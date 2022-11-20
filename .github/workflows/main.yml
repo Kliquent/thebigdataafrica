@@ -25,8 +25,8 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: whoami
-      - run: docker container stop thebigdataafrica # stop the container
-      - run: docker rm -v thebigdataafrica # remove the container & its volume
+      - run: docker container stop $(docker container ls -q --filter name=thebigdataafrica*) # stop the container
+      - run: docker rm -v $(docker container ls -q --filter name=thebigdataafrica*) # remove the container & its volume
       - run: docker rmi ${{ secrets.DOCKER_HUB_USERNAME }}/thebigdataafrica # remove outdated image
       - run: docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/thebigdataafrica:latest # pull latest image
       - run: docker run --name thebigdataafrica -p ${{ secrets.PORT }}:${{ secrets.PORT }} -d ${{ secrets.DOCKER_HUB_USERNAME }}/thebigdataafrica:latest # run updated container
