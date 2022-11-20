@@ -25,4 +25,4 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: whoami
-      - run: docker pull
+      - run: docker pull allisterhydra/thebigdataafrica:latest
