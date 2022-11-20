@@ -17,7 +17,7 @@ mongoose
 			useUnifiedTopology: true,
 		}
 	)
-	.then(() => console.log('MongoDB connected successfully Update.!!!'))
+	.then(() => console.log('MongoDB connected successfully (Update).!!!'))
 	.catch((error) => console.log(error));
 app.use(cors('*'));
 app.use(express.json()); // used to parse JSON bodies
