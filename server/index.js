@@ -10,10 +10,13 @@ dotenv.config();
 
 // Connect to MongoDB
 mongoose
-	.connect(process.env.MONGO_URI, {
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-	})
+	.connect(
+		'mongodb://thebigdataafrica:2%40Muccinex%2a%2a@155.133.23.216:29019/TheBigDataAfrica?authSource=admin',
+		{
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+		}
+	)
 	.then(() => console.log('MongoDB connected successfully!!'))
 	.catch((error) => console.log(error));
 app.use(cors('*'));
@@ -26,6 +29,6 @@ app.get('/', (req, res) => {
 	res.json({ message: 'Welcome to TheBigDataAfrica api endpoint!' });
 });
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`Server is listening on *:${PORT}`));
