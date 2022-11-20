@@ -1,4 +1,4 @@
-name: ci
+name: bigdataafrica_docker_ci
 
 on:
   push:
