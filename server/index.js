@@ -18,7 +18,7 @@ mongoose
 		}
 	)
 	.then(() =>
-		console.log('MongoDB connected successfully (Changed:latest).!!!')
+		console.log('MongoDB connected successfully (Updated:latest).!!!')
 	)
 	.catch((error) => console.log(error));
 app.use(cors('*'));
