@@ -24,7 +24,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
-          script: whoami && cd ${{ secrets.PROJECT_PATH }} && docker container stop $(docker container ls -q --filter name=thebigdataafrica*) && docker rm $(docker ps -a -q) && docker rmi ${{ secrets.DOCKER_HUB_USERNAME }}/thebigdataafrica && docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/thebigdataafrica:latest && docker run -it --rm --name thebigdataafrica -e MONGO_URI="${{ secrets.MONGO_URI }}" -p ${{ secrets.PORT }}:${{ secrets.PORT }} -d ${{ secrets.DOCKER_HUB_USERNAME }}/thebigdataafrica:latest && docker ps -a
+          script: whoami && cd ${{ secrets.PROJECT_PATH }} && docker container stop $(docker container ls -q --filter name=thebigdataafrica*) && docker rmi ${{ secrets.DOCKER_HUB_USERNAME }}/thebigdataafrica && docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/thebigdataafrica:latest && docker run -it --rm --name thebigdataafrica -e MONGO_URI="${{ secrets.MONGO_URI }}" -p ${{ secrets.PORT }}:${{ secrets.PORT }} -d ${{ secrets.DOCKER_HUB_USERNAME }}/thebigdataafrica:latest && docker ps -a
       # - run: docker rmi ${{ secrets.DOCKER_HUB_USERNAME }}/thebigdataafrica # remove outdated image
       # - run: docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/thebigdataafrica:latest # pull latest image
       # - run: docker run -it --rm --name thebigdataafrica -p ${{ secrets.PORT }}:${{ secrets.PORT }} -d ${{ secrets.DOCKER_HUB_USERNAME }}/thebigdataafrica:latest # run updated container
