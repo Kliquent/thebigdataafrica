@@ -10,13 +10,10 @@ dotenv.config();
 
 // Connect to MongoDB
 mongoose
-	.connect(
-		'mongodb://thebigdataafrica:2%40Muccinex%2a%2a@155.133.23.216:29019/TheBigDataAfrica?authSource=admin',
-		{
-			useNewUrlParser: true,
-			useUnifiedTopology: true,
-		}
-	)
+	.connect(process.env.MONGO_URI, {
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+	})
 	.then(() => console.log('MongoDB connected successfully!!'))
 	.catch((error) => console.log(error));
 app.use(cors('*'));
