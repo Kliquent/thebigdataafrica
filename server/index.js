@@ -14,7 +14,7 @@ mongoose
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 	})
-	.then(() => console.log('MongoDB connected successfully!!'))
+	.then(() => console.log('MongoDB connected successfully!'))
 	.catch((error) => console.log(error));
 app.use(cors('*'));
 app.use(express.json()); // used to parse JSON bodies
