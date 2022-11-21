@@ -17,9 +17,7 @@ mongoose
 			useUnifiedTopology: true,
 		}
 	)
-	.then(() =>
-		console.log('MongoDB connected successfully (Updated:latest).!!!')
-	)
+	.then(() => console.log('MongoDB connected successfully!'))
 	.catch((error) => console.log(error));
 app.use(cors('*'));
 app.use(express.json()); // used to parse JSON bodies
@@ -28,7 +26,7 @@ app.use(morgan('common'));
 
 // Catch / routes
 app.get('/', (req, res) => {
-	res.json({ message: 'Welcome to TheBigDataAfrica api endpoint!!!' });
+	res.json({ message: 'Welcome to TheBigDataAfrica api endpoint!' });
 });
 
 const PORT = process.env.PORT || 5000;
