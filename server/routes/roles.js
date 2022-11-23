@@ -5,7 +5,7 @@ import { auth } from '../middleware/auth.js';
 
 const router = express.Router();
 
-router.post('/system-create', auth, systemCreateRole);
+router.post('/system-create', systemCreateRole);
 router.post('/create', auth, createRole);
 
 export default router;
