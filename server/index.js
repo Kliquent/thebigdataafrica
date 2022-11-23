@@ -69,7 +69,7 @@ app.get('/', (req, res) => {
 
 // Routes middleware
 app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/role', roleRoutes);
+app.use('/api/v1/roles', roleRoutes);
 
 const PORT = process.env.PORT;
 
