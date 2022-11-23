@@ -11,7 +11,11 @@ export const systemCreateRole = async (req, res) => {
 		if (!title || !description)
 			return res.status(400).json({ message: 'Please enter all fields!' });
 
-		const existingRole = await Roles.findOne({ slug: slugify(`${title}`) });
+		const titleLowercase = title.toLowerCase();
+
+		const existingRole = await Roles.findOne({
+			slug: slugify(`${titleLowercase}`),
+		});
 
 		// Check existing role
 		if (existingRole)
@@ -20,7 +24,7 @@ export const systemCreateRole = async (req, res) => {
 		// Create user
 		await Roles.create({
 			title,
-			slug: slugify(`${title}`),
+			slug: slugify(`${titleLowercase}`),
 			description,
 			active: true,
 		});
