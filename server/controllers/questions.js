@@ -86,21 +86,20 @@ export const updateQuestion = async (req, res) => {
 		const currentSurveyQuestionId = await SurveyQuestion.findOne({
 			$and: [{ survey_id }, { question_id: questionId }],
 		});
-		console.log(currentSurveyQuestionId);
 
 		// Update reference question to survey
-		// await SurveyQuestion.findByIdAndUpdate(
-		// 	{
-		// 		_id: currentSurveyQuestionId._id,
-		// 	},
-		// 	{
-		// 		$set: {
-		// 			survey_id,
-		// 			question_id: questionId,
-		// 		},
-		// 	},
-		// 	{ new: true }
-		// );
+		await SurveyQuestion.findByIdAndUpdate(
+			{
+				_id: currentSurveyQuestionId._id,
+			},
+			{
+				$set: {
+					survey_id,
+					question_id: questionId,
+				},
+			},
+			{ new: true }
+		);
 
 		// Log event
 		await QuestionEvent.create({
