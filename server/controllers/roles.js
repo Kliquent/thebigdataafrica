@@ -22,7 +22,7 @@ export const systemCreateRole = async (req, res) => {
 		if (existingRole)
 			return res.status(409).json({ message: 'Role already exists!' });
 
-		// Create user
+		// Create new role
 		await Roles.create({
 			title,
 			slug: slugify(`${titleLowercase}`),
@@ -57,7 +57,7 @@ export const createRole = async (req, res) => {
 		if (existingRole)
 			return res.status(409).json({ message: 'Role already exists!' });
 
-		// Create user
+		// Create new role
 		const newRole = await Roles.create({
 			title,
 			slug: slugify(`${titleLowercase}`),
@@ -67,8 +67,10 @@ export const createRole = async (req, res) => {
 			updated_by: userId,
 		});
 
+		// Log event
 		await RoleEvent.create({
 			event: 'CREATE',
+			content: newRole,
 			description: 'This role has been created by administrator',
 			role_id: newRole._id,
 			created_by: userId,
@@ -104,7 +106,8 @@ export const updateRole = async (req, res) => {
 			updated_by: userId,
 		};
 
-		await Roles.findByIdAndUpdate(
+		// Update existing role
+		const updatedRole = await Roles.findByIdAndUpdate(
 			{
 				_id: roleId,
 			},
@@ -112,8 +115,10 @@ export const updateRole = async (req, res) => {
 			{ new: true }
 		);
 
+		// Log event
 		await RoleEvent.create({
 			event: 'UPDATE',
+			content: updatedRole,
 			description: 'This role has been updated by administrator',
 			role_id: roleId,
 			created_by: userId,

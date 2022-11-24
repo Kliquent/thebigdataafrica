@@ -7,6 +7,10 @@ const roleEventSchema = Schema(
 			type: String,
 			required: [true, 'Event is required'],
 		},
+		content: {
+			type: Array,
+			default: [],
+		},
 		description: {
 			type: String,
 			required: false,
