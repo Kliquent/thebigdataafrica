@@ -72,7 +72,7 @@ export const createRole = async (req, res) => {
 		await RoleEvent.create({
 			event: 'CREATE',
 			content: newRole,
-			description: 'This role has been created by administrator',
+			description: 'This role has been created by the administrator',
 			role_id: newRole._id,
 			created_by: userId,
 			updated_by: userId,
@@ -121,7 +121,7 @@ export const updateRole = async (req, res) => {
 		await RoleEvent.create({
 			event: 'UPDATE',
 			content: updatedRole,
-			description: 'This role has been updated by administrator',
+			description: 'This role has been updated by the administrator',
 			role_id: roleId,
 			created_by: userId,
 			updated_by: userId,
@@ -134,6 +134,7 @@ export const updateRole = async (req, res) => {
 	}
 };
 
+// Delete role controller & capture events
 export const deleteRole = async (req, res) => {
 	let userId = req.userId;
 	let roleId = req.params.roleId;
@@ -148,7 +149,7 @@ export const deleteRole = async (req, res) => {
 		await RoleEvent.create({
 			event: 'DELETE',
 			content: currentRole,
-			description: 'This role has been deleted by administrator',
+			description: 'This role has been deleted by the administrator',
 			role_id: roleId,
 			created_by: userId,
 			updated_by: userId,
