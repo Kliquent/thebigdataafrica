@@ -62,7 +62,7 @@ export const updateQuestion = async (req, res) => {
 		if (!survey_id)
 			return res.status(403).json({ message: 'Survey id is required!' });
 
-		const currentQuestion = await Surveys.findOne({ _id: questionId });
+		const currentQuestion = await Questions.findOne({ _id: questionId });
 
 		if (!currentQuestion)
 			return res.status(403).json({ message: 'No question found.' });
@@ -74,7 +74,7 @@ export const updateQuestion = async (req, res) => {
 		};
 
 		// Update existing question
-		const updatedSurvey = await Surveys.findByIdAndUpdate(
+		const updatedQuestion = await Questions.findByIdAndUpdate(
 			{
 				_id: questionId,
 			},
@@ -104,7 +104,7 @@ export const updateQuestion = async (req, res) => {
 		// Log event
 		await QuestionEvent.create({
 			event: 'UPDATE',
-			content: updatedSurvey,
+			content: updatedQuestion,
 			description: 'This question has been updated by the administrator',
 			question_id: questionId,
 			created_by: userId,
