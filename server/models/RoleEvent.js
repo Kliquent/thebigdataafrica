@@ -11,17 +11,17 @@ const roleEventSchema = Schema(
 			type: String,
 			required: false,
 		},
-		roleId: {
+		role_id: {
 			type: Schema.Types.ObjectId,
 			ref: 'roles',
 			required: false,
 		},
-		createdBy: {
+		created_by: {
 			type: Schema.Types.ObjectId,
 			ref: 'users',
 			required: false,
 		},
-		updatedBy: {
+		updated_by: {
 			type: Schema.Types.ObjectId,
 			ref: 'users',
 			required: false,
@@ -30,4 +30,4 @@ const roleEventSchema = Schema(
 	{ timestamps: true }
 );
 
-export default mongoose.model('roleEvent', roleEventSchema);
+export default mongoose.model('role-events', roleEventSchema);

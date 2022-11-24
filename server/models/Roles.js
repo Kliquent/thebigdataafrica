@@ -20,12 +20,12 @@ const roleSchema = Schema(
 			type: Boolean,
 			default: false,
 		},
-		createdBy: {
+		created_by: {
 			type: Schema.Types.ObjectId,
 			ref: 'users',
 			required: false,
 		},
-		updatedBy: {
+		updated_by: {
 			type: Schema.Types.ObjectId,
 			ref: 'users',
 			required: false,

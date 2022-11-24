@@ -1,6 +1,7 @@
 import slugify from 'slugify';
 
 import Roles from '../models/Roles.js';
+import RoleEvent from '../models/RoleEvent.js';
 
 // System level actions
 export const systemCreateRole = async (req, res) => {
@@ -38,6 +39,7 @@ export const systemCreateRole = async (req, res) => {
 
 // Create role controller & capture events
 export const createRole = async (req, res) => {
+	let userId = req.userId;
 	const { title, description } = req.body;
 
 	try {
@@ -56,11 +58,21 @@ export const createRole = async (req, res) => {
 			return res.status(409).json({ message: 'Role already exists!' });
 
 		// Create user
-		await Roles.create({
+		const newRole = await Roles.create({
 			title,
 			slug: slugify(`${titleLowercase}`),
 			description,
 			active: true,
+			created_by: userId,
+			updated_by: userId,
+		});
+
+		await RoleEvent.create({
+			event: 'CREATE',
+			description: 'This role has been created by administrator',
+			role_id: newRole._id,
+			created_by: userId,
+			updated_by: userId,
 		});
 
 		res.status(200).json({ message: 'Role created successfully!' });

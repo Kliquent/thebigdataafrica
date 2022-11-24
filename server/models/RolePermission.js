@@ -17,4 +17,4 @@ const rolePermissionSchema = Schema(
 	{ timestamps: true }
 );
 
-export default mongoose.model('rolePermission', rolePermissionSchema);
+export default mongoose.model('role-permission', rolePermissionSchema);
