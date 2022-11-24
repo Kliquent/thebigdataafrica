@@ -54,8 +54,15 @@ export const signin = async (req, res) => {
 
 // adminSignup controller
 export const adminSignup = async (req, res) => {
-	const { name, email, phone, gender, password, password_confirmation } =
-		req.body;
+	const {
+		role_id,
+		name,
+		email,
+		phone,
+		gender,
+		password,
+		password_confirmation,
+	} = req.body;
 
 	const emailLowercase = email.toLowerCase(); // sanitize: convert email to lowercase
 
@@ -83,6 +90,10 @@ export const adminSignup = async (req, res) => {
 		)
 			return res.status(400).json({ message: 'Please enter all fields!' });
 
+		// Role validation
+		if (!role_id)
+			return res.status(400).json({ message: 'Please provide user role id!' });
+
 		// Check password strength
 		if (password.length < 8)
 			return res
@@ -107,7 +118,7 @@ export const adminSignup = async (req, res) => {
 			gender,
 			isAdmin: true,
 			isUserActive: true,
-			role: 'Administrator',
+			role_id,
 			isEmailVerified: false,
 			password: hashedPassword,
 		});
