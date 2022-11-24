@@ -17,7 +17,7 @@ export const createQuestion = async (req, res) => {
 
 		// Create new question
 		const newQuestion = await Questions.create({
-			title,
+			name,
 			description,
 			active: true,
 			created_by: userId,
@@ -112,6 +112,24 @@ export const updateQuestion = async (req, res) => {
 		});
 
 		res.status(200).json({ message: 'Question updated successfully!' });
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
+// Delete question controller & capture events
+export const deleteQuestion = async (req, res) => {
+	let userId = req.userId;
+	let questionId = req.params.questionId;
+
+	try {
+		const currentQuestion = await Surveys.findOne({ _id: questionId });
+
+		if (!currentQuestion)
+			return res.status(403).json({ message: 'No question found.' });
+
+		res.status(200).json({ message: 'Question deleted successfully!' });
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: error });
