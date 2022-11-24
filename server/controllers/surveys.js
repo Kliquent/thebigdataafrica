@@ -98,6 +98,8 @@ export const deleteSurvey = async (req, res) => {
 		if (!currentSurvey)
 			return res.status(403).json({ message: 'No survey found.' });
 
+		// Prevent delete if the question is referenced
+
 		// Log event
 		await SurveyEvent.create({
 			event: 'DELETE',

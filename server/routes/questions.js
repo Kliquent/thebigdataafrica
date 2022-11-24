@@ -6,7 +6,7 @@ import { auth } from '../middleware/auth.js';
 const router = express.Router();
 
 router.post('/create', auth, createQuestion);
-router.put('/:roleId', auth, updateQuestion);
-// router.delete('/:roleId', auth, deleteRole);
+router.put('/:questionId', auth, updateQuestion);
+// router.delete('/:questionId', auth, deleteRole);
 
 export default router;
