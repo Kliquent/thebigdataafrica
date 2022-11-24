@@ -93,7 +93,6 @@ export const updateRole = async (req, res) => {
 		if (!title || !description)
 			return res.status(400).json({ message: 'Please enter all fields!' });
 
-		const currentUser = await Users.findById(userId);
 		const currentRole = await Roles.findOne({ _id: roleId });
 
 		if (!currentRole)
@@ -102,15 +101,24 @@ export const updateRole = async (req, res) => {
 		const updatedRoleInfo = {
 			title,
 			description,
+			updated_by: userId,
 		};
 
 		await Roles.findByIdAndUpdate(
 			{
-				_id: currentRole._id,
+				_id: roleId,
 			},
 			{ $set: updatedRoleInfo },
 			{ new: true }
 		);
+
+		await RoleEvent.create({
+			event: 'UPDATE',
+			description: 'This role has been updated by administrator',
+			role_id: roleId,
+			created_by: userId,
+			updated_by: userId,
+		});
 
 		res.status(200).json({ message: 'Role updated successfully!' });
 	} catch (error) {
