@@ -8,6 +8,7 @@ import winston from 'winston';
 import authRoutes from './routes/users.js';
 import roleRoutes from './routes/roles.js';
 import surveyRoutes from './routes/surveys.js';
+import questionRoutes from './routes/questions.js';
 import { parseUserAgent } from './utils/parseUserAgent.js';
 import { sanitizeUrl } from './utils/sanitizeUrl.js';
 
@@ -72,6 +73,7 @@ app.get('/', (req, res) => {
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/roles', roleRoutes);
 app.use('/api/v1/surveys', surveyRoutes);
+app.use('/api/v1/questions', questionRoutes);
 
 const PORT = process.env.PORT;
 

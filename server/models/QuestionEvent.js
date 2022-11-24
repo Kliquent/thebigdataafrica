@@ -1,27 +1,23 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
-const surveySchema = Schema(
+const questionEventSchema = Schema(
 	{
-		type: {
+		event: {
 			type: String,
-			default: 'Survey',
+			required: [true, 'Event is required'],
 		},
-		title: {
-			type: String,
-			required: [true, 'Title is required'],
+		content: {
+			type: Array,
+			default: [],
 		},
 		description: {
 			type: String,
 			required: false,
 		},
-		active: {
-			type: Boolean,
-			default: false,
-		},
-		owner: {
+		question_id: {
 			type: Schema.Types.ObjectId,
-			ref: 'users',
+			ref: 'questions',
 			required: false,
 		},
 		created_by: {
@@ -38,4 +34,4 @@ const surveySchema = Schema(
 	{ timestamps: true }
 );
 
-export default mongoose.model('surveys', surveySchema);
+export default mongoose.model('question-events', questionEventSchema);

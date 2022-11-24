@@ -1,28 +1,20 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
-const surveySchema = Schema(
+const optionSchema = Schema(
 	{
-		type: {
+		name: {
 			type: String,
-			default: 'Survey',
-		},
-		title: {
-			type: String,
-			required: [true, 'Title is required'],
+			required: [true, 'Name is required'],
 		},
 		description: {
 			type: String,
 			required: false,
 		},
-		active: {
-			type: Boolean,
-			default: false,
-		},
-		owner: {
+		question_id: {
 			type: Schema.Types.ObjectId,
-			ref: 'users',
-			required: false,
+			ref: 'questions',
+			required: [true, 'Question id is required'],
 		},
 		created_by: {
 			type: Schema.Types.ObjectId,
@@ -38,4 +30,4 @@ const surveySchema = Schema(
 	{ timestamps: true }
 );
 
-export default mongoose.model('surveys', surveySchema);
+export default mongoose.model('options', optionSchema);

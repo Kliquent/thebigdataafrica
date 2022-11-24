@@ -16,6 +16,7 @@ export const createSurvey = async (req, res) => {
 			title,
 			description,
 			active: true,
+			owner: userId, // can be admin/client based on role
 			created_by: userId,
 			updated_by: userId,
 		});
