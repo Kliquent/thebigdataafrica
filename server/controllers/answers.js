@@ -4,12 +4,12 @@ import AnswerEvent from '../models/AnswerEvent.js';
 // Create answer controller & capture events
 export const createAnswer = async (req, res) => {
 	let userId = req.userId;
-	const { type, survey_question_id, option_id, location, surveyee } = req.body;
+	const { survey_question_id, option_id, location, surveyee } = req.body;
 
 	try {
 		// Simple validation
-		if (!type || !surveyee)
-			return res.status(400).json({ message: 'Please enter all fields!' });
+		if (!surveyee)
+			return res.status(400).json({ message: 'Surveyee is required!' });
 
 		if (!survey_question_id)
 			return res
@@ -55,12 +55,12 @@ export const updateAnswer = async (req, res) => {
 	let userId = req.userId;
 	let answerId = req.params.answerId;
 
-	const { type, survey_question_id, option_id, location, surveyee } = req.body;
+	const { survey_question_id, option_id, location, surveyee } = req.body;
 
 	try {
 		// Simple validation
-		if (!type || !surveyee)
-			return res.status(400).json({ message: 'Please enter all fields!' });
+		if (!surveyee)
+			return res.status(400).json({ message: 'Surveyee is required!' });
 
 		if (!survey_question_id)
 			return res
