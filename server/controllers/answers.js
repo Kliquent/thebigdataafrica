@@ -24,7 +24,6 @@ export const createAnswer = async (req, res) => {
 
 		// Create new answer
 		const newAnswer = await Answers.create({
-			type,
 			survey_question_id,
 			option_id,
 			surveyee,
@@ -76,7 +75,6 @@ export const updateAnswer = async (req, res) => {
 			return res.status(403).json({ message: 'No answer found.' });
 
 		const updatedAnswerInfo = {
-			type,
 			survey_question_id,
 			option_id,
 			surveyee,
