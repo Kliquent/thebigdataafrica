@@ -4,10 +4,10 @@ import OptionEvent from '../models/OptionEvent.js';
 // Create option controller & capture events
 export const createOption = async (req, res) => {
 	let userId = req.userId;
-	const { name, description, question_id } = req.body;
+	const { type, name, description, question_id } = req.body;
 	try {
 		// Simple validation
-		if (!name || !description)
+		if (!type || !name || !description)
 			return res.status(400).json({ message: 'Please enter all fields!' });
 
 		if (!question_id)
