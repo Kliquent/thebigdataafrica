@@ -17,6 +17,14 @@ const answerSchema = Schema(
 			ref: 'options',
 			required: false,
 		},
+		location: {
+			type: Array,
+			default: [],
+		},
+		surveyee: {
+			type: Array,
+			default: [],
+		},
 		created_by: {
 			type: Schema.Types.ObjectId,
 			ref: 'users',
