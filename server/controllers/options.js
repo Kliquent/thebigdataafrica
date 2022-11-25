@@ -15,6 +15,7 @@ export const createOption = async (req, res) => {
 
 		// Create new option
 		const newOption = await Options.create({
+			type,
 			name,
 			description,
 			question_id,
@@ -48,7 +49,7 @@ export const updateOption = async (req, res) => {
 
 	try {
 		// Simple validation
-		if (!name || !description)
+		if (!type || !name || !description)
 			return res.status(400).json({ message: 'Please enter all fields!' });
 
 		if (!question_id)
@@ -60,6 +61,7 @@ export const updateOption = async (req, res) => {
 			return res.status(403).json({ message: 'No option found.' });
 
 		const updatedOptionInfo = {
+			type,
 			name,
 			description,
 			question_id,
