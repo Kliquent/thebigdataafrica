@@ -16,7 +16,7 @@ export const createOption = async (req, res) => {
 		// Create new option
 		const newOption = await Options.create({
 			select_type, // Single or Multi Select
-			type, // Dropdown Select, Radio, Checkbox, Range
+			type, // Dropdown Select, Radio, Checkbox, Range, Text Field
 			name,
 			description,
 			question_id,
@@ -46,7 +46,7 @@ export const updateOption = async (req, res) => {
 	let userId = req.userId;
 	let optionId = req.params.optionId;
 
-	const { name, description, question_id } = req.body;
+	const { select_type, name, description, question_id } = req.body;
 
 	try {
 		// Simple validation
@@ -61,9 +61,10 @@ export const updateOption = async (req, res) => {
 		if (!currentOption)
 			return res.status(403).json({ message: 'No option found.' });
 
+		// Select Type & Type can be changed on update
 		const updatedOptionInfo = {
 			select_type, // Single or Multi Select
-			type, // Dropdown Select, Radio, Checkbox, Range
+			type, // Dropdown Select, Radio, Checkbox, Range, Text Field
 			name,
 			description,
 			question_id,
