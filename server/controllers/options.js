@@ -46,7 +46,7 @@ export const updateOption = async (req, res) => {
 	let userId = req.userId;
 	let optionId = req.params.optionId;
 
-	const { select_type, name, description, question_id } = req.body;
+	const { select_type, type, name, description, question_id } = req.body;
 
 	try {
 		// Simple validation
