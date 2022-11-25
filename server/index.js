@@ -9,6 +9,7 @@ import authRoutes from './routes/users.js';
 import roleRoutes from './routes/roles.js';
 import surveyRoutes from './routes/surveys.js';
 import questionRoutes from './routes/questions.js';
+import optionRoutes from './routes/options.js';
 import { parseUserAgent } from './utils/parseUserAgent.js';
 import { sanitizeUrl } from './utils/sanitizeUrl.js';
 
@@ -56,7 +57,7 @@ app.use(
 		stream: {
 			write: (message) => {
 				const data = JSON.parse(message);
-				parseUserAgent(data); //Enrich data
+				parseUserAgent(data); // Enrich data
 				sanitizeUrl(data);
 				return logger.info('accesslog', data);
 			},
@@ -74,6 +75,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/roles', roleRoutes);
 app.use('/api/v1/surveys', surveyRoutes);
 app.use('/api/v1/questions', questionRoutes);
+app.use('/api/v1/options', optionRoutes);
 
 const PORT = process.env.PORT;
 
