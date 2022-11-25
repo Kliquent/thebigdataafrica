@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 const optionSchema = Schema(
 	{
+		type: {
+			type: String,
+			default: 'Text Field',
+		},
 		name: {
 			type: String,
 			required: [true, 'Name is required'],
