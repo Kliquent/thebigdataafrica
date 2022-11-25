@@ -56,7 +56,7 @@ export const updateOption = async (req, res) => {
 		if (!question_id)
 			return res.status(400).json({ message: 'Question id is required!' });
 
-		const currentOption = await Surveys.findOne({ _id: optionId });
+		const currentOption = await Options.findOne({ _id: optionId });
 
 		if (!currentOption)
 			return res.status(403).json({ message: 'No option found.' });
