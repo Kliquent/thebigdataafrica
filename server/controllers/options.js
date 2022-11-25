@@ -4,10 +4,10 @@ import OptionEvent from '../models/OptionEvent.js';
 // Create option controller & capture events
 export const createOption = async (req, res) => {
 	let userId = req.userId;
-	const { type, name, description, question_id } = req.body;
+	const { select_type, type, name, description, question_id } = req.body;
 	try {
 		// Simple validation
-		if (!type || !name || !description)
+		if (!select_type || !type || !name || !description)
 			return res.status(400).json({ message: 'Please enter all fields!' });
 
 		if (!question_id)
@@ -15,7 +15,8 @@ export const createOption = async (req, res) => {
 
 		// Create new option
 		const newOption = await Options.create({
-			type,
+			select_type, // Single or Multi Select
+			type, // Dropdown Select, Radio, Checkbox, Range
 			name,
 			description,
 			question_id,
@@ -49,7 +50,7 @@ export const updateOption = async (req, res) => {
 
 	try {
 		// Simple validation
-		if (!type || !name || !description)
+		if (!select_type || !type || !name || !description)
 			return res.status(400).json({ message: 'Please enter all fields!' });
 
 		if (!question_id)
@@ -61,7 +62,8 @@ export const updateOption = async (req, res) => {
 			return res.status(403).json({ message: 'No option found.' });
 
 		const updatedOptionInfo = {
-			type,
+			select_type, // Single or Multi Select
+			type, // Dropdown Select, Radio, Checkbox, Range
 			name,
 			description,
 			question_id,

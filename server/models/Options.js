@@ -3,9 +3,15 @@ const Schema = mongoose.Schema;
 
 const optionSchema = Schema(
 	{
+		select_type: {
+			type: String,
+			default: 'Single Select', // Multi Select, Input Text
+			required: [true, 'Select type is required'],
+		},
 		type: {
 			type: String,
-			default: 'Text Field',
+			default: 'Text Field', // Dropdown Select, Radio, Checkbox, Range
+			required: [true, 'Type is required'],
 		},
 		name: {
 			type: String,
