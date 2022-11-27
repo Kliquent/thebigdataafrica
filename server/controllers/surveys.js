@@ -8,8 +8,11 @@ export const createSurvey = async (req, res) => {
 
 	try {
 		// Simple validation
-		if (!title || !researcher_id)
-			return res.status(400).json({ message: 'Please enter all fields!' });
+		if (!title)
+			return res.status(400).json({ message: 'Please enter title field!' });
+
+		if (!researcher_id)
+			return res.status(400).json({ message: 'Researcher id is required!' });
 
 		// Create new survey
 		const newSurvey = await Surveys.create({
@@ -48,8 +51,11 @@ export const updateSurvey = async (req, res) => {
 
 	try {
 		// Simple validation
-		if (!title || !researcher_id)
-			return res.status(400).json({ message: 'Please enter all fields!' });
+		if (!title)
+			return res.status(400).json({ message: 'Please enter title field!' });
+
+		if (!researcher_id)
+			return res.status(400).json({ message: 'Researcher id is required!' });
 
 		const currentSurvey = await Surveys.findOne({ _id: surveyId });
 

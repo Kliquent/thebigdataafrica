@@ -282,7 +282,7 @@ export const getUsersByRole = async (req, res) => {
 			return res.status(403).json({ message: 'No role found.' });
 
 		const users = await Users.find({
-			_id: roleId,
+			role_id: roleId,
 		});
 
 		res.status(200).json({ role: `${currentRole.name}`, users });
