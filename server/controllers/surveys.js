@@ -63,10 +63,10 @@ export const updateSurvey = async (req, res) => {
 			return res.status(403).json({ message: 'No survey found.' });
 
 		const updatedSurveyInfo = {
-			title,
-			description,
-			researcher: researcher_id,
-			owner: client_id,
+			title: title || currentSurvey.title,
+			description: description || currentSurvey.description,
+			researcher: researcher_id || currentSurvey.researcher,
+			owner: client_id || currentSurvey.owner,
 			updated_by: userId,
 		};
 
