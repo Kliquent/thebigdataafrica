@@ -460,16 +460,12 @@ export const adminDeleteUser = async (req, res) => {
 		// const currentUser = await Users.findById(userId);
 
 		// if (currentUser.isAdmin) {
-		const userToBeDeleted = await Users.findOne({ _id: _id });
-
-		if (!userToBeDeleted)
-			return res.status(403).json({ message: 'No user found.' });
 
 		// Prevent delete if the user has attached resources
 
 		// Log event
 
-		await Users.findByIdAndDelete({ _id: userToBeDeleted._id });
+		await Users.findByIdAndDelete({ _id: _id });
 
 		res.status(200).json({ message: 'User deleted successfully!' });
 		// } else {
