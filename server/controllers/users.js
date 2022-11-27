@@ -276,7 +276,7 @@ export const getUsersByRole = async (req, res) => {
 	let roleId = req.params.roleId;
 
 	try {
-		const currentRole = await Roles.findOne({ role_id: roleId });
+		const currentRole = await Roles.findOne({ _id: roleId });
 
 		if (!currentRole)
 			return res.status(403).json({ message: 'No role found.' });
@@ -285,7 +285,7 @@ export const getUsersByRole = async (req, res) => {
 			role_id: roleId,
 		});
 
-		res.status(200).json({ role: `${currentRole.name}`, users });
+		res.status(200).json({ role: `${currentRole.title}`, users });
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: error });
