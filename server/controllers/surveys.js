@@ -138,10 +138,10 @@ export const getSurveys = async (req, res) => {
 			const surveys = await Surveys.find({
 				$text: { $search: `"${searchTerm}"` },
 			})
-				.populate('owner')
-				.populate('researcher')
-				.populate('created_by')
-				.populate('updated_by');
+				.populate('owner', 'name email phone gender')
+				.populate('researcher', 'name email phone gender')
+				.populate('created_by', 'name email phone gender')
+				.populate('updated_by', 'name email phone gender');
 
 			res.status(200).json({ surveys, totalSearchSurveys: surveys.length });
 		} else {
@@ -149,10 +149,10 @@ export const getSurveys = async (req, res) => {
 				.sort([[orderBy, order]])
 				.skip(skipIndex)
 				.limit(limit)
-				.populate('owner')
-				.populate('researcher')
-				.populate('created_by')
-				.populate('updated_by');
+				.populate('owner', 'name email phone gender')
+				.populate('researcher', 'name email phone gender')
+				.populate('created_by', 'name email phone gender')
+				.populate('updated_by', 'name email phone gender');
 
 			res.status(200).json(surveys);
 		}
@@ -175,9 +175,9 @@ export const getSurvey = async (req, res) => {
 			_id: surveyId,
 		})
 			.populate('owner', 'name email phone gender')
-			.populate('researcher')
-			.populate('created_by')
-			.populate('updated_by');
+			.populate('researcher', 'name email phone gender')
+			.populate('created_by', 'name email phone gender')
+			.populate('updated_by', 'name email phone gender');
 
 		res.status(200).json(survey);
 	} catch (error) {
