@@ -55,9 +55,6 @@ export const updateSurvey = async (req, res) => {
 		if (!title)
 			return res.status(400).json({ message: 'Please enter title field!' });
 
-		if (!researcher_id)
-			return res.status(400).json({ message: 'Researcher id is required!' });
-
 		const currentSurvey = await Surveys.findOne({ _id: surveyId });
 
 		if (!currentSurvey)
