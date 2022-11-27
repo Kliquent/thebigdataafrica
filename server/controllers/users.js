@@ -407,7 +407,7 @@ export const getUsersByRole = async (req, res) => {
 
 		const users = await Users.find({
 			role_id: roleId,
-		});
+		}).populate('role', 'title');
 
 		res.status(200).json({ role: `${currentRole.title}`, users });
 	} catch (error) {
