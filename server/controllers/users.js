@@ -453,11 +453,11 @@ export const adminGetUser = async (req, res) => {
 };
 
 export const adminDeleteUser = async (req, res) => {
-	const userId = req.userId;
+	// const userId = req.userId;
 	const { _id } = req.body;
 
 	try {
-		const currentUser = await Users.findById(userId);
+		// const currentUser = await Users.findById(userId);
 
 		// if (currentUser.isAdmin) {
 		const userToBeDeleted = await Users.findOne({ _id: _id });
