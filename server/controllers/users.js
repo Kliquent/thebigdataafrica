@@ -55,8 +55,15 @@ export const signin = async (req, res) => {
 
 // userSignup controller
 export const userSignup = async (req, res) => {
-	const { role_id, name, email, phone, password, password_confirmation } =
-		req.body;
+	const {
+		role_id,
+		name,
+		email,
+		phone,
+		gender,
+		password,
+		password_confirmation,
+	} = req.body;
 
 	const emailLowercase = email.toLowerCase(); // sanitize: convert email to lowercase
 
@@ -78,6 +85,7 @@ export const userSignup = async (req, res) => {
 			!name ||
 			!emailLowercase ||
 			!phone ||
+			!gender ||
 			!password ||
 			!password_confirmation
 		)
@@ -128,7 +136,7 @@ export const userSignup = async (req, res) => {
 			{ expiresIn: '28 days' }
 		);
 
-		res.status(200).json({ message: 'New user customer created!', token });
+		res.status(200).json({ message: 'New user created!', token });
 	} catch (error) {
 		res.status(500).json({ message: error });
 	}
