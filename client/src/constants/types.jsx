@@ -14,3 +14,10 @@ export const GET_ERRORS = 'get_errors';
 export const CLEAR_ERRORS = 'clear_errors';
 
 export const CREATE_USER = 'create_user';
+
+export const SURVEY_LOADING = 'survey_loading';
+export const CREATE_SURVEY = 'create_survey';
+export const GET_SURVEY = 'get_survey';
+export const GET_SURVEYS = 'get_surveys';
+export const UPDATE_SURVEY = 'update_survey';
+export const DELETE_SURVEY = 'delete_survey';
