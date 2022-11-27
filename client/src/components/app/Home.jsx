@@ -21,6 +21,31 @@ const Home = () => {
 							Welcome back, {auth?.user?.current_user?.name}
 						</h3>
 					</div>
+					<div className="w-full md:w-56 lg:w-56 xl:w-56">
+						<button
+							// onClick={handleClickOpen}
+							className="align-bottom inline-flex items-center justify-center cursor-pointer leading-5 transition-colors duration-150 font-medium focus:outline-none px-4 py-2 text-sm text-white bg-green-500 border border-transparent active:bg-green-600 hover:bg-green-600 focus:ring focus:ring-purple-300 w-full rounded-md h-12"
+							type="button"
+						>
+							<span className="mr-3">
+								<svg
+									stroke="currentColor"
+									fill="none"
+									strokeWidth={2}
+									viewBox="0 0 24 24"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									height="1em"
+									width="1em"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<line x1={12} y1={5} x2={12} y2={19} />
+									<line x1={5} y1={12} x2={19} y2={12} />
+								</svg>
+							</span>
+							New Survey
+						</button>
+					</div>
 				</div>
 
 				{/* Survey Stats */}

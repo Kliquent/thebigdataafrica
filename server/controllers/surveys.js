@@ -174,7 +174,7 @@ export const getSurvey = async (req, res) => {
 		const survey = await Surveys.find({
 			_id: surveyId,
 		})
-			.populate('owner')
+			.populate('owner', 'name email phone gender')
 			.populate('researcher')
 			.populate('created_by')
 			.populate('updated_by');
