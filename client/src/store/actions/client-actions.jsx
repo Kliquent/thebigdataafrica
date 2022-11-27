@@ -32,7 +32,7 @@ export const tokenConfig = () => {
 	return config;
 };
 
-export const createClient = () => async (dispatch) => {
+export const createClient = (payload) => async (dispatch) => {
 	const token = tokenConfig();
 	const { name, email, phone, gender, password } = payload;
 
@@ -65,7 +65,7 @@ export const createClient = () => async (dispatch) => {
 
 		toast.success(`Success! create client success.`);
 	} catch (error) {
-		console.log(error.response);
+		console.log(error.response.data);
 		toast.error('Error! create client failed.');
 		dispatch(
 			returnErrors(error.response.data, error.response.status, 'CREATE_CLIENT')
@@ -73,7 +73,7 @@ export const createClient = () => async (dispatch) => {
 	}
 };
 
-export const updateClient = () => async (dispatch) => {
+export const updateClient = (payload) => async (dispatch) => {
 	const token = tokenConfig();
 	const { _id, name, email, phone, gender } = payload;
 
@@ -114,7 +114,7 @@ export const updateClient = () => async (dispatch) => {
 
 // Change client password
 
-export const deleteClient = () => async (dispatch) => {
+export const deleteClient = (payload) => async (dispatch) => {
 	const token = tokenConfig();
 	const { _id } = payload;
 
@@ -122,7 +122,7 @@ export const deleteClient = () => async (dispatch) => {
 		await dispatch({ type: CLIENT_LOADING });
 
 		const body = JSON.stringify({
-			_id,
+			deleteUserId: _id,
 		});
 
 		const response = await axios.delete(
@@ -130,6 +130,7 @@ export const deleteClient = () => async (dispatch) => {
 			body,
 			token
 		);
+
 		const data = await response.data;
 
 		await dispatch({

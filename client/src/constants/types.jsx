@@ -28,3 +28,10 @@ export const GET_CLIENT = 'get_client';
 export const GET_CLIENTS = 'get_clients';
 export const UPDATE_CLIENT = 'update_client';
 export const DELETE_CLIENT = 'delete_client';
+
+export const RESEARCHER_LOADING = 'researcher_loading';
+export const CREATE_RESEARCHER = 'create_researcher';
+export const GET_RESEARCHER = 'get_researcher';
+export const GET_RESEARCHERS = 'get_researchers';
+export const UPDATE_RESEARCHER = 'update_researcher';
+export const DELETE_RESEARCHER = 'delete_researcher';

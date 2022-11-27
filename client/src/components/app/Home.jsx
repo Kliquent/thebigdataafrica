@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -13,7 +13,6 @@ import {
 	TableRow,
 	TableCell,
 	Button,
-	Chip,
 	Autocomplete,
 	IconButton,
 	CircularProgress,
@@ -128,6 +127,14 @@ const Home = () => {
 		};
 	}, [loadingClient]);
 
+	useEffect(() => {
+		reset({
+			title: '',
+			description: '',
+		});
+		// eslint-disable-next-line
+	}, [openPopup]);
+
 	const handlePageChange = (event, newPage) => {
 		setPage(newPage);
 	};
@@ -154,7 +161,7 @@ const Home = () => {
 
 	const handleCloseEditDialog = () => {
 		reset({
-			name: '',
+			title: '',
 			description: '',
 		});
 		setOpenEditPopup(false);
@@ -526,7 +533,7 @@ const Home = () => {
 											colSpan={12}
 											style={{ padding: '1rem', textAlign: 'center' }}
 										>
-											{loading ? (
+											{surveyLoading ? (
 												<CircularProgress
 													variant="indeterminate"
 													disableShrink
