@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import {
 	Dialog,
@@ -13,6 +14,7 @@ import {
 	TableCell,
 	Button,
 	Chip,
+	Autocomplete,
 	IconButton,
 	CircularProgress,
 	TablePagination,
@@ -25,6 +27,7 @@ import {
 	deleteSurvey,
 	getSurveys,
 	getSurvey,
+	tokenConfig,
 } from '../../store/actions/survey-actions';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -37,9 +40,10 @@ import { abbreviateNumber } from '../../utils/AbbreviationNumber';
 const Home = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	const token = tokenConfig();
 
 	let auth = useSelector((state) => state.auth);
-	let loading = useSelector((state) => state.surveys?.isLoading);
+	let surveyLoading = useSelector((state) => state.surveys?.isLoading);
 	let surveys = useSelector((state) => state.surveys?.surveys);
 
 	const pages = [10, 20, 50];
@@ -53,11 +57,76 @@ const Home = () => {
 	const [buttonLoading, setButtonLoading] = useState(false);
 
 	const [updatedSurvey, setUpdatedSurvey] = useState([]);
-	const [deletedType, setDeletedType] = useState([]);
+	const [updatedResearcher, setUpdatedResearcher] = useState([]);
+	const [updatedClient, setUpdatedClient] = useState([]);
+	const [deletedSurvey, setDeletedSurvey] = useState([]);
+
+	const [open, setOpen] = useState(false);
+	const [options, setOptions] = useState([]);
+	const [selectedResearcher, setSelectedResearcher] = useState([]);
+
+	const [openClient, setOpenClient] = useState(false);
+	const [optionsClient, setOptionsClient] = useState([]);
+	const [selectedClient, setSelectedClient] = useState([]);
+
+	const loading = open && options.length === 0;
+	const loadingClient = openClient && optionsClient.length === 0;
 
 	useEffect(() => {
 		dispatch(getSurveys());
 	}, []);
+
+	useEffect(() => {
+		let active = true;
+
+		if (!loading) {
+			return undefined;
+		}
+
+		let roleId = '638321784a197589eeedf7fa'; // for researcher
+
+		(async () => {
+			const response = await axios.get(
+				`https://apis.thebigdataafrica.com/api/v1/auth/users-by-role/${roleId}`,
+				token
+			);
+			const users = await response.data.users;
+
+			if (active) {
+				setOptions(users);
+			}
+		})();
+
+		return () => {
+			active = false;
+		};
+	}, [loading]);
+
+	useEffect(() => {
+		let active = true;
+
+		if (!loadingClient) {
+			return undefined;
+		}
+
+		let roleId = '638321904a197589eeedf7ff'; // for client
+
+		(async () => {
+			const response = await axios.get(
+				`https://apis.thebigdataafrica.com/api/v1/auth/users-by-role/${roleId}`,
+				token
+			);
+			const users = await response.data.users;
+
+			if (active) {
+				setOptionsClient(users);
+			}
+		})();
+
+		return () => {
+			active = false;
+		};
+	}, [loadingClient]);
 
 	const handlePageChange = (event, newPage) => {
 		setPage(newPage);
@@ -95,56 +164,86 @@ const Home = () => {
 		setOpenDeletePopup(false);
 	};
 
+	const selectedOption = (value) => {
+		setSelectedResearcher(value);
+	};
+
+	const selectedOptionClient = (value) => {
+		setSelectedClient(value);
+	};
+
 	const handleClickOpen = () => {
 		setOpenPopup(true);
 	};
 
 	const handleEditPopup = (data, e) => {
 		e.preventDefault();
-		const { title, description } = data;
+		const { title, description, researcher, owner } = data;
 
 		reset({
 			title,
 			description,
+			researcher: researcher?.name,
+			client: owner?.name,
 		});
 
 		setUpdatedSurvey(data);
+		setUpdatedResearcher(researcher);
+		setUpdatedClient(owner);
 		setOpenEditPopup(true);
 	};
 
 	const onSubmit = async (data, e) => {
 		e.preventDefault();
-		console.log(data);
-		// setButtonLoading(true);
+		const { title, description } = data;
 
-		// await dispatch(postProductType(data));
-		// await dispatch(getProductTypes());
+		setButtonLoading(true);
 
-		// setButtonLoading(false);
-		// handleCloseDialog();
+		const payload = {
+			title,
+			description,
+			researcher_id: selectedResearcher?._id,
+			client_id: selectedClient?._id,
+		};
+
+		await dispatch(createSurvey(payload));
+		await dispatch(getSurveys());
+
+		setButtonLoading(false);
+		handleCloseDialog();
 	};
 
 	const onSubmitEdit = async (data, e) => {
 		e.preventDefault();
-		// setButtonLoading(true);
-		// const { name, description } = data;
+		setButtonLoading(true);
+		const { title, description } = data;
 
-		// const updatedData = {
-		// 	_id: updatedProductType._id,
-		// 	name,
-		// 	description,
-		// };
+		const updatedData = {
+			_id: updatedSurvey._id,
+			title,
+			description,
+			researcher_id: selectedResearcher?._id,
+			client_id: selectedClient?._id,
+		};
 
-		// await dispatch(updateProductType(updatedData));
-		// await dispatch(getProductTypes());
+		await dispatch(updateSurvey(updatedData));
+		await dispatch(getSurveys());
 
-		// setButtonLoading(false);
-		// handleCloseEditDialog();
+		setButtonLoading(false);
+		handleCloseEditDialog();
 	};
 
-	const handleDeleteSurvey = (item) => {
-		// setDeletedType(item);
-		// setOpenDeletePopup(true);
+	const handleDeleteSurvey = (survey) => {
+		setDeletedSurvey(survey);
+		setOpenDeletePopup(true);
+	};
+
+	const confirmDeleteSurvey = async () => {
+		setButtonLoading(true);
+		await dispatch(deleteSurvey(deletedSurvey));
+		await dispatch(getSurveys());
+		setButtonLoading(false);
+		handleCloseDeleteDialog();
 	};
 
 	return (
@@ -354,7 +453,9 @@ const Home = () => {
 													<span className="text-sm">{created_by?.name}</span>
 												</td>
 												<td className="px-4 py-3">
-													<span className="text-sm">{updatedAt}</span>
+													<span className="text-sm">
+														{new Date(`${updatedAt}`).toLocaleString()}
+													</span>
 												</td>
 
 												<td className="px-4 py-3">
@@ -422,9 +523,7 @@ const Home = () => {
 														</div>
 														<div className="p-2 cursor-pointer text-gray-400 hover:text-red-600">
 															<IconButton
-															// onClick={(e) =>
-															// 	handleDeleteType(productType, e)
-															// }
+																onClick={(e) => handleDeleteSurvey(survey, e)}
 															>
 																<svg
 																	stroke="currentColor"
@@ -588,6 +687,192 @@ const Home = () => {
 							error={errors?.description ? true : false}
 							helperText={errors?.description?.message}
 						/>
+
+						{openEditPopup || openViewPopup ? (
+							<Autocomplete
+								defaultValue={updatedResearcher}
+								id="researcher"
+								style={{ marginBottom: '1rem' }}
+								open={open}
+								onOpen={() => {
+									setOpen(true);
+								}}
+								onClose={() => {
+									setOpen(false);
+								}}
+								onChange={(event, value) => selectedOption(value)}
+								isOptionEqualToValue={(option, value) => {
+									return option.name === value.name;
+								}}
+								getOptionLabel={(option) => option.name}
+								options={options}
+								loading={loading}
+								fullWidth
+								renderInput={(params) => (
+									<TextField
+										{...params}
+										{...register('researcher', {
+											required: 'Researcher is required!',
+											shouldFocus: true,
+										})}
+										sx={{ marginBottom: '.8rem' }}
+										label="Assign survey researcher"
+										variant="outlined"
+										InputProps={{
+											...params.InputProps,
+											endAdornment: (
+												<>
+													{loading ? (
+														<CircularProgress color="inherit" size={20} />
+													) : null}
+													{params.InputProps.endAdornment}
+												</>
+											),
+										}}
+										error={errors?.researcher ? true : false}
+										helperText={errors?.researcher?.message}
+									/>
+								)}
+							/>
+						) : (
+							<Autocomplete
+								id="researcher"
+								style={{ marginBottom: '1rem' }}
+								open={open}
+								onOpen={() => {
+									setOpen(true);
+								}}
+								onClose={() => {
+									setOpen(false);
+								}}
+								onChange={(event, value) => selectedOption(value)}
+								isOptionEqualToValue={(option, value) => {
+									return option.name === value.name;
+								}}
+								getOptionLabel={(option) => option.name}
+								options={options}
+								loading={loading}
+								fullWidth
+								renderInput={(params) => (
+									<TextField
+										{...params}
+										{...register('researcher', {
+											required: 'Researcher is required!',
+											shouldFocus: true,
+										})}
+										sx={{ marginBottom: '.8rem' }}
+										label="Assign survey researcher"
+										variant="outlined"
+										InputProps={{
+											...params.InputProps,
+											endAdornment: (
+												<>
+													{loading ? (
+														<CircularProgress color="inherit" size={20} />
+													) : null}
+													{params.InputProps.endAdornment}
+												</>
+											),
+										}}
+										error={errors?.researcher ? true : false}
+										helperText={errors?.researcher?.message}
+									/>
+								)}
+							/>
+						)}
+
+						{openEditPopup || openViewPopup ? (
+							<Autocomplete
+								defaultValue={updatedClient}
+								id="clients"
+								style={{ marginBottom: '1rem' }}
+								open={openClient}
+								onOpen={() => {
+									setOpenClient(true);
+								}}
+								onClose={() => {
+									setOpenClient(false);
+								}}
+								onChange={(event, value) => selectedOptionClient(value)}
+								isOptionEqualToValue={(option, value) => {
+									return option.name === value.name;
+								}}
+								getOptionLabel={(option) => option.name}
+								options={optionsClient}
+								loading={loadingClient}
+								fullWidth
+								renderInput={(params) => (
+									<TextField
+										{...params}
+										{...register('client', {
+											required: 'Client is required!',
+											shouldFocus: true,
+										})}
+										sx={{ marginBottom: '.8rem' }}
+										label="Choose survey client"
+										variant="outlined"
+										InputProps={{
+											...params.InputProps,
+											endAdornment: (
+												<>
+													{loadingClient ? (
+														<CircularProgress color="inherit" size={20} />
+													) : null}
+													{params.InputProps.endAdornment}
+												</>
+											),
+										}}
+										error={errors?.client ? true : false}
+										helperText={errors?.client?.message}
+									/>
+								)}
+							/>
+						) : (
+							<Autocomplete
+								id="clients"
+								style={{ marginBottom: '1rem' }}
+								open={openClient}
+								onOpen={() => {
+									setOpenClient(true);
+								}}
+								onClose={() => {
+									setOpenClient(false);
+								}}
+								onChange={(event, value) => selectedOptionClient(value)}
+								isOptionEqualToValue={(option, value) => {
+									return option.name === value.name;
+								}}
+								getOptionLabel={(option) => option.name}
+								options={optionsClient}
+								loading={loadingClient}
+								fullWidth
+								renderInput={(params) => (
+									<TextField
+										{...params}
+										{...register('client', {
+											required: 'Client is required!',
+											shouldFocus: true,
+										})}
+										sx={{ marginBottom: '.8rem' }}
+										label="Choose survey client"
+										variant="outlined"
+										InputProps={{
+											...params.InputProps,
+											endAdornment: (
+												<>
+													{loadingClient ? (
+														<CircularProgress color="inherit" size={20} />
+													) : null}
+													{params.InputProps.endAdornment}
+												</>
+											),
+										}}
+										error={errors?.client ? true : false}
+										helperText={errors?.client?.message}
+									/>
+								)}
+							/>
+						)}
 					</DialogContent>
 					{!openViewPopup && (
 						<DialogActions sx={{ marginRight: '1rem', marginBottom: '1rem' }}>
@@ -609,6 +894,61 @@ const Home = () => {
 						</DialogActions>
 					)}
 				</form>
+			</Dialog>
+			<Dialog
+				open={openDeletePopup}
+				onClose={handleCloseDeleteDialog}
+				aria-labelledby="alert-dialog-title"
+				aria-describedby="alert-dialog-description"
+			>
+				<DialogContent
+					sx={{
+						display: 'flex',
+						flexDirection: 'column',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<DialogContentText id="alert-dialog-description">
+						<svg
+							className="w-16 h-16 text-red-500"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+							/>
+						</svg>
+					</DialogContentText>
+					<DialogContentText
+						sx={{ color: '#000', fontSize: 18, paddingBottom: '1rem' }}
+						id="alert-dialog-description"
+					>
+						Are You Sure! Want to Delete this record?
+					</DialogContentText>
+					<DialogContentText id="alert-dialog-description">
+						Do you really want to delete this record? You can't view this in
+						your list anymore if you delete!
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button sx={{ color: 'gray' }} onClick={handleCloseDeleteDialog}>
+						No, Keep it
+					</Button>
+					<CustomButton
+						onClick={confirmDeleteSurvey}
+						disabled={buttonLoading ? true : false}
+						loading={buttonLoading}
+						variant="contained"
+					>
+						Yes, Delete it
+					</CustomButton>
+				</DialogActions>
 			</Dialog>
 		</>
 	);
