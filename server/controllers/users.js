@@ -223,7 +223,50 @@ export const adminSignup = async (req, res) => {
 	}
 };
 
-// updateUserInfo controller
+// adminUpdateUserInfo by admin controller
+export const adminUpdateUserInfo = async (req, res) => {
+	const userId = req.userId;
+
+	const { _id, name, email, phone, gender } = req.body;
+
+	const emailLowercase = email.toLowerCase(); // sanitize: convert email to lowercase
+
+	try {
+		// Simple validation
+		if (!name || !emailLowercase || !phone)
+			return res.status(400).json({ message: 'Please enter all fields!' });
+
+		const currentUser = await Users.findById(userId);
+
+		if (currentUser.isAdmin) {
+			const updatedUserInfo = {
+				name,
+				email: emailLowercase,
+				phone,
+				gender,
+			};
+
+			await Users.findByIdAndUpdate(
+				{
+					_id: _id, // user can be researcher, client or admin
+				},
+				{ $set: updatedUserInfo },
+				{ new: true }
+			);
+
+			res.status(200).json({ message: 'User details updated successfully!' });
+		} else {
+			return res.status(401).json({
+				message: `You're not an admin, resource can't be created`,
+			});
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
+// updateUserInfo personal controller
 export const updateUserInfo = async (req, res) => {
 	const userId = req.userId;
 	const { name, email, phone } = req.body;

@@ -3,8 +3,9 @@ import express from 'express';
 import {
 	userSignup,
 	adminSignup,
-	updateUserInfo,
 	signin,
+	adminUpdateUserInfo,
+	updateUserInfo,
 	changePassword,
 	forgotPassword,
 	// storeExponentPushToken,
@@ -19,6 +20,7 @@ router.get('/profile', auth, profile);
 router.post('/signin', signin);
 router.post('/user/signup', userSignup);
 router.post('/admin/signup', adminSignup);
+router.put('/admin/update-user-info', auth, adminUpdateUserInfo);
 router.put('/update-user-info', auth, updateUserInfo);
 router.put('/update-password', auth, changePassword);
 router.put('/forgot-password', forgotPassword);
