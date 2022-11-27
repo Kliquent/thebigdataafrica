@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
@@ -18,6 +18,8 @@ import {
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
+import { getSurvey } from '../../store/actions/survey-actions';
+
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CustomButton from '../../utils/CustomButton';
 import Navbar from './Navbar';
@@ -26,9 +28,16 @@ const SurveyDetails = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
+	let survey = useSelector((state) => state.surveys?.survey);
+
 	let urlParams = useParams();
 	let surveyId = urlParams?.surveyId;
-	console.log(surveyId);
+
+	useEffect(() => {
+		(async () => {
+			await dispatch(getSurvey(surveyId));
+		})();
+	}, []);
 
 	return (
 		<>
@@ -39,7 +48,7 @@ const SurveyDetails = () => {
 						<ArrowBackIcon />
 					</IconButton>
 					<h1 className="text-2xl font-semibold whitespace-nowrap">
-						What’s Your Take on This? Techmakers
+						{survey[0]?.title}
 					</h1>
 				</div>
 				<div className="wrapper">

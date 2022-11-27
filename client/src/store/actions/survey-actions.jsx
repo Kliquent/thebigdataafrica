@@ -150,13 +150,12 @@ export const getSurveys = () => async (dispatch) => {
 	}
 };
 
-export const getSurvey = (payload) => async (dispatch) => {
+export const getSurvey = (surveyId) => async (dispatch) => {
 	const token = tokenConfig();
-	const { _id } = payload;
 
 	try {
 		await dispatch({ type: SURVEY_LOADING });
-		const response = await axios.get(`${SURVEY_SERVER}/${_id}`, token);
+		const response = await axios.get(`${SURVEY_SERVER}/${surveyId}`, token);
 		const data = await response.data;
 
 		await dispatch({
