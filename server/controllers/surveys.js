@@ -4,7 +4,7 @@ import SurveyEvent from '../models/SurveyEvent.js';
 // Create survey controller & capture events
 export const createSurvey = async (req, res) => {
 	let userId = req.userId;
-	const { title, description } = req.body;
+	const { title, description, researcher_id, client_id } = req.body;
 
 	try {
 		// Simple validation
@@ -16,7 +16,8 @@ export const createSurvey = async (req, res) => {
 			title,
 			description,
 			active: true,
-			owner: userId, // can be admin/client based on role
+			researcher: researcher_id,
+			owner: client_id ? client_id : userId, // can be admin/client based on role
 			created_by: userId,
 			updated_by: userId,
 		});
@@ -43,7 +44,7 @@ export const updateSurvey = async (req, res) => {
 	let userId = req.userId;
 	let surveyId = req.params.surveyId;
 
-	const { title, description } = req.body;
+	const { title, description, client_id } = req.body;
 
 	try {
 		// Simple validation
@@ -113,6 +114,72 @@ export const deleteSurvey = async (req, res) => {
 		await Surveys.findByIdAndDelete({ _id: surveyId });
 
 		res.status(200).json({ message: 'Survey deleted successfully!' });
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
+export const getSurveys = async (req, res) => {
+	let searchTerm = req.query.searchTerm;
+	let order = req.query.order ? req.query.order : 'desc';
+	let orderBy = req.query.orderBy ? req.query.orderBy : '_id';
+
+	const page = parseInt(req.query.page)
+		? parseInt(req.query.page)
+		: parseInt(1);
+	let limit = parseInt(req.query.limit)
+		? parseInt(req.query.limit)
+		: parseInt(20);
+	const skipIndex = (page - 1) * limit;
+
+	try {
+		if (searchTerm) {
+			const surveys = await Surveys.find({
+				$text: { $search: `"${searchTerm}"` },
+			})
+				.populate('owner')
+				.populate('researcher')
+				.populate('created_by')
+				.populate('updated_by');
+
+			res.status(200).json({ surveys, totalSearchSurveys: surveys.length });
+		} else {
+			const surveys = await Surveys.find()
+				.sort([[orderBy, order]])
+				.skip(skipIndex)
+				.limit(limit)
+				.populate('owner')
+				.populate('researcher')
+				.populate('created_by')
+				.populate('updated_by');
+
+			res.status(200).json(surveys);
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
+export const getSurvey = async (req, res) => {
+	let surveyId = req.params.surveyId;
+
+	try {
+		const currentSurvey = await Surveys.findOne({ _id: surveyId });
+
+		if (!currentSurvey)
+			return res.status(403).json({ message: 'No survey found.' });
+
+		const survey = await Surveys.find({
+			_id: surveyId,
+		})
+			.populate('owner')
+			.populate('researcher')
+			.populate('created_by')
+			.populate('updated_by');
+
+		res.status(200).json(survey);
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: error });
