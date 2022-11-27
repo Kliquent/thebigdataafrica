@@ -8,6 +8,8 @@ import {
 	Clients,
 	Researchers,
 	Administrators,
+	// Content
+	SurveyDetails,
 } from './components/app';
 import { PrivateRoute } from './middleware';
 import { Login, ForgotPassword, PageNotFound } from './components';
@@ -59,6 +61,12 @@ const App = () => {
 								<Administrators />
 							</PrivateRoute>
 						}
+					/>
+
+					{/* Survey Content */}
+					<Route
+						path="/surveys-details/:surveyId"
+						element={<SurveyDetails />}
 					/>
 				</Route>
 				<Route path="/login" element={<Login />} />
