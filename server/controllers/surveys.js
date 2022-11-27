@@ -1,4 +1,5 @@
 import Surveys from '../models/Survey.js';
+import SurveyQuestion from '../models/SurveyQuestion.js';
 import SurveyEvent from '../models/SurveyEvent.js';
 
 // Create survey controller & capture events
@@ -108,6 +109,15 @@ export const deleteSurvey = async (req, res) => {
 			return res.status(403).json({ message: 'No survey found.' });
 
 		// Prevent delete if the question is referenced
+		const surveyQuestion = await SurveyQuestion.find({
+			survey_id: surveyId,
+		});
+
+		if (surveyQuestion.length > 0) {
+			return res.status(403).json({
+				message: `Resource can't be deleted due attached resources.`,
+			});
+		}
 
 		// Log event
 		await SurveyEvent.create({
