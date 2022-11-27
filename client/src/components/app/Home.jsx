@@ -52,6 +52,9 @@ const Home = () => {
 	const [openDeletePopup, setOpenDeletePopup] = useState(false);
 	const [buttonLoading, setButtonLoading] = useState(false);
 
+	const [updatedSurvey, setUpdatedSurvey] = useState([]);
+	const [deletedType, setDeletedType] = useState([]);
+
 	useEffect(() => {
 		dispatch(getSurveys());
 	}, []);
@@ -96,8 +99,22 @@ const Home = () => {
 		setOpenPopup(true);
 	};
 
+	const handleEditPopup = (data, e) => {
+		e.preventDefault();
+		const { title, description } = data;
+
+		reset({
+			title,
+			description,
+		});
+
+		setUpdatedSurvey(data);
+		setOpenEditPopup(true);
+	};
+
 	const onSubmit = async (data, e) => {
 		e.preventDefault();
+		console.log(data);
 		// setButtonLoading(true);
 
 		// await dispatch(postProductType(data));
@@ -385,7 +402,7 @@ const Home = () => {
 														</div>
 														<div className="p-2 cursor-pointer text-gray-400 hover:text-green-600">
 															<IconButton
-															// onClick={(e) => handleEditPopup(productType, e)}
+																onClick={(e) => handleEditPopup(survey, e)}
 															>
 																<svg
 																	stroke="currentColor"
@@ -571,17 +588,6 @@ const Home = () => {
 							error={errors?.description ? true : false}
 							helperText={errors?.description?.message}
 						/>
-						{/* {!openPopup && (
-							<div className="mt-4">
-								{categories?.map((item, index) => (
-									<Fragment key={index}>
-										{item?.type?._id === updatedProductType?._id && (
-											<Chip label={item.name} />
-										)}
-									</Fragment>
-								))}
-							</div>
-						)} */}
 					</DialogContent>
 					{!openViewPopup && (
 						<DialogActions sx={{ marginRight: '1rem', marginBottom: '1rem' }}>

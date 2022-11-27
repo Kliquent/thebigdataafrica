@@ -5,6 +5,9 @@ import {
 	Landing,
 	// Sidebar components
 	Home,
+	Clients,
+	Researchers,
+	Administrators,
 } from './components/app';
 import { PrivateRoute } from './middleware';
 import { Login, ForgotPassword, PageNotFound } from './components';
@@ -30,6 +33,30 @@ const App = () => {
 						element={
 							<PrivateRoute>
 								<Home />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path="clients"
+						element={
+							<PrivateRoute>
+								<Clients />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path="researchers"
+						element={
+							<PrivateRoute>
+								<Researchers />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path="administrators"
+						element={
+							<PrivateRoute>
+								<Administrators />
 							</PrivateRoute>
 						}
 					/>
