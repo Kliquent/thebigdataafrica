@@ -147,7 +147,7 @@ const Sidebar = ({ width, toggled, handleDrawerToggle }) => {
 										tooltip: {
 											sx: {
 												color: '#45B64C',
-												width: '100px',
+												width: '110px',
 												bgcolor: '#fff',
 												lineHeight: '30px',
 												textAlign: 'center',
@@ -176,7 +176,7 @@ const Sidebar = ({ width, toggled, handleDrawerToggle }) => {
 						</NavLink>
 					</li>
 
-					<li>
+					{/* <li>
 						<NavLink
 							to="/administrators"
 							activeclassname="active"
@@ -190,7 +190,7 @@ const Sidebar = ({ width, toggled, handleDrawerToggle }) => {
 										tooltip: {
 											sx: {
 												color: '#45B64C',
-												width: '100px',
+												width: '120px',
 												bgcolor: '#fff',
 												lineHeight: '30px',
 												textAlign: 'center',
@@ -217,7 +217,7 @@ const Sidebar = ({ width, toggled, handleDrawerToggle }) => {
 							)}
 							<span className="links_name">Administrators</span>
 						</NavLink>
-					</li>
+					</li> */}
 				</ul>
 
 				<div className="profile_content">
