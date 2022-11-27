@@ -416,6 +416,34 @@ export const getUsersByRole = async (req, res) => {
 	}
 };
 
+export const adminGetUser = async (req, res) => {
+	// admin
+	let userId = req.userId;
+	// current viewed user
+	const { _id } = req.body;
+
+	try {
+		// This is admin user
+		const currentUser = await Users.findById(userId);
+
+		if (currentUser.isAdmin) {
+			// This is currently viewed user
+			const getUser = await Users.findById(_id);
+
+			if (!getUser) return res.status(403).json({ message: 'No user found.' });
+
+			res.status(200).json({ current_user: currentUser });
+		} else {
+			return res.status(401).json({
+				message: `You're not an admin, resource can't be created`,
+			});
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
 export const adminDeleteUser = async (req, res) => {
 	const userId = req.userId;
 	const { _id } = req.body;

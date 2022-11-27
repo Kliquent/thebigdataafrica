@@ -8,6 +8,7 @@ import {
 	updateUserInfo,
 	changePassword,
 	forgotPassword,
+	adminGetUser,
 	adminDeleteUser,
 	// storeExponentPushToken,
 	getUsersByRole,
@@ -18,6 +19,7 @@ import { auth } from '../middleware/auth.js';
 const router = express.Router();
 
 router.get('/profile', auth, profile);
+router.get('/admin/get-user', auth, adminGetUser);
 router.post('/signin', signin);
 router.post('/user/signup', userSignup);
 router.post('/admin/signup', adminSignup);
