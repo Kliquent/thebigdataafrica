@@ -8,6 +8,7 @@ import {
 	updateUserInfo,
 	changePassword,
 	forgotPassword,
+	adminDeleteUser,
 	// storeExponentPushToken,
 	getUsersByRole,
 } from '../controllers/users.js';
@@ -21,6 +22,7 @@ router.post('/signin', signin);
 router.post('/user/signup', userSignup);
 router.post('/admin/signup', adminSignup);
 router.put('/admin/update-user-info', auth, adminUpdateUserInfo);
+router.put('/admin/delete-user', auth, adminDeleteUser);
 router.put('/update-user-info', auth, updateUserInfo);
 router.put('/update-password', auth, changePassword);
 router.put('/forgot-password', forgotPassword);
