@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 import Roles from '../models/Roles.js';
 import Users from '../models/Users.js';
@@ -454,9 +455,10 @@ export const adminGetUser = async (req, res) => {
 
 export const adminDeleteUser = async (req, res) => {
 	// const userId = req.userId;
-	const { _id } = req.body;
+	const { deleteUserId } = req.body;
 
 	try {
+		let id = mongoose.Types.ObjectId(deleteUserId);
 		// const currentUser = await Users.findById(userId);
 
 		// if (currentUser.isAdmin) {
@@ -465,7 +467,7 @@ export const adminDeleteUser = async (req, res) => {
 
 		// Log event
 
-		await Users.findByIdAndDelete({ _id: _id });
+		await Users.findByIdAndDelete({ _id: id });
 
 		res.status(200).json({ message: 'User deleted successfully!' });
 		// } else {
