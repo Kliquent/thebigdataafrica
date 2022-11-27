@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
+import Roles from '../models/Roles.js';
 import Users from '../models/Users.js';
 
 // signin controller handles signin of all users i.e admin, researcher & client
@@ -265,6 +266,26 @@ export const forgotPassword = async (req, res) => {
 		);
 
 		res.status(200).json({ message: 'User password updated successfully!' });
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
+export const getUsersByRole = async (req, res) => {
+	let roleId = req.params.roleId;
+
+	try {
+		const currentRole = await Roles.findOne({ _id: roleId });
+
+		if (!currentRole)
+			return res.status(403).json({ message: 'No role found.' });
+
+		const users = await Users.find({
+			_id: roleId,
+		});
+
+		res.status(200).json({ role: `${currentRole.name}`, users });
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: error });
