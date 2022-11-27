@@ -1,13 +1,10 @@
 import express from 'express';
 
 import {
-	// getUsers,
-	// customerSignup,
-	// sellerSignup,
+	userSignup,
 	adminSignup,
 	updateUserInfo,
 	signin,
-	// getSellers,
 	changePassword,
 	forgotPassword,
 	// storeExponentPushToken,
@@ -20,6 +17,7 @@ const router = express.Router();
 
 router.get('/profile', auth, profile);
 router.post('/signin', signin);
+router.post('/user/signup', userSignup);
 router.post('/admin/signup', adminSignup);
 router.put('/update-user-info', auth, updateUserInfo);
 router.put('/update-password', auth, changePassword);

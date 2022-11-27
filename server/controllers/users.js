@@ -53,6 +53,87 @@ export const signin = async (req, res) => {
 	}
 };
 
+// userSignup controller
+export const userSignup = async (req, res) => {
+	const { role_id, name, email, phone, password, password_confirmation } =
+		req.body;
+
+	const emailLowercase = email.toLowerCase(); // sanitize: convert email to lowercase
+
+	try {
+		const existingUser = await Users.findOne({ email: emailLowercase });
+
+		const existingPhoneNumber = await Users.findOne({ phone });
+
+		// Check existing user
+		if (existingUser)
+			return res.status(409).json({ message: 'User already exists!' });
+
+		// Check existing phone number
+		if (existingPhoneNumber)
+			return res.status(401).json({ message: 'Phone number already exists!' });
+
+		// Simple validation
+		if (
+			!name ||
+			!emailLowercase ||
+			!phone ||
+			!password ||
+			!password_confirmation
+		)
+			return res.status(400).json({ message: 'Please enter all fields!' });
+
+		// Role validation
+		if (!role_id)
+			return res.status(400).json({ message: 'Please provide user role id!' });
+
+		// Check password strength
+		if (password.length < 8)
+			return res
+				.status(400)
+				.json({ message: 'Password should be atleast 8 characters.' });
+
+		// Compare passwords
+		if (password !== password_confirmation)
+			return res.status(400).json({ message: 'Passwords do not match!' });
+
+		// Hash user password
+		const hashedPassword = await bcrypt.hash(
+			password,
+			parseInt(process.env.SALT_ROUNDS)
+		);
+
+		// Create user
+		await Users.create({
+			name,
+			email: emailLowercase, // sanitize: convert email to lowercase
+			phone,
+			gender,
+			isAdmin: false,
+			isUserActive: true,
+			role_id,
+			isEmailVerified: false,
+			password: hashedPassword,
+		});
+
+		const newUser = await Users.findOne({ email: emailLowercase });
+
+		// Authenticate user
+		const token = jwt.sign(
+			{
+				email: newUser.email,
+				id: newUser._id,
+			},
+			process.env.JWT_SECRET,
+			{ expiresIn: '28 days' }
+		);
+
+		res.status(200).json({ message: 'New user customer created!', token });
+	} catch (error) {
+		res.status(500).json({ message: error });
+	}
+};
+
 // adminSignup controller
 export const adminSignup = async (req, res) => {
 	const {
