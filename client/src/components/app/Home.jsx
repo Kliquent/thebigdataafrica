@@ -1,13 +1,135 @@
-import React from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+
+import {
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
+	TextField,
+	TableRow,
+	TableCell,
+	Button,
+	Chip,
+	IconButton,
+	CircularProgress,
+	TablePagination,
+} from '@mui/material';
+import { useForm } from 'react-hook-form';
+
+import {
+	createSurvey,
+	updateSurvey,
+	deleteSurvey,
+	getSurveys,
+	getSurvey,
+} from '../../store/actions/survey-actions';
+
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CustomButton from '../../utils/CustomButton';
+
 import Navbar from './Navbar';
 // import { PieChartM, BarChartM } from '../charts/home';
 import { abbreviateNumber } from '../../utils/AbbreviationNumber';
 
 const Home = () => {
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	let auth = useSelector((state) => state.auth);
+	let loading = useSelector((state) => state.surveys?.isLoading);
+	let surveys = useSelector((state) => state.surveys?.surveys);
+
+	const pages = [10, 20, 50];
+	const [page, setPage] = useState(0);
+	const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
+
+	const [openPopup, setOpenPopup] = useState(false);
+	const [openViewPopup, setOpenViewPopup] = useState(false);
+	const [openEditPopup, setOpenEditPopup] = useState(false);
+	const [openDeletePopup, setOpenDeletePopup] = useState(false);
+	const [buttonLoading, setButtonLoading] = useState(false);
+
+	useEffect(() => {
+		dispatch(getSurveys());
+	}, []);
+
+	const handlePageChange = (event, newPage) => {
+		setPage(newPage);
+	};
+
+	const handleRowsPerPageChange = (event) => {
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
+	};
+
+	const {
+		register,
+		reset,
+		handleSubmit,
+		formState: { errors },
+	} = useForm({
+		mode: 'all',
+		shouldUnregister: true,
+		shouldFocusError: true,
+	});
+
+	const handleCloseDialog = () => {
+		setOpenPopup(false);
+	};
+
+	const handleCloseEditDialog = () => {
+		reset({
+			name: '',
+			description: '',
+		});
+		setOpenEditPopup(false);
+	};
+
+	const handleCloseDeleteDialog = () => {
+		setOpenDeletePopup(false);
+	};
+
+	const handleClickOpen = () => {
+		setOpenPopup(true);
+	};
+
+	const onSubmit = async (data, e) => {
+		e.preventDefault();
+		// setButtonLoading(true);
+
+		// await dispatch(postProductType(data));
+		// await dispatch(getProductTypes());
+
+		// setButtonLoading(false);
+		// handleCloseDialog();
+	};
+
+	const onSubmitEdit = async (data, e) => {
+		e.preventDefault();
+		// setButtonLoading(true);
+		// const { name, description } = data;
+
+		// const updatedData = {
+		// 	_id: updatedProductType._id,
+		// 	name,
+		// 	description,
+		// };
+
+		// await dispatch(updateProductType(updatedData));
+		// await dispatch(getProductTypes());
+
+		// setButtonLoading(false);
+		// handleCloseEditDialog();
+	};
+
+	const handleDeleteSurvey = (item) => {
+		// setDeletedType(item);
+		// setOpenDeletePopup(true);
+	};
+
 	return (
 		<>
 			<Navbar />
@@ -23,7 +145,7 @@ const Home = () => {
 					</div>
 					<div className="w-full md:w-56 lg:w-56 xl:w-56">
 						<button
-							// onClick={handleClickOpen}
+							onClick={handleClickOpen}
 							className="align-bottom inline-flex items-center justify-center cursor-pointer leading-5 transition-colors duration-150 font-medium focus:outline-none px-4 py-2 text-sm text-white bg-green-500 border border-transparent active:bg-green-600 hover:bg-green-600 focus:ring focus:ring-purple-300 w-full rounded-md h-12"
 							type="button"
 						>
@@ -175,168 +297,313 @@ const Home = () => {
 						<table className="w-full whitespace-nowrap">
 							<thead className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
 								<tr>
-									<td className="px-4 py-3">Order Time</td>
-									<td className="px-4 py-3">Delivery Address</td>
-									<td className="px-4 py-3">Customer Name</td>
-									<td className="px-4 py-3">Phone</td>
-									<td className="px-4 py-3">Payment method</td>
-									<td className="px-4 py-3">Order amount</td>
+									<td className="px-4 py-3">Type</td>
+									<td className="px-4 py-3 text-center">Title</td>
+									<td className="px-4 py-3">Client Name</td>
+									<td className="px-4 py-3">Researcher</td>
+									<td className="px-4 py-3">Created By</td>
+									<td className="px-4 py-3">Last Updated</td>
 									<td className="px-4 py-3">Status</td>
+									<td className="px-4 py-3 text-center">Action</td>
 								</tr>
 							</thead>
 							<tbody className="bg-white divide-y divide-gray-100 dark:divide-gray-700 dark:bg-gray-800 text-gray-700 dark:text-gray-400">
-								{orders.map((order, index) => {
-									const {
-										date,
-										deliveryAddress,
-										name,
-										phone,
-										amount,
-										paymentMethod,
-										status,
-									} = order;
-									return (
-										<tr key={index} className="">
-											<td className="px-4 py-3">
-												<span className="text-sm">{date}</span>
-											</td>
-											<td className="px-4 py-3">
-												<span className="text-sm ">{deliveryAddress}</span>
-											</td>
-											<td className="px-4 py-3">
-												<span className="text-sm ">{name}</span>
-											</td>
-											<td className="px-4 py-3">
-												{' '}
-												<span className="text-sm">{phone}</span>{' '}
-											</td>
-											<td className="px-4 py-3">
-												<span className="text-sm font-semibold">
-													{paymentMethod}
-												</span>
-											</td>
-											<td className="px-4 py-3">
-												{' '}
-												<span className="text-sm font-semibold">
-													KES {abbreviateNumber(amount)}
-												</span>{' '}
-											</td>
-											<td className="px-4 py-3">
-												<span className="font-serif">
-													{status === 'Processing' ? (
-														<span className="inline-flex px-2 text-xs font-medium leading-5 rounded-full text-blue-500 bg-blue-100 dark:text-white dark:bg-blue-800">
-															Processing
-														</span>
-													) : status === 'Delivered' ? (
-														<span className="inline-flex px-2 text-xs font-medium leading-5 rounded-full text-green-500 bg-green-100 dark:bg-green-800 dark:text-green-100">
-															Delivered
-														</span>
-													) : (
-														status === 'Cancelled' && (
-															<span className="inline-flex px-2 text-xs font-medium leading-5 rounded-full text-red-500 bg-red-100 dark:text-red-100 dark:bg-red-800">
-																Cancel
+								{surveys.length > 0 ? (
+									surveys.map((survey, index) => {
+										const {
+											type,
+											title,
+											owner,
+											researcher,
+											created_by,
+											updatedAt,
+											active,
+										} = survey;
+										return (
+											<tr key={index} className="">
+												<td className="px-4 py-3">
+													<span className="text-sm">{type}</span>
+												</td>
+												<td className="px-4 py-3">
+													<span className="text-sm">{title}</span>
+												</td>
+												<td className="px-4 py-3">
+													<span className="text-sm">{owner?.name}</span>
+												</td>
+												<td className="px-4 py-3">
+													<span className="text-sm">{researcher?.name}</span>
+												</td>
+												<td className="px-4 py-3">
+													<span className="text-sm">{created_by?.name}</span>
+												</td>
+												<td className="px-4 py-3">
+													<span className="text-sm">{updatedAt}</span>
+												</td>
+
+												<td className="px-4 py-3">
+													<span className="font-serif">
+														{active === true ? (
+															<span className="inline-flex px-2 text-xs font-medium leading-5 rounded-full text-green-500 bg-green-100 dark:bg-green-800 dark:text-green-100">
+																Active
 															</span>
-														)
-													)}
-												</span>
-											</td>
-										</tr>
-									);
-								})}
+														) : (
+															<span className="inline-flex px-2 text-xs font-medium leading-5 rounded-full text-red-500 bg-red-100 dark:text-red-100 dark:bg-red-800">
+																Inactive
+															</span>
+														)}
+													</span>
+												</td>
+												<td className="px-4 py-3">
+													<div className="flex items-center justify-end text-right">
+														<div className="p-2 cursor-pointer text-gray-400 hover:text-green-600">
+															<IconButton
+															// onClick={(e) => handleViewPopup(productType, e)}
+															>
+																<svg
+																	className="w-6 h-6"
+																	fill="none"
+																	stroke="currentColor"
+																	viewBox="0 0 24 24"
+																	xmlns="http://www.w3.org/2000/svg"
+																>
+																	<path
+																		strokeLinecap="round"
+																		strokeLinejoin="round"
+																		strokeWidth={2}
+																		height="1em"
+																		width="1em"
+																		d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+																	/>
+																	<path
+																		strokeLinecap="round"
+																		strokeLinejoin="round"
+																		strokeWidth={2}
+																		d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+																	/>
+																</svg>
+															</IconButton>
+														</div>
+														<div className="p-2 cursor-pointer text-gray-400 hover:text-green-600">
+															<IconButton
+															// onClick={(e) => handleEditPopup(productType, e)}
+															>
+																<svg
+																	stroke="currentColor"
+																	fill="none"
+																	strokeWidth={2}
+																	viewBox="0 0 24 24"
+																	strokeLinecap="round"
+																	strokeLinejoin="round"
+																	height="1em"
+																	width="1em"
+																	xmlns="http://www.w3.org/2000/svg"
+																>
+																	<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+																	<path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+																</svg>
+															</IconButton>
+														</div>
+														<div className="p-2 cursor-pointer text-gray-400 hover:text-red-600">
+															<IconButton
+															// onClick={(e) =>
+															// 	handleDeleteType(productType, e)
+															// }
+															>
+																<svg
+																	stroke="currentColor"
+																	fill="none"
+																	strokeWidth={2}
+																	viewBox="0 0 24 24"
+																	strokeLinecap="round"
+																	strokeLinejoin="round"
+																	height="1em"
+																	width="1em"
+																	xmlns="http://www.w3.org/2000/svg"
+																>
+																	<polyline points="3 6 5 6 21 6" />
+																	<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+																	<line x1={10} y1={11} x2={10} y2={17} />
+																	<line x1={14} y1={11} x2={14} y2={17} />
+																</svg>
+															</IconButton>
+														</div>
+													</div>
+												</td>
+											</tr>
+										);
+									})
+								) : (
+									<TableRow>
+										<TableCell
+											colSpan={12}
+											style={{ padding: '1rem', textAlign: 'center' }}
+										>
+											{loading ? (
+												<CircularProgress
+													variant="indeterminate"
+													disableShrink
+													size={25}
+													thickness={4}
+												/>
+											) : (
+												<p>You have no product types</p>
+											)}
+										</TableCell>
+									</TableRow>
+								)}
 							</tbody>
 						</table>
 					</div>
 					<div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-white text-gray-500 dark:text-gray-400 dark:bg-gray-800">
 						<div className="flex flex-col justify-between text-xs sm:flex-row text-gray-600 dark:text-gray-400">
 							<span className="flex items-center font-semibold tracking-wide uppercase">
-								Showing 1-8 of 186
+								Showing 1-{surveys.length} of{' '}
+								{surveys.length ? surveys.length : 0}
 							</span>
 							<div className="flex mt-2 sm:mt-auto sm:justify-end">
-								<nav aria-label="Table navigation">
-									<ul className="inline-flex items-center">
-										<li>
-											<button
-												className="align-bottom inline-flex items-center justify-center leading-5 transition-colors duration-150 font-medium focus:outline-none p-2 rounded-md text-gray-600 dark:text-gray-400 border border-transparent opacity-50 cursor-not-allowed"
-												disabled=""
-												type="button"
-												aria-label="Previous"
-											>
-												<svg
-													className="h-3 w-3"
-													aria-hidden="true"
-													fill="currentColor"
-													viewBox="0 0 20 20"
-												>
-													<path
-														d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-														clipRule="evenodd"
-														fillRule="evenodd"
-													/>
-												</svg>
-											</button>
-										</li>
-										<li>
-											<button
-												className="align-bottom inline-flex items-center justify-center cursor-pointer leading-5 transition-colors duration-150 font-medium focus:outline-none px-3 py-1 rounded-md text-xs text-white bg-green-500 border border-transparent active:bg-green-600 hover:bg-green-600 focus:ring focus:ring-purple-300"
-												type="button"
-											>
-												1
-											</button>
-										</li>
-										<li>
-											<button
-												className="align-bottom inline-flex items-center justify-center cursor-pointer leading-5 transition-colors duration-150 font-medium  px-3 py-1 rounded-md text-xs text-gray-600 dark:text-gray-400 focus:outline-none border border-transparent active:bg-transparent hover:bg-gray-100 focus:ring focus:ring-gray-300 dark:hover:bg-gray-500 dark:hover:text-gray-300 dark:hover:bg-opacity-10"
-												type="button"
-											>
-												2
-											</button>
-										</li>
-										<li>
-											<button
-												className="align-bottom inline-flex items-center justify-center cursor-pointer leading-5 transition-colors duration-150 font-medium px-3 py-1 rounded-md text-xs text-gray-600 dark:text-gray-400 focus:outline-none border border-transparent active:bg-transparent hover:bg-gray-100 focus:ring focus:ring-gray-300 dark:hover:bg-gray-500 dark:hover:text-gray-300 dark:hover:bg-opacity-10"
-												type="button"
-											>
-												3
-											</button>
-										</li>
-										<li>
-											<span className="px-2 py-1">...</span>
-										</li>
-										<li>
-											<button
-												className="align-bottom inline-flex items-center justify-center cursor-pointer leading-5 transition-colors duration-150 font-medium px-3 py-1 rounded-md text-xs text-gray-600 dark:text-gray-400 focus:outline-none border border-transparent active:bg-transparent hover:bg-gray-100 focus:ring focus:ring-gray-300 dark:hover:bg-gray-500 dark:hover:text-gray-300 dark:hover:bg-opacity-10"
-												type="button"
-											>
-												24
-											</button>
-										</li>
-										<li>
-											<button
-												className="align-bottom inline-flex items-center justify-center cursor-pointer leading-5 transition-colors duration-150 font-medium p-2 rounded-md text-gray-600 dark:text-gray-400 focus:outline-none border border-transparent active:bg-transparent hover:bg-gray-100 focus:ring focus:ring-gray-300 dark:hover:bg-gray-500 dark:hover:text-gray-300 dark:hover:bg-opacity-10"
-												type="button"
-												aria-label="Next"
-											>
-												<svg
-													className="h-3 w-3"
-													aria-hidden="true"
-													fill="currentColor"
-													viewBox="0 0 20 20"
-												>
-													<path
-														d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-														clipRule="evenodd"
-														fillRule="evenodd"
-													/>
-												</svg>
-											</button>
-										</li>
-									</ul>
-								</nav>
+								<TablePagination
+									sx={{ overflow: 'hidden' }}
+									component="div"
+									page={page}
+									rowsPerPageOptions={pages}
+									rowsPerPage={rowsPerPage}
+									count={surveys.length ? surveys.length : 0}
+									onPageChange={handlePageChange}
+									onRowsPerPageChange={handleRowsPerPageChange}
+								/>
 							</div>
 						</div>
 					</div>
 				</div>
 			</main>
+			<Dialog
+				open={
+					openEditPopup
+						? openEditPopup
+						: openViewPopup
+						? openViewPopup
+						: openPopup
+				}
+				onBackdropClick={() => setOpenViewPopup(false)}
+			>
+				<DialogTitle
+					sx={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+					}}
+				>
+					{openEditPopup
+						? 'Edit Survey'
+						: openViewPopup
+						? 'View Survey'
+						: 'Add New Survey'}{' '}
+					<IconButton
+						onClick={
+							openEditPopup
+								? () => setOpenEditPopup(false)
+								: openPopup
+								? () => setOpenPopup(false)
+								: () => setOpenViewPopup(false)
+						}
+					>
+						<svg
+							className="w-6 h-6"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M6 18L18 6M6 6l12 12"
+							/>
+						</svg>
+					</IconButton>
+				</DialogTitle>
+				<form
+					onSubmit={
+						openEditPopup ? handleSubmit(onSubmitEdit) : handleSubmit(onSubmit)
+					}
+				>
+					<DialogContent>
+						<DialogContentText style={{ marginBottom: '.8rem' }}>
+							{openEditPopup
+								? 'Update existing survey'
+								: openPopup
+								? 'Create a new survey'
+								: 'View details'}
+						</DialogContentText>
+
+						<TextField
+							{...register('title', {
+								required: 'Survey title is required!',
+								shouldFocus: true,
+							})}
+							InputProps={{
+								readOnly: openViewPopup ? true : false,
+							}}
+							style={{ marginBottom: '.8rem' }}
+							name="title"
+							fullWidth
+							autoComplete="off"
+							label="Survey Title"
+							placeholder="Type your new survey"
+							error={errors?.title ? true : false}
+							helperText={errors?.title?.message}
+						/>
+
+						<TextField
+							{...register('description')}
+							InputProps={{
+								readOnly: openViewPopup ? true : false,
+							}}
+							sx={{ marginBottom: '.8rem', marginTop: '.8rem' }}
+							name="description"
+							fullWidth
+							multiline
+							rows={4}
+							autoComplete="off"
+							label="Survey Description"
+							placeholder="Type your description"
+							error={errors?.description ? true : false}
+							helperText={errors?.description?.message}
+						/>
+						{/* {!openPopup && (
+							<div className="mt-4">
+								{categories?.map((item, index) => (
+									<Fragment key={index}>
+										{item?.type?._id === updatedProductType?._id && (
+											<Chip label={item.name} />
+										)}
+									</Fragment>
+								))}
+							</div>
+						)} */}
+					</DialogContent>
+					{!openViewPopup && (
+						<DialogActions sx={{ marginRight: '1rem', marginBottom: '1rem' }}>
+							<Button
+								onClick={
+									openEditPopup ? handleCloseEditDialog : handleCloseDialog
+								}
+							>
+								Cancel
+							</Button>
+							<CustomButton
+								type="submit"
+								disabled={buttonLoading ? true : false}
+								loading={buttonLoading}
+								variant="contained"
+							>
+								{openEditPopup ? 'Update' : 'Create'}
+							</CustomButton>
+						</DialogActions>
+					)}
+				</form>
+			</Dialog>
 		</>
 	);
 };
@@ -412,38 +679,5 @@ const stats = [
 		value: 38100,
 		percentage: '36%',
 		year: '2019',
-	},
-];
-
-const orders = [
-	{
-		id: 1,
-		date: 'May 9, 2022',
-		deliveryAddress: 'Roysambu',
-		name: 'Allan Bingham',
-		phone: '0721436032',
-		paymentMethod: 'Mpesa',
-		amount: 16800,
-		status: 'Processing',
-	},
-	{
-		id: 2,
-		date: 'Apr 29, 2022',
-		deliveryAddress: 'Kasarani',
-		phone: '0790516067',
-		name: 'Allister Mugaisi',
-		paymentMethod: 'Visa (DTB Bank)',
-		amount: 10400,
-		status: 'Delivered',
-	},
-	{
-		id: 3,
-		date: 'Apr 25, 2022',
-		deliveryAddress: 'Kahawa West',
-		name: 'Yoven Ambati',
-		phone: '0722318068',
-		paymentMethod: 'Mastercard (KCB Bank)',
-		amount: 6800,
-		status: 'Cancelled',
 	},
 ];
