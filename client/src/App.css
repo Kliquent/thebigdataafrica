@@ -1,0 +1,342 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
+}
+
+.sidebar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 78px;
+	background: white; /* #dcfce7 #45b649*/
+	padding: 6px 14px;
+	z-index: 99;
+	transition: all 0.5s ease;
+}
+.sidebar.active {
+	width: 240px;
+}
+
+.sidebar .logo_content .logo {
+	display: flex;
+	height: 50px;
+	width: 100%;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+	pointer-events: none;
+	transition: all 0.5s ease;
+}
+.sidebar.active .logo_content .logo {
+	opacity: 1;
+	pointer-events: none;
+}
+.logo_content i {
+	cursor: pointer;
+}
+.logo_content .logo i {
+	font-size: 28px;
+	margin-right: 5px;
+}
+.logo-img {
+	width: 150px;
+}
+.logo {
+	color: #fff;
+}
+.logo_content .logo .logo_name {
+	font-size: 20px;
+	font-weight: 400;
+}
+.sidebar #btn {
+	position: absolute;
+	color: #11101d;
+	top: 6px;
+	left: 50%;
+	font-size: 22px;
+	height: 50px;
+	width: 50px;
+	text-align: center;
+	line-height: 50px;
+	transform: translateX(-50%);
+}
+.sidebar.active #btn {
+	left: 90%;
+}
+
+.sidebar ul {
+	margin-top: 20px;
+	height: calc(100% - 140px);
+	/* Can't display tooltip when overflow is present */
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+.sidebar ul::-webkit-scrollbar {
+	width: 0.5px;
+}
+
+.sidebar ul::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+/* Hide scrollbar on firefox browser */
+.sidebar ul {
+	scrollbar-width: none;
+}
+
+.sidebar ul::-webkit-scrollbar-thumb {
+	background: transparent;
+}
+
+.sidebar ul:hover::-webkit-scrollbar-thumb {
+	background: transparent;
+}
+
+.sidebar ul li {
+	position: relative; /* relative */
+	height: 50px;
+	width: 100%;
+	list-style: none;
+	line-height: 50px;
+	margin: 5px 0;
+}
+
+.sidebar ul li .tooltip {
+	position: absolute;
+	left: 125px;
+	top: 0;
+	transform: translate(-50%, -50%);
+	border-radius: 6px;
+	height: 35px;
+	width: 120px;
+	color: #45b649;
+	background: #fff;
+	line-height: 35px;
+	text-align: center;
+	transition: 0s;
+	opacity: 0;
+	pointer-events: none;
+	display: block;
+	box-shadow: 0px 0px 0px 0.5px rgba(50, 50, 93, 0.1),
+		0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07);
+}
+.sidebar.active ul li .tooltip {
+	display: none;
+}
+.sidebar ul li:hover .tooltip {
+	transition: all 0.5s ease;
+	opacity: 1;
+	top: 50%;
+}
+
+.sidebar ul li a {
+	color: #11101d;
+	display: flex;
+	align-items: center;
+	text-decoration: none;
+	border-radius: 12px;
+	white-space: nowrap;
+	transition: all 0.4s ease;
+}
+.sidebar ul li a:hover {
+	color: #45b649;
+	background: #dcfce7;
+}
+
+.sidebar ul li a.active {
+	color: #45b649;
+	background: #dcfce7;
+}
+.sidebar ul li i {
+	font-size: 18px;
+	font-weight: 400;
+	height: 50px;
+	min-width: 50px;
+	border-radius: 12px;
+	line-height: 50px;
+	text-align: center;
+}
+.sidebar .links_name {
+	font-size: 15px;
+	font-weight: 400;
+	opacity: 0;
+	pointer-events: none;
+	transition: all 0.3s ease;
+}
+.sidebar.active .links_name {
+	transition: 0s;
+	opacity: 1;
+	pointer-events: auto;
+}
+.sidebar .profile_content {
+	position: absolute;
+	color: #11101d;
+	bottom: 5px;
+	left: 10px;
+	width: 90%;
+}
+.sidebar .profile_content .profile_dashboard {
+	position: relative;
+	padding: 10px 6px;
+	height: 60px;
+	border-radius: 7px;
+	background: none;
+	transition: all 0.4s ease;
+}
+.sidebar.active .profile_content .profile_dashboard {
+	background: #dcfce7;
+}
+.profile_content .profile_dashboard .profile_details {
+	display: flex;
+	align-items: center;
+	opacity: 0;
+	pointer-events: none;
+	white-space: nowrap;
+	transition: all 0.4s ease;
+}
+.sidebar.active .profile_dashboard .profile_details {
+	opacity: 1;
+	pointer-events: auto;
+}
+.profile_dashboard .profile_details img {
+	height: 45px;
+	width: 45px;
+	object-fit: cover;
+	border-radius: 12px;
+}
+.profile_dashboard .profile_details .name_job {
+	margin-left: 10px;
+}
+.profile_dashboard .profile_details .name {
+	font-size: 15px;
+	font-weight: 400;
+}
+.profile_dashboard .profile_details .job {
+	font-size: 12px;
+}
+.profile_dashboard #log_out {
+	position: absolute;
+	bottom: 5px;
+	left: 30px;
+	transform: translateX(-50%);
+	min-width: 50px;
+	line-height: 50px;
+	font-size: 20px;
+	border-radius: 12px;
+	text-align: center;
+	transition: all 0.4s ease;
+	background: #dcfce7;
+	cursor: pointer;
+}
+.sidebar.active .profile_dashboard #log_out {
+	left: 88%;
+}
+.sidebar.active .profile_dashboard #log_out {
+	background: none;
+}
+.home_content {
+	height: 100vh;
+	width: calc(100% - 78px);
+	margin-left: 78px;
+	overflow-y: auto;
+	background: #f9fafb; /* #f9fafb*/
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+	transition: all 0.5s ease;
+}
+.sidebar.active ~ .home_content {
+	z-index: 100;
+}
+.home_content .text {
+	font-size: 25px;
+	font-weight: 500;
+	color: #1d1b31;
+	margin: 12px;
+}
+.sidebar.active ~ .home_content {
+	width: calc(100% - 240px);
+	margin-left: 240px;
+}
+
+/* Sidebar navigation under 800px */
+
+@media (max-width: 800px) {
+	.home_content {
+		height: 100vh;
+		width: calc(100% - 60px);
+		margin-left: 60px;
+		overflow-y: auto;
+		background: #f9fafb; /* #f9fafb*/
+		box-shadow: 0 5px 10px rgb(0 0 0 / 20%);
+		transition: all 0.5s ease;
+	}
+	.sidebar {
+		position: fixed;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 60px;
+		background: white; /* #dcfce7 #45b649*/
+		padding: 6px 4px;
+		z-index: 99;
+		transition: all 0.5s ease;
+	}
+
+	.sidebar-logo .logo-name {
+		font-size: 25px;
+		color: #fff;
+	}
+	.sidebar-logo i,
+	.navbar .bx-menu {
+		font-size: 25px;
+		color: #fff;
+	}
+	.sidebar ul {
+		margin-top: 20px;
+		height: calc(100% - 120px);
+		/* Can't display tooltip when overflow is present */
+		/* overflow-y: auto;
+		overflow-x: hidden; */
+	}
+	.sidebar ul li {
+		position: relative;
+		height: 50px;
+		width: 97%;
+		margin: 0 5px;
+		list-style: none;
+		line-height: 50px;
+		margin: 5px 0;
+	}
+	.sidebar .profile_content {
+		position: fixed;
+		color: #11101d;
+		bottom: 5px;
+		left: 10px;
+		width: 90%;
+	}
+	.profile_dashboard #log_out {
+		position: fixed;
+		bottom: 5px;
+		left: 30px;
+		transform: translateX(-50%);
+		min-width: 50px;
+		line-height: 50px;
+		font-size: 20px;
+		border-radius: 12px;
+		text-align: center;
+		transition: all 0.4s ease;
+		background: #dcfce7;
+		cursor: pointer;
+	}
+}
