@@ -44,7 +44,7 @@ export const updateSurvey = async (req, res) => {
 	let userId = req.userId;
 	let surveyId = req.params.surveyId;
 
-	const { title, description } = req.body;
+	const { title, description, researcher_id, client_id } = req.body;
 
 	try {
 		// Simple validation
@@ -59,6 +59,8 @@ export const updateSurvey = async (req, res) => {
 		const updatedSurveyInfo = {
 			title,
 			description,
+			researcher: researcher_id,
+			owner: client_id,
 			updated_by: userId,
 		};
 
