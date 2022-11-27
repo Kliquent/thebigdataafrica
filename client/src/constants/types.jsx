@@ -21,3 +21,10 @@ export const GET_SURVEY = 'get_survey';
 export const GET_SURVEYS = 'get_surveys';
 export const UPDATE_SURVEY = 'update_survey';
 export const DELETE_SURVEY = 'delete_survey';
+
+export const CLIENT_LOADING = 'client_loading';
+export const CREATE_CLIENT = 'create_client';
+export const GET_CLIENT = 'get_client';
+export const GET_CLIENTS = 'get_clients';
+export const UPDATE_CLIENT = 'update_client';
+export const DELETE_CLIENT = 'delete_client';

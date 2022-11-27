@@ -534,7 +534,7 @@ const Home = () => {
 													thickness={4}
 												/>
 											) : (
-												<p>You have no product types</p>
+												<p>You have no surveys</p>
 											)}
 										</TableCell>
 									</TableRow>
