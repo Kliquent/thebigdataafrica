@@ -141,7 +141,6 @@ export const deleteQuestion = async (req, res) => {
 				message: `Resource can't be deleted due attached resources.`,
 			});
 		}
-		console.log(surveyQuestion[0]._id);
 
 		// // If survey question is one, then delete survey_id & question_id
 		await SurveyQuestion.findByIdAndDelete({
@@ -158,7 +157,7 @@ export const deleteQuestion = async (req, res) => {
 			updated_by: userId,
 		});
 
-		// await Questions.findByIdAndDelete({ _id: questionId });
+		await Questions.findByIdAndDelete({ _id: questionId });
 
 		res.status(200).json({ message: 'Question deleted successfully!' });
 	} catch (error) {
