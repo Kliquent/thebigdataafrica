@@ -1,62 +1,62 @@
 import {
-	QUESTION_LOADING,
-	CREATE_QUESTION,
-	GET_QUESTION,
-	GET_QUESTIONS,
-	UPDATE_QUESTION,
-	DELETE_QUESTION,
+	OPTION_LOADING,
+	CREATE_OPTION,
+	GET_OPTION,
+	GET_OPTIONS,
+	UPDATE_OPTION,
+	DELETE_OPTION,
 } from '../../constants/types';
 
 const initialState = {
 	isLoading: false,
 	isAuthenticated: !!localStorage.getItem('userToken'),
-	question: null,
-	questions: [],
-	totalSearchQuestions: null,
+	option: null,
+	options: [],
+	totalSearchOptions: null,
 };
 
 export default function SurveyReducer(state = initialState, action) {
 	switch (action.type) {
-		case QUESTION_LOADING:
+		case OPTION_LOADING:
 			return {
 				...state,
 				isLoading: true,
 			};
-		case GET_QUESTION:
+		case GET_OPTION:
 			return {
 				...state,
 				isAuthenticated: true,
 				isLoading: false,
-				question: action.payload,
+				option: action.payload,
 			};
-		case GET_QUESTIONS:
+		case GET_OPTIONS:
 			return {
 				...state,
 				isAuthenticated: true,
 				isLoading: false,
-				questions: action.payload,
-				totalSearchQuestions: action.totalSearchQuestions,
+				options: action.payload,
+				totalSearchOptions: action.totalSearchOptions,
 			};
-		case CREATE_QUESTION:
+		case CREATE_OPTION:
 			return {
 				...state,
 				isAuthenticated: true,
 				isLoading: false,
-				question: action.payload,
+				option: action.payload,
 			};
-		case UPDATE_QUESTION:
+		case UPDATE_OPTION:
 			return {
 				...state,
 				isAuthenticated: true,
 				isLoading: false,
-				question: action.payload,
+				option: action.payload,
 			};
-		case DELETE_QUESTION:
+		case DELETE_OPTION:
 			return {
 				...state,
 				isAuthenticated: true,
 				isLoading: false,
-				question: action.payload,
+				option: action.payload,
 			};
 		default:
 			return state;

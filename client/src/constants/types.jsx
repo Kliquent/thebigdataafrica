@@ -43,3 +43,10 @@ export const GET_QUESTIONS = 'get_questions';
 export const GET_QUESTIONS_BY_SURVEY = 'get_questions_by_survey';
 export const UPDATE_QUESTION = 'update_question';
 export const DELETE_QUESTION = 'delete_question';
+
+export const OPTION_LOADING = 'option_loading';
+export const CREATE_OPTION = 'create_option';
+export const GET_OPTION = 'get_option';
+export const GET_OPTIONS = 'get_options';
+export const UPDATE_OPTION = 'update_option';
+export const DELETE_OPTION = 'delete_option';
