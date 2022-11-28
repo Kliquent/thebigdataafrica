@@ -186,7 +186,7 @@ export const getSurvey = async (req, res) => {
 		if (!currentSurvey)
 			return res.status(403).json({ message: 'No survey found.' });
 
-		const survey = await Surveys.find({
+		const survey = await Surveys.findOne({
 			_id: surveyId,
 		})
 			.populate('owner', 'name email phone gender')
