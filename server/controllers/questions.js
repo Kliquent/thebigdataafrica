@@ -124,12 +124,67 @@ export const deleteQuestion = async (req, res) => {
 	let questionId = req.params.questionId;
 
 	try {
-		const currentQuestion = await Surveys.findOne({ _id: questionId });
+		const currentQuestion = await Questions.findOne({ _id: questionId });
 
 		if (!currentQuestion)
 			return res.status(403).json({ message: 'No question found.' });
 
 		res.status(200).json({ message: 'Question deleted successfully!' });
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
+export const getQuestions = async (req, res) => {
+	let searchTerm = req.query.searchTerm;
+	let order = req.query.order ? req.query.order : 'desc';
+	let orderBy = req.query.orderBy ? req.query.orderBy : '_id';
+
+	const page = parseInt(req.query.page)
+		? parseInt(req.query.page)
+		: parseInt(1);
+	let limit = parseInt(req.query.limit)
+		? parseInt(req.query.limit)
+		: parseInt(20);
+	const skipIndex = (page - 1) * limit;
+
+	try {
+		if (searchTerm) {
+			const questions = await Questions.find({
+				$text: { $search: `"${searchTerm}"` },
+			});
+			res
+				.status(200)
+				.json({ questions, totalSearchQuestions: questions.length });
+		} else {
+			const questions = await Questions.find()
+				.sort([[orderBy, order]])
+				.skip(skipIndex)
+				.limit(limit);
+
+			res.status(200).json(questions);
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
+export const getQuestion = async (req, res) => {
+	let questionId = req.params.questionId;
+
+	try {
+		const currentQuestion = await Questions.findOne({ _id: questionId });
+
+		if (!currentQuestion)
+			return res.status(403).json({ message: 'No question found.' });
+
+		const question = await Questions.findOne({
+			_id: questionId,
+		});
+
+		res.status(200).json(question);
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: error });
