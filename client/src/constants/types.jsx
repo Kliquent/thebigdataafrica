@@ -35,3 +35,10 @@ export const GET_RESEARCHER = 'get_researcher';
 export const GET_RESEARCHERS = 'get_researchers';
 export const UPDATE_RESEARCHER = 'update_researcher';
 export const DELETE_RESEARCHER = 'delete_researcher';
+
+export const QUESTION_LOADING = 'question_loading';
+export const CREATE_QUESTION = 'create_question';
+export const GET_QUESTION = 'get_question';
+export const GET_QUESTIONS = 'get_questions';
+export const UPDATE_QUESTION = 'update_question';
+export const DELETE_QUESTION = 'delete_question';

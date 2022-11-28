@@ -3,6 +3,7 @@ import auth from './auth-reducer';
 import surveys from './survey-reducer';
 import clients from './client-reducer';
 import researchers from './researcher-reducer';
+import questions from './question-reducer';
 import error from './error-reducer';
 
 const rootReducer = combineReducers({
@@ -10,6 +11,7 @@ const rootReducer = combineReducers({
 	surveys,
 	clients,
 	researchers,
+	questions,
 	error,
 });
 
