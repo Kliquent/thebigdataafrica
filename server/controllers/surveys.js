@@ -141,7 +141,7 @@ export const getSurveysByResearcher = async (req, res) => {
 	let researcherId = req.params.researcherId;
 
 	try {
-		const existingResearcher = await Users.findOne({ email: emailLowercase });
+		const existingResearcher = await Users.findOne({ _id: researcherId });
 
 		// Check existing researcher
 		if (!existingResearcher)
