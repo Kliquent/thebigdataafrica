@@ -1,5 +1,6 @@
 import Surveys from '../models/Survey.js';
 import SurveyQuestion from '../models/SurveyQuestion.js';
+import Questions from '../models/Questions.js';
 import SurveyEvent from '../models/SurveyEvent.js';
 
 // Create survey controller & capture events
@@ -129,6 +130,31 @@ export const deleteSurvey = async (req, res) => {
 		await Surveys.findByIdAndDelete({ _id: surveyId });
 
 		res.status(200).json({ message: 'Survey deleted successfully!' });
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
+export const getQuestionsBySurvey = async (req, res) => {
+	// let userId = req.userId;
+	let surveyId = req.params.surveyId;
+
+	try {
+		// Check referenced survey
+		const surveyQuestion = await SurveyQuestion.find({
+			survey_id: surveyId,
+		});
+
+		let surveyQuestionIds = surveyQuestion.map((item) => {
+			return item.question_id;
+		});
+
+		let questions = await Questions.aggregate([
+			{ $match: { _id: { $in: surveyQuestionIds } } },
+		]);
+
+		res.status(200).json(questions);
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: error });
