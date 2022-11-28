@@ -155,13 +155,14 @@ export const getOptions = async (req, res) => {
 		if (searchTerm) {
 			const options = await Options.find({
 				$text: { $search: `"${searchTerm}"` },
-			});
+			}).populate('created_by', 'name email phone gender');
 			res.status(200).json({ options, totalSearchOptions: options.length });
 		} else {
 			const options = await Options.find()
 				.sort([[orderBy, order]])
 				.skip(skipIndex)
-				.limit(limit);
+				.limit(limit)
+				.populate('created_by', 'name email phone gender');
 
 			res.status(200).json(options);
 		}
@@ -182,7 +183,7 @@ export const getOption = async (req, res) => {
 
 		const option = await Options.findOne({
 			_id: optionId,
-		});
+		}).populate('created_by', 'name email phone gender');
 
 		res.status(200).json(option);
 	} catch (error) {
