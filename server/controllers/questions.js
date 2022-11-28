@@ -142,6 +142,8 @@ export const deleteQuestion = async (req, res) => {
 			});
 		}
 
+		// Also, check if option is referenced
+
 		// // If survey question is one, then delete survey_id & question_id
 		await SurveyQuestion.findByIdAndDelete({
 			_id: surveyQuestion[0]._id,

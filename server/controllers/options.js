@@ -96,3 +96,97 @@ export const updateOption = async (req, res) => {
 		res.status(500).json({ message: error });
 	}
 };
+
+// Delete option controller & capture events
+export const deleteOption = async (req, res) => {
+	let userId = req.userId;
+	let optionId = req.params.optionId;
+
+	try {
+		const currentOption = await Surveys.findOne({ _id: optionId });
+
+		if (!currentOption)
+			return res.status(403).json({ message: 'No option found.' });
+
+		// Prevent delete if option is referenced to answer/response
+		// const surveyQuestion = await SurveyQuestion.find({
+		// 	survey_id: surveyId,
+		// });
+
+		// if (surveyQuestion.length > 0) {
+		// 	return res.status(403).json({
+		// 		message: `Resource can't be deleted due attached resources.`,
+		// 	});
+		// }
+
+		// Log event
+		await OptionEvent.create({
+			event: 'DELETE',
+			content: currentOption,
+			description: 'This option has been deleted by the administrator',
+			option_id: optionId,
+			created_by: userId,
+			updated_by: userId,
+		});
+
+		await Options.findByIdAndDelete({ _id: optionId });
+
+		res.status(200).json({ message: 'Option deleted successfully!' });
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
+export const getOptions = async (req, res) => {
+	let searchTerm = req.query.searchTerm;
+	let order = req.query.order ? req.query.order : 'desc';
+	let orderBy = req.query.orderBy ? req.query.orderBy : '_id';
+
+	const page = parseInt(req.query.page)
+		? parseInt(req.query.page)
+		: parseInt(1);
+	let limit = parseInt(req.query.limit)
+		? parseInt(req.query.limit)
+		: parseInt(20);
+	const skipIndex = (page - 1) * limit;
+
+	try {
+		if (searchTerm) {
+			const options = await Options.find({
+				$text: { $search: `"${searchTerm}"` },
+			});
+			res.status(200).json({ options, totalSearchOptions: options.length });
+		} else {
+			const options = await Options.find()
+				.sort([[orderBy, order]])
+				.skip(skipIndex)
+				.limit(limit);
+
+			res.status(200).json(options);
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
+export const getOption = async (req, res) => {
+	let optionId = req.params.optionId;
+
+	try {
+		const currentOption = await Options.findOne({ _id: optionId });
+
+		if (!currentOption)
+			return res.status(403).json({ message: 'No option found.' });
+
+		const option = await Options.findOne({
+			_id: optionId,
+		});
+
+		res.status(200).json(option);
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
