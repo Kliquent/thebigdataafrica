@@ -1,4 +1,5 @@
 import Questions from '../models/Questions.js';
+import Options from '../models/Options.js';
 import SurveyQuestion from '../models/SurveyQuestion.js';
 import QuestionEvent from '../models/QuestionEvent.js';
 
@@ -142,7 +143,16 @@ export const deleteQuestion = async (req, res) => {
 			});
 		}
 
-		// Also, check if option is referenced
+		// Prevent delete if option is referenced to answer/response
+		const options = await Options.find({
+			question_id: questionId,
+		});
+
+		if (options.length > 0) {
+			return res.status(403).json({
+				message: `Resource can't be deleted due attached resources.`,
+			});
+		}
 
 		// // If survey question is one, then delete survey_id & question_id
 		await SurveyQuestion.findByIdAndDelete({

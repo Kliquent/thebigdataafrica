@@ -1,4 +1,5 @@
 import Options from '../models/Options.js';
+import Answers from '../models/Answers.js';
 import OptionEvent from '../models/OptionEvent.js';
 
 // Create option controller & capture events
@@ -109,15 +110,15 @@ export const deleteOption = async (req, res) => {
 			return res.status(403).json({ message: 'No option found.' });
 
 		// Prevent delete if option is referenced to answer/response
-		// const surveyQuestion = await SurveyQuestion.find({
-		// 	survey_id: surveyId,
-		// });
+		const answers = await Answers.find({
+			option_id: optionId,
+		});
 
-		// if (surveyQuestion.length > 0) {
-		// 	return res.status(403).json({
-		// 		message: `Resource can't be deleted due attached resources.`,
-		// 	});
-		// }
+		if (answers.length > 0) {
+			return res.status(403).json({
+				message: `Resource can't be deleted due attached resources.`,
+			});
+		}
 
 		// Log event
 		await OptionEvent.create({
