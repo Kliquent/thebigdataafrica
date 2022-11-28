@@ -84,7 +84,7 @@ export const updateQuestion = async (req, res) => {
 
 		// Search survey_question_id using survey_id & questionId
 		const currentSurveyQuestionId = await SurveyQuestion.find({
-			$and: [{ survey_id }, { question_id: questionId }],
+			question_id: questionId,
 		});
 		console.log(currentSurveyQuestionId);
 
