@@ -1,0 +1,34 @@
+{
+	"expo": {
+		"name": "Niki [AI] Systems",
+		"slug": "nikiaisystems",
+		"version": "0.1.9",
+		"owner": "kifaru_africa",
+		"orientation": "portrait",
+		"icon": "./assets/adaptive-icon.png",
+		"splash": {
+			"image": "./assets/nikiai-logo.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#ffffff"
+		},
+		"updates": {
+			"fallbackToCacheTimeout": 0
+		},
+		"assetBundlePatterns": ["**/*"],
+		"ios": {
+			"supportsTablet": true
+		},
+		"android": {
+			"package": "com.nikiaisystems.app",
+			"versionCode": 10,
+			"permissions": ["NOTIFICATIONS"],
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/adaptive-icon.png",
+				"backgroundColor": "#FFFFFF"
+			}
+		},
+		"web": {
+			"favicon": "./assets/favicon.png"
+		}
+	}
+}
