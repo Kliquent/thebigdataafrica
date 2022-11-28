@@ -16,7 +16,7 @@ const router = express.Router();
 router.post('/create', auth, createSurvey);
 router.get('/', auth, getSurveys);
 router.get(
-	'/get-surveys-by-researcher/:surveyId',
+	'/get-surveys-by-researcher/:researcherId',
 	auth,
 	getSurveysByResearcher
 );
