@@ -5,6 +5,7 @@ import {
 	updateQuestion,
 	getQuestions,
 	getQuestion,
+	deleteQuestion,
 } from '../controllers/questions.js';
 import { auth } from '../middleware/auth.js';
 
@@ -14,6 +15,6 @@ router.post('/create', auth, createQuestion);
 router.get('/', auth, getQuestions);
 router.get('/:questionId', auth, getQuestion);
 router.put('/:questionId', auth, updateQuestion);
-// router.delete('/:questionId', auth, deleteRole);
+router.delete('/:questionId', auth, deleteQuestion);
 
 export default router;
