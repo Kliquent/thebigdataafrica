@@ -145,7 +145,6 @@ export const getQuestionsBySurvey = async (req, res) => {
 		const surveyQuestion = await SurveyQuestion.find({
 			survey_id: surveyId,
 		});
-		console.log(surveyQuestion);
 
 		let surveyQuestionIds = surveyQuestion.map((item) => {
 			return item.question_id;

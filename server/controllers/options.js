@@ -104,7 +104,7 @@ export const deleteOption = async (req, res) => {
 	let optionId = req.params.optionId;
 
 	try {
-		const currentOption = await Surveys.findOne({ _id: optionId });
+		const currentOption = await Options.findOne({ _id: optionId });
 
 		if (!currentOption)
 			return res.status(403).json({ message: 'No option found.' });
