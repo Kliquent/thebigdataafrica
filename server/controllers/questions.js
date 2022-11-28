@@ -83,7 +83,12 @@ export const updateQuestion = async (req, res) => {
 		);
 
 		// Search survey_question_id using survey_id & questionId
-		const currentSurveyQuestionId = await SurveyQuestion.find({
+		// const currentSurveyQuestionId = await SurveyQuestion.find({
+		// 	question_id: questionId,
+		// });
+
+		const currentSurveyQuestionId = await SurveyQuestion.find({}).select({
+			survey_id,
 			question_id: questionId,
 		});
 		console.log(currentSurveyQuestionId);
