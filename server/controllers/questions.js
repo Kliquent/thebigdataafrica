@@ -83,24 +83,23 @@ export const updateQuestion = async (req, res) => {
 		);
 
 		// Search survey_question_id using survey_id & questionId
-		const currentSurveyQuestionId = await SurveyQuestion.find({
+		const currentSurveyQuestionId = await SurveyQuestion.findOne({
 			$and: [{ survey_id }, { question_id: questionId }],
 		});
-		console.log(currentSurveyQuestionId);
 
 		// Update reference question to survey
-		// await SurveyQuestion.findByIdAndUpdate(
-		// 	{
-		// 		_id: currentSurveyQuestionId._id,
-		// 	},
-		// 	{
-		// 		$set: {
-		// 			survey_id,
-		// 			question_id: questionId,
-		// 		},
-		// 	},
-		// 	{ new: true }
-		// );
+		await SurveyQuestion.findByIdAndUpdate(
+			{
+				_id: currentSurveyQuestionId._id,
+			},
+			{
+				$set: {
+					survey_id,
+					question_id: questionId,
+				},
+			},
+			{ new: true }
+		);
 
 		// Log event
 		await QuestionEvent.create({
@@ -129,6 +128,38 @@ export const deleteQuestion = async (req, res) => {
 
 		if (!currentQuestion)
 			return res.status(403).json({ message: 'No question found.' });
+
+		// Prevent delete if the survey is referenced
+		const surveyQuestion = await SurveyQuestion.find({
+			question_id: questionId,
+		});
+
+		// If the survey is referenced more than once (many to many)
+		// Then don't delete else it can be deleted as it is (one to many)
+		if (surveyQuestion.length > 1) {
+			return res.status(403).json({
+				message: `Resource can't be deleted due attached resources.`,
+			});
+		}
+
+		// If survey question is one, then delete survey_id & question_id
+		if (surveyQuestion.length === 0) {
+			await SurveyQuestion.findByIdAndDelete({
+				_id: surveyQuestion[0]._id,
+			});
+		}
+
+		// Log event
+		await QuestionEvent.create({
+			event: 'DELETE',
+			content: currentQuestion,
+			description: 'This question has been deleted by the administrator',
+			question_id: questionId,
+			created_by: userId,
+			updated_by: userId,
+		});
+
+		await Questions.findByIdAndDelete({ _id: questionId });
 
 		res.status(200).json({ message: 'Question deleted successfully!' });
 	} catch (error) {
