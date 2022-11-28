@@ -178,6 +178,21 @@ export const deleteQuestion = async (req, res) => {
 	}
 };
 
+export const getOptionsByQuestion = async (req, res) => {
+	let questionId = req.params.questionId;
+
+	try {
+		const options = await Options.find({
+			question_id: questionId,
+		}).populate('created_by', 'name email phone gender');
+
+		res.status(200).json(options);
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
 export const getQuestions = async (req, res) => {
 	let searchTerm = req.query.searchTerm;
 	let order = req.query.order ? req.query.order : 'desc';
