@@ -5,6 +5,7 @@ import {
 	CREATE_SURVEY,
 	GET_SURVEY,
 	GET_SURVEYS,
+	GET_QUESTIONS_BY_SURVEY,
 	UPDATE_SURVEY,
 	DELETE_SURVEY,
 } from '../../constants/types';
@@ -120,9 +121,40 @@ export const deleteSurvey = (payload) => async (dispatch) => {
 		toast.success(`Success! delete survey success.`);
 	} catch (error) {
 		console.log(error.response);
-		toast.error('Error! delete survey failed.');
+		toast.error(`Error! ${error?.response?.data?.message}`);
 		dispatch(
 			returnErrors(error.response.data, error.response.status, 'DELETE_SURVEY')
+		);
+	}
+};
+
+export const getQuestionsBySurvey = (surveyId) => async (dispatch) => {
+	const token = tokenConfig();
+
+	try {
+		await dispatch({ type: SURVEY_LOADING });
+
+		const response = await axios.get(
+			`${SURVEY_SERVER}/get-questions-by-survey/${surveyId}`,
+			token
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: GET_QUESTIONS_BY_SURVEY,
+			payload: data,
+		});
+
+		await dispatch(clearErrors());
+	} catch (error) {
+		console.log(error.response);
+		toast.error('Error! get questions by survey failed.');
+		dispatch(
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'GET_QUESTIONS_BY_SURVEY'
+			)
 		);
 	}
 };

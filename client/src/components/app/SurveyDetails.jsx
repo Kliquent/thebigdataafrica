@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
@@ -18,7 +18,10 @@ import {
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
-import { getSurvey } from '../../store/actions/survey-actions';
+import {
+	getSurvey,
+	getQuestionsBySurvey,
+} from '../../store/actions/survey-actions';
 import {
 	createQuestion,
 	updateQuestion,
@@ -37,7 +40,9 @@ const SurveyDetails = () => {
 
 	let survey = useSelector((state) => state.surveys?.survey);
 	let questionLoading = useSelector((state) => state.questions?.isLoading);
-	let questions = useSelector((state) => state.questions?.questions);
+	let questionsBySurvey = useSelector(
+		(state) => state.surveys?.questionsBySurvey
+	);
 
 	let urlParams = useParams();
 	let surveyId = urlParams?.surveyId;
@@ -52,6 +57,9 @@ const SurveyDetails = () => {
 	const [openDeletePopup, setOpenDeletePopup] = useState(false);
 	const [buttonLoading, setButtonLoading] = useState(false);
 
+	const [updatedQuestion, setUpdatedSurvey] = useState([]);
+	const [deletedQuestion, setDeletedQuestion] = useState([]);
+
 	useEffect(() => {
 		(async () => {
 			await dispatch(getSurvey(surveyId));
@@ -59,7 +67,7 @@ const SurveyDetails = () => {
 	}, []);
 
 	useEffect(() => {
-		dispatch(getQuestions());
+		dispatch(getQuestionsBySurvey(surveyId));
 	}, []);
 
 	const handlePageChange = (event, newPage) => {
@@ -104,18 +112,14 @@ const SurveyDetails = () => {
 
 	const handleEditPopup = (data, e) => {
 		e.preventDefault();
-		// const { title, description, researcher, owner } = data;
+		const { name, description } = data;
 
-		// reset({
-		// 	title,
-		// 	description,
-		// 	researcher: researcher?.name,
-		// 	client: owner?.name,
-		// });
+		reset({
+			name,
+			description,
+		});
 
-		// setUpdatedSurvey(data);
-		// setUpdatedResearcher(researcher);
-		// setUpdatedClient(owner);
+		setUpdatedSurvey(data);
 		setOpenEditPopup(true);
 	};
 
@@ -140,35 +144,34 @@ const SurveyDetails = () => {
 
 	const onSubmitEdit = async (data, e) => {
 		e.preventDefault();
-		// setButtonLoading(true);
-		// const { title, description } = data;
+		setButtonLoading(true);
+		const { name, description } = data;
 
-		// const updatedData = {
-		// 	_id: updatedSurvey._id,
-		// 	title,
-		// 	description,
-		// 	researcher_id: selectedResearcher?._id,
-		// 	client_id: selectedClient?._id,
-		// };
+		const updatedData = {
+			_id: updatedQuestion._id,
+			name,
+			description,
+			survey_id: surveyId,
+		};
 
-		// await dispatch(updateSurvey(updatedData));
-		// await dispatch(getSurveys());
+		await dispatch(updateQuestion(updatedData));
+		await dispatch(getQuestions());
 
-		// setButtonLoading(false);
-		// handleCloseEditDialog();
+		setButtonLoading(false);
+		handleCloseEditDialog();
 	};
 
-	const handleDeleteSurvey = (survey) => {
-		// setDeletedSurvey(survey);
+	const handleDeleteQuestion = (question) => {
+		setDeletedQuestion(question);
 		setOpenDeletePopup(true);
 	};
 
-	const confirmDeleteSurvey = async () => {
-		// setButtonLoading(true);
-		// await dispatch(deleteSurvey(deletedSurvey));
-		// await dispatch(getSurveys());
-		// setButtonLoading(false);
-		// handleCloseDeleteDialog();
+	const confirmDeleteQuestion = async () => {
+		setButtonLoading(true);
+		await dispatch(deleteQuestion(deletedQuestion));
+		await dispatch(getQuestions());
+		setButtonLoading(false);
+		handleCloseDeleteDialog();
 	};
 
 	return (
@@ -211,14 +214,58 @@ const SurveyDetails = () => {
 					</div>
 				</div>
 				<div className="wrapper">
-					{questions.length > 0 ? (
-						questions.map((question, index) => {
+					{questionsBySurvey.length > 0 ? (
+						questionsBySurvey.map((question, index) => {
 							const { _id, name, description } = question;
 
 							return (
-								<Accordion key={index} title={name}>
-									{description}
-								</Accordion>
+								<Fragment key={index}>
+									<Accordion title={name}>
+										<div className="flex items-center justify-between">
+											{description}
+											<div className="p-2 cursor-pointer text-gray-400 hover:text-green-600">
+												<IconButton
+													onClick={(e) => handleEditPopup(question, e)}
+												>
+													<svg
+														stroke="currentColor"
+														fill="none"
+														strokeWidth={2}
+														viewBox="0 0 24 24"
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														height="1em"
+														width="1em"
+														xmlns="http://www.w3.org/2000/svg"
+													>
+														<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+														<path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+													</svg>
+												</IconButton>
+												<IconButton
+													onClick={(e) => handleDeleteQuestion(question, e)}
+												>
+													<svg
+														stroke="currentColor"
+														fill="none"
+														strokeWidth={2}
+														viewBox="0 0 24 24"
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														height="1em"
+														width="1em"
+														xmlns="http://www.w3.org/2000/svg"
+													>
+														<polyline points="3 6 5 6 21 6" />
+														<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+														<line x1={10} y1={11} x2={10} y2={17} />
+														<line x1={14} y1={11} x2={14} y2={17} />
+													</svg>
+												</IconButton>
+											</div>
+										</div>
+									</Accordion>
+								</Fragment>
 							);
 						})
 					) : (
@@ -353,6 +400,61 @@ const SurveyDetails = () => {
 						</DialogActions>
 					)}
 				</form>
+			</Dialog>
+			<Dialog
+				open={openDeletePopup}
+				onClose={handleCloseDeleteDialog}
+				aria-labelledby="alert-dialog-title"
+				aria-describedby="alert-dialog-description"
+			>
+				<DialogContent
+					sx={{
+						display: 'flex',
+						flexDirection: 'column',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<DialogContentText id="alert-dialog-description">
+						<svg
+							className="w-16 h-16 text-red-500"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+							/>
+						</svg>
+					</DialogContentText>
+					<DialogContentText
+						sx={{ color: '#000', fontSize: 18, paddingBottom: '1rem' }}
+						id="alert-dialog-description"
+					>
+						Are You Sure! Want to Delete this record?
+					</DialogContentText>
+					<DialogContentText id="alert-dialog-description">
+						Do you really want to delete this record? You can't view this in
+						your list anymore if you delete!
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button sx={{ color: 'gray' }} onClick={handleCloseDeleteDialog}>
+						No, Keep it
+					</Button>
+					<CustomButton
+						onClick={confirmDeleteQuestion}
+						disabled={buttonLoading ? true : false}
+						loading={buttonLoading}
+						variant="contained"
+					>
+						Yes, Delete it
+					</CustomButton>
+				</DialogActions>
 			</Dialog>
 		</>
 	);

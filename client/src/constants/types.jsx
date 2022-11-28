@@ -40,5 +40,6 @@ export const QUESTION_LOADING = 'question_loading';
 export const CREATE_QUESTION = 'create_question';
 export const GET_QUESTION = 'get_question';
 export const GET_QUESTIONS = 'get_questions';
+export const GET_QUESTIONS_BY_SURVEY = 'get_questions_by_survey';
 export const UPDATE_QUESTION = 'update_question';
 export const DELETE_QUESTION = 'delete_question';
