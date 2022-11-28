@@ -143,7 +143,7 @@ export const deleteQuestion = async (req, res) => {
 		}
 
 		// If survey question is one, then delete survey_id & question_id
-		if (surveyQuestion.length === 0) {
+		if (surveyQuestion.length < 1) {
 			await SurveyQuestion.findByIdAndDelete({
 				_id: surveyQuestion[0]._id,
 			});
@@ -159,7 +159,7 @@ export const deleteQuestion = async (req, res) => {
 			updated_by: userId,
 		});
 
-		await Questions.findByIdAndDelete({ _id: questionId });
+		// await Questions.findByIdAndDelete({ _id: questionId });
 
 		res.status(200).json({ message: 'Question deleted successfully!' });
 	} catch (error) {
