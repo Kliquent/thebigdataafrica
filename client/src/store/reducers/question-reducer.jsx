@@ -3,6 +3,7 @@ import {
 	CREATE_QUESTION,
 	GET_QUESTION,
 	GET_QUESTIONS,
+	GET_OPTIONS_BY_QUESTION,
 	UPDATE_QUESTION,
 	DELETE_QUESTION,
 } from '../../constants/types';
@@ -12,6 +13,7 @@ const initialState = {
 	isAuthenticated: !!localStorage.getItem('userToken'),
 	question: null,
 	questions: [],
+	optionsByQuestion: [],
 	totalSearchQuestions: null,
 };
 
@@ -36,6 +38,13 @@ export default function SurveyReducer(state = initialState, action) {
 				isLoading: false,
 				questions: action.payload,
 				totalSearchQuestions: action.totalSearchQuestions,
+			};
+		case GET_OPTIONS_BY_QUESTION:
+			return {
+				...state,
+				isAuthenticated: true,
+				isLoading: false,
+				optionsByQuestion: action.payload,
 			};
 		case CREATE_QUESTION:
 			return {

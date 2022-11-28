@@ -48,5 +48,6 @@ export const OPTION_LOADING = 'option_loading';
 export const CREATE_OPTION = 'create_option';
 export const GET_OPTION = 'get_option';
 export const GET_OPTIONS = 'get_options';
+export const GET_OPTIONS_BY_QUESTION = 'get_options_by_question';
 export const UPDATE_OPTION = 'update_option';
 export const DELETE_OPTION = 'delete_option';

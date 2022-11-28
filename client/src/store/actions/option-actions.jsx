@@ -122,7 +122,7 @@ export const deleteOption = (payload) => async (dispatch) => {
 		toast.success(`Success! delete option success.`);
 	} catch (error) {
 		console.log(error.response);
-		toast.error('Error! delete option failed.');
+		toast.error(`Error! ${error.response.data.message}`);
 		dispatch(
 			returnErrors(error.response.data, error.response.status, 'DELETE_OPTION')
 		);

@@ -5,6 +5,7 @@ import {
 	CREATE_QUESTION,
 	GET_QUESTION,
 	GET_QUESTIONS,
+	GET_OPTIONS_BY_QUESTION,
 	UPDATE_QUESTION,
 	DELETE_QUESTION,
 } from '../../constants/types';
@@ -133,6 +134,37 @@ export const deleteQuestion = (payload) => async (dispatch) => {
 				error.response.data,
 				error.response.status,
 				'DELETE_QUESTION'
+			)
+		);
+	}
+};
+
+export const getOptionsByQuestion = (questionId) => async (dispatch) => {
+	const token = tokenConfig();
+
+	try {
+		await dispatch({ type: SURVEY_LOADING });
+
+		const response = await axios.get(
+			`${QUESTION_SERVER}/get-options-by-question/${questionId}`,
+			token
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: GET_OPTIONS_BY_QUESTION,
+			payload: data,
+		});
+
+		await dispatch(clearErrors());
+	} catch (error) {
+		console.log(error.response);
+		toast.error('Error! get options by question failed.');
+		dispatch(
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'GET_OPTIONS_BY_QUESTION'
 			)
 		);
 	}

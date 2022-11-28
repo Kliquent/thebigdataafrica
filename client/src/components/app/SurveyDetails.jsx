@@ -29,6 +29,7 @@ import {
 	deleteQuestion,
 	getQuestions,
 	getQuestion,
+	getOptionsByQuestion,
 } from '../../store/actions/question-actions';
 import {
 	createOption,
@@ -51,8 +52,12 @@ const SurveyDetails = () => {
 	let questionsBySurvey = useSelector(
 		(state) => state.surveys?.questionsBySurvey
 	);
+
 	let optionLoading = useSelector((state) => state.options?.isLoading);
 	let options = useSelector((state) => state.options.options);
+	let optionsByQuestion = useSelector(
+		(state) => state.questions?.optionsByQuestion
+	);
 
 	let urlParams = useParams();
 	let surveyId = urlParams?.surveyId;
@@ -176,6 +181,10 @@ const SurveyDetails = () => {
 		setOpenDeletePopup(false);
 	};
 
+	const handleOptionsCloseDeleteDialog = () => {
+		setOptionsOpenDeletePopup(false);
+	};
+
 	const handleClickOpen = () => {
 		setOpenPopup(true);
 	};
@@ -280,11 +289,11 @@ const SurveyDetails = () => {
 
 	// options Delete confirmation
 	const confirmDeleteOption = async () => {
-		// setButtonLoading(true);
-		// await dispatch(deleteQuestion(deletedQuestion));
-		// await dispatch(getQuestions());
-		// setButtonLoading(false);
-		// handleCloseDeleteDialog();
+		setOptionsButtonLoading(true);
+		await dispatch(deleteOption(deletedOption));
+		await dispatch(getOptions());
+		setOptionsButtonLoading(false);
+		handleOptionsCloseDeleteDialog();
 	};
 
 	// options onSubmit
@@ -487,7 +496,7 @@ const SurveyDetails = () => {
 																	created_by,
 																	updatedAt,
 																} = option;
-																_id;
+
 																return (
 																	<Fragment key={index}>
 																		{question_id === _id && (
@@ -987,6 +996,64 @@ const SurveyDetails = () => {
 						</DialogActions>
 					)}
 				</form>
+			</Dialog>
+			<Dialog
+				open={optionsOpenDeletePopup}
+				onClose={handleOptionsCloseDeleteDialog}
+				aria-labelledby="alert-dialog-title"
+				aria-describedby="alert-dialog-description"
+			>
+				<DialogContent
+					sx={{
+						display: 'flex',
+						flexDirection: 'column',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<DialogContentText id="alert-dialog-description">
+						<svg
+							className="w-16 h-16 text-red-500"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+							/>
+						</svg>
+					</DialogContentText>
+					<DialogContentText
+						sx={{ color: '#000', fontSize: 18, paddingBottom: '1rem' }}
+						id="alert-dialog-description"
+					>
+						Are You Sure! Want to Delete this record?
+					</DialogContentText>
+					<DialogContentText id="alert-dialog-description">
+						Do you really want to delete this record? You can't view this in
+						your list anymore if you delete!
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button
+						sx={{ color: 'gray' }}
+						onClick={handleOptionsCloseDeleteDialog}
+					>
+						No, Keep it
+					</Button>
+					<CustomButton
+						onClick={confirmDeleteOption}
+						disabled={optionsButtonLoading ? true : false}
+						loading={optionsButtonLoading}
+						variant="contained"
+					>
+						Yes, Delete it
+					</CustomButton>
+				</DialogActions>
 			</Dialog>
 		</>
 	);
