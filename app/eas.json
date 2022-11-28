@@ -15,7 +15,7 @@
 	"submit": {
 		"production": {
 			"android": {
-				"serviceAccountKeyPath": "../nikiai-system-eas-credentials/service-account.json",
+				"serviceAccountKeyPath": "./service-account.json",
 				"track": "production"
 			}
 		}

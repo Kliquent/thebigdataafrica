@@ -35,7 +35,7 @@ export const auth = () => async (dispatch) => {
 	// console.log(token);
 
 	try {
-		const response = await axios.get(`${NIKIAI_URL}/profile`, token);
+		const response = await axios.get(`${NIKIAI_URL}/auth/profile`, token);
 		const data = await response.data;
 		// console.log(data);
 
@@ -73,7 +73,11 @@ export const loginUser = (payload) => async (dispatch) => {
 		// Request body
 		const body = JSON.stringify({ email, password });
 
-		const response = await axios.post(`${NIKIAI_URL}/login`, body, config);
+		const response = await axios.post(
+			`${NIKIAI_URL}/auth/signin`,
+			body,
+			config
+		);
 		// console.log(response.data);
 		const data = await response.data;
 		await save('userToken', data.token);
@@ -92,6 +96,7 @@ export const loginUser = (payload) => async (dispatch) => {
 			text1: `You're now logged in successfully!`,
 		});
 	} catch (error) {
+		console.log(error);
 		dispatch(
 			returnErrors(error.response.data, error.response.status, 'LOGIN_FAIL')
 		);

@@ -12,7 +12,7 @@ import {
 	TouchableOpacity,
 } from 'react-native';
 import ActionSheet from 'react-native-actions-sheet';
-import { getSurveys, getCurrentSurveyQuiz } from '../../store/actions/Surveys';
+// import { getSurveys, getCurrentSurveyQuiz } from '../../store/actions/Surveys';
 
 const actionSheetRef = createRef();
 
@@ -29,13 +29,13 @@ const Home = ({ navigation }) => {
 	const [currentSurvey, setCurrentSurvey] = useState([]);
 
 	useEffect(() => {
-		dispatch(getSurveys());
+		// dispatch(getSurveys());
 	}, []);
 
 	const viewSurvey = (survey) => {
 		actionSheetRef.current?.setModalVisible();
-		setCurrentSurvey(survey);
-		dispatch(getCurrentSurveyQuiz(survey.id));
+		// setCurrentSurvey(survey);
+		// dispatch(getCurrentSurveyQuiz(survey.id));
 	};
 
 	const openSurveyDetails = () => {
@@ -65,7 +65,7 @@ const Home = ({ navigation }) => {
 				>
 					<View>
 						<Text style={{ fontSize: 20, fontWeight: '600' }}>
-							{currentSurvey?.title}
+							{/* {currentSurvey?.title} */}
 						</Text>
 						<View
 							style={{
@@ -76,7 +76,7 @@ const Home = ({ navigation }) => {
 							}}
 						>
 							<Text style={{ color: 'gray', paddingRight: 38 }}>Title</Text>
-							<Text style={{ fontSize: 18 }}>{currentSurvey?.title}</Text>
+							{/* <Text style={{ fontSize: 18 }}>{currentSurvey?.title}</Text> */}
 						</View>
 						<View
 							style={{
@@ -88,11 +88,11 @@ const Home = ({ navigation }) => {
 						>
 							<Text style={{ color: 'gray' }}>Category</Text>
 							<Text style={{ fontSize: 18, paddingLeft: 10 }}>
-								{currentSurvey?.category?.name}
+								{/* {currentSurvey?.category?.name} */}
 							</Text>
 						</View>
 						<View style={{ marginVertical: 10 }}>
-							<Text>{currentSurvey?.description}</Text>
+							{/* <Text>{currentSurvey?.description}</Text> */}
 						</View>
 					</View>
 					<View

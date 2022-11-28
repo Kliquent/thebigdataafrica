@@ -1,6 +1,10 @@
 node_modules/
 .expo/
 dist/
+
+app.json
+service-account.json
+
 npm-debug.*
 *.jks
 *.p8
