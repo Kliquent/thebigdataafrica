@@ -141,13 +141,14 @@ export const deleteQuestion = async (req, res) => {
 				message: `Resource can't be deleted due attached resources.`,
 			});
 		}
+		console.log(surveyQuestion);
 
-		// If survey question is one, then delete survey_id & question_id
-		if (surveyQuestion.length < 1) {
-			await SurveyQuestion.findByIdAndDelete({
-				_id: surveyQuestion[0]._id,
-			});
-		}
+		// // If survey question is one, then delete survey_id & question_id
+		// if (surveyQuestion.length < 1) {
+		// 	await SurveyQuestion.findByIdAndDelete({
+		// 		_id: surveyQuestion[0]._id,
+		// 	});
+		// }
 
 		// Log event
 		await QuestionEvent.create({
