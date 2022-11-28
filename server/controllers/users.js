@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import Roles from '../models/Roles.js';
 import Users from '../models/Users.js';
 
-// signin controller handles signin of all users i.e admin, researcher & client
+// signin controller handles signin of all users i.e admin, client, researcher
 export const signin = async (req, res) => {
 	const { email, password } = req.body;
 

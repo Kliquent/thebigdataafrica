@@ -1,3 +1,4 @@
+import Users from '../models/Users.js';
 import Surveys from '../models/Survey.js';
 import SurveyQuestion from '../models/SurveyQuestion.js';
 import Questions from '../models/Questions.js';
@@ -130,6 +131,27 @@ export const deleteSurvey = async (req, res) => {
 		await Surveys.findByIdAndDelete({ _id: surveyId });
 
 		res.status(200).json({ message: 'Survey deleted successfully!' });
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
+export const getSurveysByResearcher = async (req, res) => {
+	let researcherId = req.params.researcherId;
+
+	try {
+		const existingResearcher = await Users.findOne({ email: emailLowercase });
+
+		// Check existing researcher
+		if (!existingResearcher)
+			return res.status(404).json({ message: "User doesn't exist!" });
+
+		const surveys = await Surveys.find({
+			researcher: researcherId,
+		});
+
+		res.status(200).json(surveys);
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: error });
