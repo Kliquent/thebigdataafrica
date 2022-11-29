@@ -49,7 +49,7 @@ export const auth = () => async (dispatch) => {
 		});
 		dispatch(clearErrors());
 	} catch (error) {
-		// console.log(error);
+		console.log(error);
 		dispatch(
 			returnErrors(error.response.data, error.response.status, 'AUTH_ERROR')
 		);

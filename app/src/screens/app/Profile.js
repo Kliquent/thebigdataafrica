@@ -19,11 +19,12 @@ const Profile = () => {
 			<View style={styles.innerContainer}>
 				<Text style={{ marginBottom: 10, fontSize: 20 }}>Your Profile</Text>
 				<View style={{ flexDirection: 'row' }}>
-					<Text style={styles.text}>{authUser?.user?.first_name}</Text>
-					<Text style={styles.text}>{authUser?.user?.last_name}</Text>
+					<Text style={styles.text}>{authUser?.user?.current_user?.name}</Text>
 				</View>
 				<Text style={styles.textRole}>Researcher</Text>
-				<Text style={styles.textRole}>{authUser?.user?.phone}</Text>
+				<Text style={styles.textRole}>
+					0{authUser?.user?.current_user?.phone}
+				</Text>
 				<StyledButton
 					style={{ width: '80%', marginTop: 50 }}
 					disabled={buttonLoading ? true : false}

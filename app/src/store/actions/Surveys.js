@@ -34,13 +34,15 @@ export const tokenConfig = async () => {
 	return config;
 };
 
-export const getSurveys = () => async (dispatch) => {
+export const getSurveys = (researcherId) => async (dispatch) => {
 	const token = await tokenConfig();
 
 	try {
-		const response = await axios.get(`${NIKIAI_URL}/surveys`, token);
+		const response = await axios.get(
+			`${NIKIAI_URL}/surveys/get-surveys-by-researcher/${researcherId}`,
+			token
+		);
 		const data = await response.data;
-		// console.log(data);
 
 		await dispatch({
 			type: SURVEY_LOADING,

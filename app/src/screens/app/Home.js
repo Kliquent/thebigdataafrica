@@ -12,7 +12,8 @@ import {
 	TouchableOpacity,
 } from 'react-native';
 import ActionSheet from 'react-native-actions-sheet';
-// import { getSurveys, getCurrentSurveyQuiz } from '../../store/actions/Surveys';
+import { getSurveys, getCurrentSurveyQuiz } from '../../store/actions/Surveys';
+import { auth } from '../../store/actions/Auth';
 
 const actionSheetRef = createRef();
 
@@ -24,17 +25,21 @@ const sheet_height_android = height * 0.75;
 const Home = ({ navigation }) => {
 	const dispatch = useDispatch();
 	let authUser = useSelector((state) => state.auth);
-	let surveys = useSelector((state) => state.surveys);
-
+	let surveys = useSelector((state) => state.surveys?.surveys);
+	console.log(authUser?.user?.current_user?._id);
 	const [currentSurvey, setCurrentSurvey] = useState([]);
 
 	useEffect(() => {
-		// dispatch(getSurveys());
+		dispatch(auth());
+	}, []);
+
+	useEffect(() => {
+		dispatch(getSurveys(authUser?.user?.current_user?._id));
 	}, []);
 
 	const viewSurvey = (survey) => {
 		actionSheetRef.current?.setModalVisible();
-		// setCurrentSurvey(survey);
+		setCurrentSurvey(survey);
 		// dispatch(getCurrentSurveyQuiz(survey.id));
 	};
 
@@ -65,7 +70,7 @@ const Home = ({ navigation }) => {
 				>
 					<View>
 						<Text style={{ fontSize: 20, fontWeight: '600' }}>
-							{/* {currentSurvey?.title} */}
+							{currentSurvey?.title}
 						</Text>
 						<View
 							style={{
@@ -74,10 +79,7 @@ const Home = ({ navigation }) => {
 								alignItems: 'center',
 								justifyContent: 'flex-start',
 							}}
-						>
-							<Text style={{ color: 'gray', paddingRight: 38 }}>Title</Text>
-							{/* <Text style={{ fontSize: 18 }}>{currentSurvey?.title}</Text> */}
-						</View>
+						></View>
 						<View
 							style={{
 								marginTop: 5,
@@ -86,13 +88,10 @@ const Home = ({ navigation }) => {
 								justifyContent: 'flex-start',
 							}}
 						>
-							<Text style={{ color: 'gray' }}>Category</Text>
-							<Text style={{ fontSize: 18, paddingLeft: 10 }}>
-								{/* {currentSurvey?.category?.name} */}
-							</Text>
+							<Text style={{ color: 'gray' }}>Description</Text>
 						</View>
 						<View style={{ marginVertical: 10 }}>
-							{/* <Text>{currentSurvey?.description}</Text> */}
+							<Text>{currentSurvey?.description}</Text>
 						</View>
 					</View>
 					<View
@@ -118,23 +117,20 @@ const Home = ({ navigation }) => {
 					showsVerticalScrollIndicator={false}
 				>
 					<Text style={styles.textGreetings}>
-						Hey, {authUser?.user?.first_name}!
+						Hey, {authUser?.user?.current_user?.name}!
 					</Text>
 					<Text style={styles.textTitle}>Pick Best Survey For You</Text>
 					<Text style={styles.textSubtitle}>Existing Survey</Text>
 
-					{surveys.surveys?.length > 0 ? (
-						surveys.surveys?.map((survey) => {
-							const { id, title, image, category, description } = survey;
+					{surveys?.length > 0 ? (
+						surveys?.map((survey) => {
+							const { _id, type, title, description } = survey;
 							return (
-								<View key={id} style={styles.surveyContainer}>
-									<View style={{ width: '35%' }}>
-										<Image source={{ uri: `${image}` }} style={styles.image} />
-									</View>
-									<View style={[styles.surveyContent, { width: '65%' }]}>
+								<View key={_id} style={styles.surveyContainer}>
+									<View style={[styles.surveyContent, { width: '100%' }]}>
 										<View style={styles.surveyCategory}>
 											<Text style={{ color: '#fff', fontSize: 12 }}>
-												{category.name}
+												{type}
 											</Text>
 										</View>
 										<Text
@@ -146,7 +142,10 @@ const Home = ({ navigation }) => {
 										>
 											{title}
 										</Text>
-										<Text style={{ color: 'gray', fontSize: 12 }}>
+										<Text
+											numberOfLines={2}
+											style={{ color: 'gray', fontSize: 12 }}
+										>
 											{description}
 										</Text>
 										<View style={{ alignItems: 'center', width: '80%' }}>
@@ -205,7 +204,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		borderRadius: 10,
 		width: width * 0.9,
-		height: 130,
+		height: 140,
 		...Platform.select({
 			ios: {
 				shadowColor: 'gray',
@@ -228,6 +227,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white',
 	},
 	surveyCategory: {
+		justifyContent: 'center',
 		alignItems: 'center',
 		width: 80,
 		padding: 3,
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
 		borderRadius: 50,
 	},
 	surveyContent: {
-		alignItems: 'flex-start',
+		alignItems: 'center',
 		justifyContent: 'center',
 	},
 	surveyButton: {
