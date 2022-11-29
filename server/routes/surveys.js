@@ -8,12 +8,14 @@ import {
 	getSurvey,
 	getQuestionsBySurvey,
 	getSurveysByResearcher,
+	getSurveysByResearcherToken,
 } from '../controllers/surveys.js';
 import { auth } from '../middleware/auth.js';
 
 const router = express.Router();
 
 router.post('/create', auth, createSurvey);
+router.get('/get-surveys-by-researcher', auth, getSurveysByResearcherToken);
 router.get('/', auth, getSurveys);
 router.get(
 	'/get-surveys-by-researcher/:researcherId',
