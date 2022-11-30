@@ -2,8 +2,8 @@
 	"expo": {
 		"name": "Big Data Africa",
 		"slug": "bigdataafrica",
-		"version": "0.1.9",
-		"owner": "kifaru_africa",
+		"version": "0.1.12",
+		"owner": "allister",
 		"orientation": "portrait",
 		"icon": "./assets/adaptive-icon.png",
 		"splash": {
@@ -20,7 +20,7 @@
 		},
 		"android": {
 			"package": "com.nikiaisystems.app",
-			"versionCode": 10,
+			"versionCode": 13,
 			"permissions": ["NOTIFICATIONS"],
 			"adaptiveIcon": {
 				"foregroundImage": "./assets/adaptive-icon.png",
@@ -29,6 +29,11 @@
 		},
 		"web": {
 			"favicon": "./assets/favicon.png"
+		},
+		"extra": {
+			"eas": {
+				"projectId": "34e91c5d-87c0-46e9-872d-ca6cc73d9fa6"
+			}
 		}
 	}
 }
