@@ -4,8 +4,14 @@ import AnswerEvent from '../models/AnswerEvent.js';
 // Create answer controller & capture events
 export const createAnswer = async (req, res) => {
 	let userId = req.userId;
-	const { survey_question_id, question_id, option_id, location, surveyee } =
-		req.body;
+	const {
+		survey_question_id,
+		question_id,
+		option_id,
+		answerText,
+		location,
+		surveyee,
+	} = req.body;
 
 	try {
 		// Simple validation
@@ -27,6 +33,7 @@ export const createAnswer = async (req, res) => {
 			survey_question_id, // please provide field
 			question_id,
 			option_id,
+			answerText,
 			surveyee,
 			location,
 			created_by: userId,
@@ -55,8 +62,14 @@ export const updateAnswer = async (req, res) => {
 	let userId = req.userId;
 	let answerId = req.params.answerId;
 
-	const { survey_question_id, question_id, option_id, location, surveyee } =
-		req.body;
+	const {
+		survey_question_id,
+		question_id,
+		option_id,
+		answerText,
+		location,
+		surveyee,
+	} = req.body;
 
 	try {
 		// Simple validation
@@ -78,6 +91,7 @@ export const updateAnswer = async (req, res) => {
 			survey_question_id,
 			question_id,
 			option_id,
+			answerText,
 			surveyee,
 			location,
 			updated_by: userId,

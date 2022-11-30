@@ -21,6 +21,10 @@ const answerSchema = Schema(
 			ref: 'options',
 			required: false,
 		},
+		answerText: {
+			type: String,
+			required: false,
+		},
 		location: {
 			type: Array,
 			default: [],
