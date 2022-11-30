@@ -10,8 +10,8 @@ export const createQuestion = async (req, res) => {
 
 	try {
 		// Simple validation
-		if (!name || !description)
-			return res.status(400).json({ message: 'Please enter all fields!' });
+		if (!name)
+			return res.status(400).json({ message: 'Please enter name field!' });
 
 		if (!survey_id)
 			return res.status(403).json({ message: 'Survey id is required!' });
@@ -57,8 +57,8 @@ export const updateQuestion = async (req, res) => {
 
 	try {
 		// Simple validation
-		if (!name || !description)
-			return res.status(400).json({ message: 'Please enter all fields!' });
+		if (!name)
+			return res.status(400).json({ message: 'Please enter name field!' });
 
 		if (!survey_id)
 			return res.status(403).json({ message: 'Survey id is required!' });
@@ -69,8 +69,8 @@ export const updateQuestion = async (req, res) => {
 			return res.status(403).json({ message: 'No question found.' });
 
 		const updatedQuestionInfo = {
-			name,
-			description,
+			name: name || currentQuestion.name,
+			description: description || currentQuestion.description,
 			updated_by: userId,
 		};
 

@@ -8,7 +8,7 @@ export const createOption = async (req, res) => {
 	const { select_type, type, name, description, question_id } = req.body;
 	try {
 		// Simple validation
-		if (!select_type || !type || !name || !description)
+		if (!select_type || !type || !name)
 			return res.status(400).json({ message: 'Please enter all fields!' });
 
 		if (!question_id)
@@ -51,7 +51,7 @@ export const updateOption = async (req, res) => {
 
 	try {
 		// Simple validation
-		if (!select_type || !type || !name || !description)
+		if (!select_type || !type || !name)
 			return res.status(400).json({ message: 'Please enter all fields!' });
 
 		if (!question_id)
@@ -64,11 +64,11 @@ export const updateOption = async (req, res) => {
 
 		// Select Type & Type can be changed on update
 		const updatedOptionInfo = {
-			select_type, // Single or Multi Select
-			type, // Dropdown Select, Radio, Checkbox, Range, Text Field
-			name,
-			description,
-			question_id,
+			select_type: select_type || currentOption.select_type, // Single or Multi Select
+			type: type || currentOption.type, // Dropdown Select, Radio, Checkbox, Range, Text Field
+			name: name || currentOption.name,
+			description: description || currentOption.description,
+			question_id: question_id || currentOption.question_id,
 			updated_by: userId,
 		};
 
