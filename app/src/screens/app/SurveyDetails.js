@@ -8,12 +8,14 @@ import {
 	StatusBar,
 	Dimensions,
 	Image,
+	TextInput,
 	TouchableOpacity,
 	Modal,
 	Animated,
+	ActivityIndicator,
 } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import Toast from 'react-native-toast-message';
+// import Toast from 'react-native-toast-message';
 import { COLORS, SIZES } from '../../constants';
 import {
 	postSurveyeeResponse,
@@ -45,6 +47,8 @@ const SurveyDetails = ({ navigation }) => {
 	const [showNextButton, setShowNextButton] = useState(false);
 	const [showCompleteModal, setShowCompleteModal] = useState(false);
 	const [progress, setProgress] = useState(new Animated.Value(0));
+	const [optionText, setOptionText] = useState('');
+	const [buttonLoading, setButtonLoading] = useState(false);
 
 	useEffect(() => {
 		dispatch(getSurveyQuestions(currentSurvey?._id));
@@ -63,11 +67,38 @@ const SurveyDetails = ({ navigation }) => {
 		outputRange: ['0%', '100%'],
 	});
 
+	useEffect(() => {
+		if (optionText !== '') {
+			// Show Next Button
+			setShowNextButton(true);
+		} else {
+			setShowNextButton(false);
+		}
+	}, [optionText]);
+
+	// getCurrentOption from input field option
+	const getCurrentOption = (option, answerText) => {
+		// State for input text
+		setOptionText(answerText);
+
+		const body = {
+			survey_question_id: '', // provide field to avoid error
+			question_id: surveyQuestions[currentQuestionIndex]?._id,
+			option_id: option._id,
+			answerText: answerText,
+			location: '',
+			surveyee: currentSurveyee,
+		};
+		setSelectedOption(body);
+	};
+
 	const validateAnswer = (option) => {
 		if (option.type === 'Checkbox') {
 			const body = {
-				survey_question_id: '',
+				survey_question_id: '', // provide field to avoid error
+				question_id: surveyQuestions[currentQuestionIndex]?._id,
 				option_id: option._id,
+				answerText: '',
 				location: '',
 				surveyee: currentSurveyee,
 			};
@@ -92,8 +123,10 @@ const SurveyDetails = ({ navigation }) => {
 		} else {
 			// Body params
 			const body = {
-				survey_question_id: '',
+				survey_question_id: '', // provide field to avoid error
+				question_id: surveyQuestions[currentQuestionIndex]?._id,
 				option_id: option._id,
+				answerText: '',
 				location: '',
 				surveyee: currentSurveyee,
 			};
@@ -106,35 +139,45 @@ const SurveyDetails = ({ navigation }) => {
 	const handleNext = async () => {
 		if (currentQuestionIndex == surveyQuestions?.length - 1) {
 			// Handle last quiz dispatch
+			setButtonLoading(true);
+
 			// dispatch checkBoxes response
 			checkSelectedOption?.map(async (option) => {
-				console.log(option);
-				// await dispatch(postSurveyeeResponse(option));
+				await dispatch(postSurveyeeResponse(option));
 			});
+
 			// Clear state on Checkbox to avoid sending duplicate data
 			setCheckSelectedOption([]);
+
 			// dispatch radioButton response
-			// await dispatch(postSurveyeeResponse(selectedOption));
-			console.log(selectedOption);
+			await dispatch(postSurveyeeResponse(selectedOption));
+
 			// Clear state to avoid sending duplicate data
 			setSelectedOption([]);
+
 			// Show Score Modal
 			setShowCompleteModal(true);
+			setButtonLoading(false);
 		} else {
+			setButtonLoading(true);
 			// dispatch checkBoxes response
 			checkSelectedOption?.map(async (option) => {
-				console.log(option);
-				// await dispatch(postSurveyeeResponse(option));
+				await dispatch(postSurveyeeResponse(option));
 			});
+
 			// Clear state on Checkbox to avoid sending duplicate data
 			setCheckSelectedOption([]);
+
 			// dispatch radioButton response
-			// await dispatch(postSurveyeeResponse(selectedOption));
-			console.log(selectedOption);
+			await dispatch(postSurveyeeResponse(selectedOption));
+
 			// Clear state to avoid sending duplicate data
 			setSelectedOption([]);
+
+			// Show next question
 			setCurrentQuestionIndex(currentQuestionIndex + 1);
 			setShowNextButton(false);
+			setButtonLoading(false);
 		}
 
 		Animated.timing(progress, {
@@ -196,6 +239,17 @@ const SurveyDetails = ({ navigation }) => {
 				>
 					{surveyQuestions[currentQuestionIndex]?.name}
 				</Text>
+				<Text
+					style={{
+						color: COLORS.white,
+						fontSize: 15,
+						opacity: 0.8,
+						marginVertical: 5,
+						marginRight: 2,
+					}}
+				>
+					Choose one/multiple options or Input text.
+				</Text>
 			</View>
 		);
 	};
@@ -228,7 +282,7 @@ const SurveyDetails = ({ navigation }) => {
 											validateAnswer(option);
 										}}
 									/>
-								) : (
+								) : type === 'Radio' ? (
 									<RadioButton.Group>
 										<RadioButton.Item
 											status={
@@ -244,6 +298,29 @@ const SurveyDetails = ({ navigation }) => {
 											labelStyle={{ color: '#fff' }}
 										/>
 									</RadioButton.Group>
+								) : (
+									<>
+										<Text
+											style={{
+												color: COLORS.white,
+												fontSize: 18,
+												opacity: 0.9,
+												marginVertical: 5,
+											}}
+										>
+											{name}
+										</Text>
+										<TextInput
+											style={{ height: 50, color: 'white' }}
+											placeholder="Type your suggestion"
+											placeholderTextColor="white"
+											inputStyle={{ color: 'white' }}
+											onChangeText={(newText) =>
+												getCurrentOption(option, newText)
+											}
+											value={optionText}
+										/>
+									</>
 								)}
 							</Fragment>
 						);
@@ -257,6 +334,7 @@ const SurveyDetails = ({ navigation }) => {
 		if (showNextButton) {
 			return (
 				<TouchableOpacity
+					disabled={buttonLoading ? true : false}
 					onPress={handleNext}
 					style={{
 						marginTop: 5,
@@ -266,11 +344,15 @@ const SurveyDetails = ({ navigation }) => {
 						borderRadius: 50,
 					}}
 				>
-					<Text
-						style={{ fontSize: 20, color: COLORS.white, textAlign: 'center' }}
-					>
-						Next
-					</Text>
+					{buttonLoading ? (
+						<ActivityIndicator color="#fff" size="small" />
+					) : (
+						<Text
+							style={{ fontSize: 20, color: COLORS.white, textAlign: 'center' }}
+						>
+							Next
+						</Text>
+					)}
 				</TouchableOpacity>
 			);
 		} else {

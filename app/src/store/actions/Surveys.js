@@ -160,22 +160,37 @@ export const getOptionsByQuestion = (questionId) => async (dispatch) => {
 	}
 };
 
+// Post answer/choice from the surveyee
 export const postSurveyeeResponse = (payload) => async (dispatch) => {
 	const token = await tokenConfig();
-	const { surveyee_id, question_id, option_id, option_title } = payload;
-	try {
-		const body = JSON.stringify({
-			surveyee_id,
-			question_id,
-			option_id,
-			option_title,
-		});
+	const {
+		survey_question_id,
+		question_id,
+		option_id,
+		answerText,
+		surveyee,
+		location,
+	} = payload;
 
+	try {
 		await dispatch({
 			type: SURVEY_LOADING,
 		});
 
-		const response = await axios.post(`${NIKIAI_URL}/responses`, body, token);
+		const body = JSON.stringify({
+			survey_question_id,
+			question_id,
+			option_id,
+			answerText,
+			surveyee,
+			location,
+		});
+
+		const response = await axios.post(
+			`${NIKIAI_URL}/answers/create`,
+			body,
+			token
+		);
 
 		const data = await response.data;
 		// console.log(data);
