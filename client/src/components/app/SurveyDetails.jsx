@@ -1102,16 +1102,16 @@ const inputType = [
 		value: 'Radio',
 		label: 'Radio',
 	},
-	{
-		value: 'Dropdown Select',
-		label: 'Dropdown Select',
-	},
+	// {
+	// 	value: 'Dropdown Select',
+	// 	label: 'Dropdown Select',
+	// },
 	{
 		value: 'Textfield',
 		label: 'Textfield',
 	},
-	{
-		value: 'Range',
-		label: 'Range',
-	},
+	// {
+	// 	value: 'Range',
+	// 	label: 'Range',
+	// },
 ];
