@@ -269,3 +269,34 @@ export const getSurvey = async (req, res) => {
 		res.status(500).json({ message: error });
 	}
 };
+
+// Get survey by survey question to allow effective referencing
+export const getSurveyBySurveyQuestion = async (req, res) => {
+	let surveyId = req.params.surveyId;
+
+	try {
+		const currentSurvey = await Surveys.findOne({ _id: surveyId });
+
+		if (!currentSurvey)
+			return res.status(403).json({ message: 'No survey found.' });
+
+		// Search survey_question_id using survey_id.
+		// Match survey_id & questionId on mobile app
+		const currentSurveyQuestionId = await SurveyQuestion.find({
+			survey_id: surveyId,
+		});
+
+		const survey = await Surveys.findOne({
+			_id: surveyId,
+		})
+			.populate('owner', 'name email phone gender')
+			.populate('researcher', 'name email phone gender')
+			.populate('created_by', 'name email phone gender')
+			.populate('updated_by', 'name email phone gender');
+
+		res.status(200).json({ survey, currentSurveyQuestionId });
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};

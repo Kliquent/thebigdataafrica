@@ -12,6 +12,11 @@ const answerSchema = Schema(
 			ref: 'survey-question',
 			required: false,
 		},
+		question_id: {
+			type: Schema.Types.ObjectId,
+			ref: 'questions',
+			required: false,
+		},
 		option_id: {
 			type: Schema.Types.ObjectId,
 			ref: 'options',

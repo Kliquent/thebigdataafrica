@@ -4,17 +4,17 @@ import AnswerEvent from '../models/AnswerEvent.js';
 // Create answer controller & capture events
 export const createAnswer = async (req, res) => {
 	let userId = req.userId;
-	const { survey_question_id, option_id, location, surveyee } = req.body;
+	const { survey_question_id, question_id, option_id, location, surveyee } =
+		req.body;
 
 	try {
 		// Simple validation
 		if (!surveyee)
 			return res.status(400).json({ message: 'Surveyee is required!' });
 
-		if (!survey_question_id)
-			return res
-				.status(400)
-				.json({ message: 'Survey question id is required!' });
+		// survey_question_id can also be used to reference both Survey & Question
+		if (!question_id)
+			return res.status(400).json({ message: 'Question id is required!' });
 
 		if (!option_id)
 			return res.status(400).json({ message: 'Option id is required!' });
@@ -24,7 +24,8 @@ export const createAnswer = async (req, res) => {
 
 		// Create new answer
 		const newAnswer = await Answers.create({
-			survey_question_id,
+			survey_question_id, // please provide field
+			question_id,
 			option_id,
 			surveyee,
 			location,
@@ -54,17 +55,16 @@ export const updateAnswer = async (req, res) => {
 	let userId = req.userId;
 	let answerId = req.params.answerId;
 
-	const { survey_question_id, option_id, location, surveyee } = req.body;
+	const { survey_question_id, question_id, option_id, location, surveyee } =
+		req.body;
 
 	try {
 		// Simple validation
 		if (!surveyee)
 			return res.status(400).json({ message: 'Surveyee is required!' });
 
-		if (!survey_question_id)
-			return res
-				.status(400)
-				.json({ message: 'Survey question id is required!' });
+		if (!question_id)
+			return res.status(400).json({ message: 'Question id is required!' });
 
 		if (!option_id)
 			return res.status(400).json({ message: 'Option id is required!' });
@@ -76,6 +76,7 @@ export const updateAnswer = async (req, res) => {
 
 		const updatedAnswerInfo = {
 			survey_question_id,
+			question_id,
 			option_id,
 			surveyee,
 			location,
