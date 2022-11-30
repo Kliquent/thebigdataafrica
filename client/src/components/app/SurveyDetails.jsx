@@ -1087,6 +1087,10 @@ const selectType = [
 		value: 'Multi Select',
 		label: 'Multi Select',
 	},
+	{
+		value: 'Input Text',
+		label: 'Input Text',
+	},
 ];
 
 const inputType = [
