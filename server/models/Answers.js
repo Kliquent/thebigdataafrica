@@ -8,9 +8,8 @@ const answerSchema = Schema(
 			default: 'Answer',
 		},
 		survey_question_id: {
-			type: Schema.Types.ObjectId,
-			ref: 'survey-question',
-			required: false,
+			type: String,
+			default: '',
 		},
 		question_id: {
 			type: Schema.Types.ObjectId,
