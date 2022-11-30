@@ -10,7 +10,7 @@ import {
 import Toast from 'react-native-toast-message';
 import { useForm, Controller } from 'react-hook-form';
 import { TextInput, HelperText } from 'react-native-paper';
-import { postSurveyee } from '../../store/actions/Surveys';
+import { postSurveyee, getSurveyQuestions } from '../../store/actions/Surveys';
 import { clearErrors } from '../../store/actions/Error';
 import TextInputAvoidingView from '../../components/KeyboardAvoiding';
 import { StyledButton, ButtonText } from '../../components/styles';
@@ -20,6 +20,7 @@ const { width, height } = Dimensions.get('screen');
 
 const SurveyeeForm = ({ navigation }) => {
 	const dispatch = useDispatch();
+
 	let currentSurveyee = useSelector((state) => state.surveys);
 	let error = useSelector((state) => state.error);
 
@@ -41,7 +42,6 @@ const SurveyeeForm = ({ navigation }) => {
 			first_name,
 			last_name,
 			phone,
-			email: '',
 		};
 		dispatch(postSurveyee(body));
 	};

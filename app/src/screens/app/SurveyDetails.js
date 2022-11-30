@@ -12,9 +12,14 @@ import {
 	Modal,
 	Animated,
 } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { COLORS, SIZES } from '../../constants';
-import { postSurveyeeResponse } from '../../store/actions/Surveys';
+import {
+	postSurveyeeResponse,
+	getSurveyQuestions,
+	getOptionsByQuestion,
+} from '../../store/actions/Surveys';
 import { clearErrors } from '../../store/actions/Error';
 import { Checkbox, RadioButton } from 'react-native-paper';
 
@@ -22,8 +27,16 @@ const { height } = Dimensions.get('screen');
 
 const SurveyDetails = ({ navigation }) => {
 	const dispatch = useDispatch();
-	let surveyQuiz = useSelector((state) => state.surveys);
-	let currentSurveyee = useSelector((state) => state.surveys);
+	const isFocused = useIsFocused();
+
+	let currentSurvey = useSelector((state) => state.surveys?.currentSurvey);
+	let surveyQuestions = useSelector(
+		(state) => state.surveys?.getSurveyQuestions
+	);
+	let questionOptions = useSelector(
+		(state) => state.surveys?.optionsByQuestion
+	);
+	let currentSurveyee = useSelector((state) => state.surveys?.currentSurveyee);
 	let error = useSelector((state) => state.error);
 
 	const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -33,31 +46,40 @@ const SurveyDetails = ({ navigation }) => {
 	const [showCompleteModal, setShowCompleteModal] = useState(false);
 	const [progress, setProgress] = useState(new Animated.Value(0));
 
+	useEffect(() => {
+		dispatch(getSurveyQuestions(currentSurvey?._id));
+	}, [isFocused]);
+
+	useEffect(() => {
+		if (surveyQuestions[currentQuestionIndex]?._id) {
+			dispatch(
+				getOptionsByQuestion(surveyQuestions[currentQuestionIndex]?._id)
+			);
+		}
+	}, [isFocused, surveyQuestions[currentQuestionIndex]?._id]);
+
 	const progressAnim = progress.interpolate({
-		inputRange: [0, surveyQuiz?.currentSurveyQuiz?.length],
+		inputRange: [0, surveyQuestions?.length],
 		outputRange: ['0%', '100%'],
 	});
 
 	const validateAnswer = (option) => {
-		if (
-			surveyQuiz?.currentSurveyQuiz[currentQuestionIndex]?.input_type?.name ==
-			'CheckBoxes'
-		) {
+		if (option.type === 'Checkbox') {
 			const body = {
-				surveyee_id: currentSurveyee?.currentSurveyee?.id,
-				question_id: surveyQuiz?.currentSurveyQuiz[currentQuestionIndex]?.id,
-				option_id: option.id,
-				option_title: option.title,
+				survey_question_id: '',
+				option_id: option._id,
+				location: '',
+				surveyee: currentSurveyee,
 			};
 
 			let newArray = checkSelectedOption.slice();
 
 			if (
-				newArray[newArray?.findIndex((x) => x.option_id === option.id)]
-					?.option_id === option.id
+				newArray[newArray?.findIndex((x) => x.option_id === option._id)]
+					?.option_id === option._id
 			) {
 				let filteredItems = newArray.filter(
-					(item) => item.option_id !== option.id
+					(item) => item.option_id !== option._id
 				);
 				setCheckSelectedOption(filteredItems);
 			} else {
@@ -70,51 +92,51 @@ const SurveyDetails = ({ navigation }) => {
 		} else {
 			// Body params
 			const body = {
-				surveyee_id: currentSurveyee?.currentSurveyee?.id,
-				question_id: surveyQuiz?.currentSurveyQuiz[currentQuestionIndex]?.id,
-				option_id: option.id,
-				option_title: option.title,
+				survey_question_id: '',
+				option_id: option._id,
+				location: '',
+				surveyee: currentSurveyee,
 			};
 			setSelectedOption(body);
-
 			// Show Next Button
 			setShowNextButton(true);
 		}
 	};
 
 	const handleNext = async () => {
-		if (currentQuestionIndex == surveyQuiz?.currentSurveyQuiz?.length - 1) {
+		if (currentQuestionIndex == surveyQuestions?.length - 1) {
 			// Handle last quiz dispatch
 			// dispatch checkBoxes response
 			checkSelectedOption?.map(async (option) => {
-				await dispatch(postSurveyeeResponse(option));
+				console.log(option);
+				// await dispatch(postSurveyeeResponse(option));
 			});
-			// Clear state to avoid sending duplicate data
+			// Clear state on Checkbox to avoid sending duplicate data
 			setCheckSelectedOption([]);
-
 			// dispatch radioButton response
-			await dispatch(postSurveyeeResponse(selectedOption));
+			// await dispatch(postSurveyeeResponse(selectedOption));
+			console.log(selectedOption);
 			// Clear state to avoid sending duplicate data
 			setSelectedOption([]);
-
 			// Show Score Modal
 			setShowCompleteModal(true);
 		} else {
 			// dispatch checkBoxes response
 			checkSelectedOption?.map(async (option) => {
-				await dispatch(postSurveyeeResponse(option));
+				console.log(option);
+				// await dispatch(postSurveyeeResponse(option));
 			});
-			// Clear state to avoid sending duplicate data
+			// Clear state on Checkbox to avoid sending duplicate data
 			setCheckSelectedOption([]);
-
 			// dispatch radioButton response
-			await dispatch(postSurveyeeResponse(selectedOption));
+			// await dispatch(postSurveyeeResponse(selectedOption));
+			console.log(selectedOption);
 			// Clear state to avoid sending duplicate data
 			setSelectedOption([]);
-
 			setCurrentQuestionIndex(currentQuestionIndex + 1);
 			setShowNextButton(false);
 		}
+
 		Animated.timing(progress, {
 			toValue: currentQuestionIndex + 1,
 			duration: 1000,
@@ -159,8 +181,9 @@ const SurveyDetails = ({ navigation }) => {
 					>
 						{currentQuestionIndex + 1}
 					</Text>
+
 					<Text style={{ color: COLORS.white, fontSize: 18, opacity: 0.6 }}>
-						/ {surveyQuiz?.currentSurveyQuiz?.length}
+						/ {surveyQuestions?.length}
 					</Text>
 				</View>
 
@@ -171,7 +194,7 @@ const SurveyDetails = ({ navigation }) => {
 						fontSize: 25,
 					}}
 				>
-					{surveyQuiz?.currentSurveyQuiz[currentQuestionIndex]?.title}
+					{surveyQuestions[currentQuestionIndex]?.name}
 				</Text>
 			</View>
 		);
@@ -181,52 +204,50 @@ const SurveyDetails = ({ navigation }) => {
 		return (
 			<View style={{ height: height * 0.36 }}>
 				<ScrollView showsVerticalScrollIndicator={false}>
-					{surveyQuiz?.currentSurveyQuiz[currentQuestionIndex]?.options?.map(
-						(option) => {
-							const { id, title } = option;
+					{questionOptions?.map((option) => {
+						// console.log(option);
+						const { _id, select_type, type, name } = option;
 
-							return (
-								<Fragment key={id}>
-									{surveyQuiz?.currentSurveyQuiz[currentQuestionIndex]
-										?.input_type?.name == 'CheckBoxes' ? (
-										<Checkbox.Item
-											labelStyle={{ color: '#fff' }}
-											label={title}
+						return (
+							<Fragment key={_id}>
+								{type === 'Checkbox' ? (
+									<Checkbox.Item
+										labelStyle={{ color: '#fff' }}
+										label={name}
+										status={
+											_id ===
+											checkSelectedOption[
+												checkSelectedOption?.findIndex(
+													(x) => x.option_id === _id
+												)
+											]?.option_id
+												? 'checked'
+												: 'unchecked'
+										}
+										onPress={() => {
+											validateAnswer(option);
+										}}
+									/>
+								) : (
+									<RadioButton.Group>
+										<RadioButton.Item
 											status={
-												id ===
-												checkSelectedOption[
-													checkSelectedOption?.findIndex(
-														(x) => x.option_id === id
-													)
-												]?.option_id
+												_id == selectedOption.option_id
 													? 'checked'
 													: 'unchecked'
 											}
 											onPress={() => {
 												validateAnswer(option);
 											}}
+											value={name}
+											label={name}
+											labelStyle={{ color: '#fff' }}
 										/>
-									) : (
-										<RadioButton.Group>
-											<RadioButton.Item
-												status={
-													id === selectedOption.option_id
-														? 'checked'
-														: 'unchecked'
-												}
-												onPress={() => {
-													validateAnswer(option);
-												}}
-												value={option.title}
-												label={title}
-												labelStyle={{ color: '#fff' }}
-											/>
-										</RadioButton.Group>
-									)}
-								</Fragment>
-							);
-						}
-					)}
+									</RadioButton.Group>
+								)}
+							</Fragment>
+						);
+					})}
 				</ScrollView>
 			</View>
 		);
@@ -283,23 +304,12 @@ const SurveyDetails = ({ navigation }) => {
 		);
 	};
 
+	// Automatically route to next question
 	// useEffect(() => {
 	// 	if (currentSurveyee.responseSuccess) {
 	// 		handleNext();
 	// 	}
 	// }, [currentSurveyee.responseSuccess]);
-
-	useEffect(() => {
-		// Check for register error
-		if (error.id === 'SURVEY_RESPONSE_ERROR') {
-			// Toast.show({
-			// 	type: 'error',
-			// 	text1: 'Server error. Please try again later!',
-			// 	text2: 'We are currently experiencing issues.',
-			// });
-			dispatch(clearErrors());
-		}
-	}, [error]);
 
 	return (
 		<SafeAreaView
@@ -354,8 +364,7 @@ const SurveyDetails = ({ navigation }) => {
 							}}
 						>
 							<Text style={{ fontSize: 30, fontWeight: 'bold' }}>
-								{surveyQuiz?.currentSurveyQuiz?.length >
-								surveyQuiz?.currentSurveyQuiz?.length / 2
+								{surveyQuestions?.length > surveyQuestions?.length / 2
 									? 'Congratulations!'
 									: 'Oops!'}
 							</Text>
@@ -372,21 +381,21 @@ const SurveyDetails = ({ navigation }) => {
 									style={{
 										fontSize: 30,
 										color:
-											surveyQuiz?.currentSurveyQuiz?.length >
-											surveyQuiz?.currentSurveyQuiz?.length / 2
+											surveyQuestions?.length > surveyQuestions?.length / 2
 												? COLORS.success
 												: COLORS.error,
 									}}
 								>
-									{surveyQuiz?.currentSurveyQuiz?.length}
+									{surveyQuestions?.length}
 								</Text>
+								<Text style={{ fontSize: 40 }}>/</Text>
 								<Text
 									style={{
 										fontSize: 20,
 										color: COLORS.black,
 									}}
 								>
-									/ {surveyQuiz?.currentSurveyQuiz?.length}
+									{surveyQuestions?.length}
 								</Text>
 							</View>
 							{/* Retry Quiz button */}

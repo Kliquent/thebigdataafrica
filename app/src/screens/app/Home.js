@@ -11,8 +11,9 @@ import {
 	Image,
 	TouchableOpacity,
 } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import ActionSheet from 'react-native-actions-sheet';
-import { getSurveys, getCurrentSurveyQuiz } from '../../store/actions/Surveys';
+import { getSurveys, getCurrentSurvey } from '../../store/actions/Surveys';
 import { auth } from '../../store/actions/Auth';
 
 const actionSheetRef = createRef();
@@ -24,23 +25,24 @@ const sheet_height_android = height * 0.75;
 
 const Home = ({ navigation }) => {
 	const dispatch = useDispatch();
+	const isFocused = useIsFocused();
+
 	let authUser = useSelector((state) => state.auth);
 	let surveys = useSelector((state) => state.surveys?.surveys);
-	console.log(authUser?.user?.current_user?._id);
 	const [currentSurvey, setCurrentSurvey] = useState([]);
 
 	useEffect(() => {
 		dispatch(auth());
-	}, []);
+	}, [isFocused]);
 
 	useEffect(() => {
 		dispatch(getSurveys(authUser?.user?.current_user?._id));
-	}, []);
+	}, [isFocused]);
 
 	const viewSurvey = (survey) => {
 		actionSheetRef.current?.setModalVisible();
 		setCurrentSurvey(survey);
-		// dispatch(getCurrentSurveyQuiz(survey.id));
+		dispatch(getCurrentSurvey(survey._id));
 	};
 
 	const openSurveyDetails = () => {

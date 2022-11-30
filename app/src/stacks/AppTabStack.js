@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { Details } from '../screens/app';
 import { HomeStack, ProfileStack } from './AppStack';
 
@@ -15,25 +16,27 @@ const AppTabStack = () => {
 				headerShown: false,
 				tabBarShowLabel: false,
 				tabBarHideOnKeyboard: true,
-				tabBarStyle: [
-					{
-						position: 'absolute',
-						height: 70,
-						bottom: 20,
-						left: 20,
-						right: 20,
-						backgroundColor: '#fff',
-						borderRadius: 10,
-						...styles.shadow,
-					},
-					null,
-				],
+				// tabBarStyle: [
+				// 	{
+				// 		position: 'absolute',
+				// 		height: 70,
+				// 		bottom: 5,
+				// 		left: 20,
+				// 		right: 20,
+				// 		backgroundColor: '#fff',
+				// 		borderRadius: 10,
+				// 		...styles.shadow,
+				// 	},
+				// 	null,
+				// ],
 			}}
 		>
 			<Tab.Screen
 				name="Home"
 				component={HomeStack}
-				options={{
+				options={({ route }) => ({
+					// tabBarStyle: { display: 'none' },
+					// tabBarStyle: { display: getRouteNameHomeScreen(route) },
 					tabBarIcon: ({ focused }) => (
 						<View
 							style={{
@@ -56,38 +59,9 @@ const AppTabStack = () => {
 							</Text>
 						</View>
 					),
-				}}
+				})}
 			/>
-			{/* <Tab.Screen
-				name="Details"
-				component={Details}
-				options={{
-					title: 'Stats',
-					tabBarVisible: false,
-					tabBarIcon: ({ focused }) => (
-						<View
-							style={{
-								top: 5,
-								alignItems: 'center',
-								justifyContent: 'center',
-							}}
-						>
-							<Ionicons
-								name="stats-chart-outline"
-								size={22}
-								color={focused ? '#0052ff' : 'gray'}
-							/>
-							<Text
-								style={{
-									color: focused ? '#0052ff' : 'gray',
-								}}
-							>
-								Stats
-							</Text>
-						</View>
-					),
-				}}
-			/> */}
+
 			<Tab.Screen
 				name="Profile"
 				component={ProfileStack}
@@ -122,6 +96,20 @@ const AppTabStack = () => {
 };
 
 export default AppTabStack;
+
+const getRouteNameHomeScreen = (route) => {
+	const routeName = getFocusedRouteNameFromRoute(route);
+	console.log(routeName);
+
+	if (
+		routeName?.name === 'SurveyDetails' &&
+		routeName?.name === 'SurveyeeForm'
+	) {
+		return 'none';
+	} else {
+		return 'flex';
+	}
+};
 
 const styles = StyleSheet.create({
 	shadow: {

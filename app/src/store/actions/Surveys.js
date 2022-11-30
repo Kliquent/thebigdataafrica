@@ -4,7 +4,9 @@ import { save, getValueFor } from '../../utils/secureStore';
 import {
 	SURVEY_LOADING,
 	GET_SURVEY,
-	CURRENT_SURVEY_QUIZ,
+	CURRENT_SURVEY,
+	GET_QUESTIONS_BY_SURVEY,
+	GET_OPTIONS_BY_QUESTION,
 	CLEAR_CURRENT_SURVEY,
 	POST_SURVEYEE_RESPONSE,
 	RESET_SURVEYEE_SUCCESS,
@@ -38,15 +40,15 @@ export const getSurveys = (researcherId) => async (dispatch) => {
 	const token = await tokenConfig();
 
 	try {
-		const response = await axios.get(
-			`${NIKIAI_URL}/surveys/get-surveys-by-researcher/${researcherId}`,
-			token
-		);
-		const data = await response.data;
-
 		await dispatch({
 			type: SURVEY_LOADING,
 		});
+
+		const response = await axios.get(
+			`${NIKIAI_URL}/surveys/get-surveys-by-researcher`,
+			token
+		);
+		const data = await response.data;
 
 		await dispatch({
 			type: GET_SURVEY,
@@ -61,23 +63,25 @@ export const getSurveys = (researcherId) => async (dispatch) => {
 	}
 };
 
-export const getCurrentSurveyQuiz = (payloadId) => async (dispatch) => {
+// Get current survey
+export const getCurrentSurvey = (surveyId) => async (dispatch) => {
 	const token = await tokenConfig();
 
 	try {
-		const response = await axios.get(
-			`${NIKIAI_URL}/surveys/${payloadId}`,
-			token
-		);
-		const data = await response.data;
-
 		await dispatch({
 			type: SURVEY_LOADING,
 		});
 
+		const response = await axios.get(
+			`${NIKIAI_URL}/surveys/${surveyId}`,
+			token
+		);
+		const data = await response.data;
+		// console.log(data);
+
 		if (data) {
 			await dispatch({
-				type: CURRENT_SURVEY_QUIZ,
+				type: CURRENT_SURVEY,
 				payload: data,
 			});
 		} else {
@@ -94,6 +98,68 @@ export const getCurrentSurveyQuiz = (payloadId) => async (dispatch) => {
 	}
 };
 
+// Get questions by Survey
+export const getSurveyQuestions = (surveyId) => async (dispatch) => {
+	const token = await tokenConfig();
+
+	try {
+		await dispatch({
+			type: SURVEY_LOADING,
+		});
+
+		const response = await axios.get(
+			`${NIKIAI_URL}/surveys/get-questions-by-survey/${surveyId}`,
+			token
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: GET_QUESTIONS_BY_SURVEY,
+			payload: data,
+		});
+	} catch (error) {
+		dispatch(
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'GET_QUESTIONS_BY_SURVEY'
+			)
+		);
+		dispatch(surveyError());
+	}
+};
+
+// Get options by Question
+export const getOptionsByQuestion = (questionId) => async (dispatch) => {
+	const token = await tokenConfig();
+
+	try {
+		await dispatch({ type: SURVEY_LOADING });
+
+		const response = await axios.get(
+			`${NIKIAI_URL}/questions/get-options-by-question/${questionId}`,
+			token
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: GET_OPTIONS_BY_QUESTION,
+			payload: data,
+		});
+
+		await dispatch(clearErrors());
+	} catch (error) {
+		console.log(error.response.data);
+		dispatch(
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'GET_OPTIONS_BY_QUESTION'
+			)
+		);
+	}
+};
+
 export const postSurveyeeResponse = (payload) => async (dispatch) => {
 	const token = await tokenConfig();
 	const { surveyee_id, question_id, option_id, option_title } = payload;
@@ -105,13 +171,14 @@ export const postSurveyeeResponse = (payload) => async (dispatch) => {
 			option_title,
 		});
 
-		const response = await axios.post(`${NIKIAI_URL}/responses`, body, token);
-
-		const data = await response.data;
-		console.log(data);
 		await dispatch({
 			type: SURVEY_LOADING,
 		});
+
+		const response = await axios.post(`${NIKIAI_URL}/responses`, body, token);
+
+		const data = await response.data;
+		// console.log(data);
 
 		await dispatch({
 			type: POST_SURVEYEE_RESPONSE,
@@ -128,30 +195,20 @@ export const postSurveyeeResponse = (payload) => async (dispatch) => {
 				'SURVEY_RESPONSE_ERROR'
 			)
 		);
-		// Remove dispatch error to avoid clear survey redux state
-		// dispatch(surveyError());
 	}
 };
 
+// Save surveyee in redux state ( = Surveyee to be submitted with options = )
 export const postSurveyee = (payload) => async (dispatch) => {
-	const token = await tokenConfig();
-	const { first_name, last_name, phone, email } = payload;
+	const { first_name, last_name, phone } = payload;
 
 	try {
-		const body = JSON.stringify({
+		const data = {
 			first_name,
 			last_name,
-			email,
 			phone,
-			role: 'surveyee',
-		});
-
-		const response = await axios.post(`${NIKIAI_URL}/users`, body, token);
-		const data = await response.data;
-
-		await dispatch({
-			type: SURVEY_LOADING,
-		});
+			role: 'Surveyee',
+		};
 
 		await dispatch({
 			type: POST_SURVEYEE,
@@ -167,8 +224,6 @@ export const postSurveyee = (payload) => async (dispatch) => {
 				'SURVEY_RESPONSE_ERROR'
 			)
 		);
-		// Remove dispatch error to avoid clear survey redux state
-		// dispatch(surveyError());
 	}
 };
 

@@ -1,7 +1,9 @@
 import {
 	GET_SURVEY,
 	SURVEY_LOADING,
-	CURRENT_SURVEY_QUIZ,
+	CURRENT_SURVEY,
+	GET_QUESTIONS_BY_SURVEY,
+	GET_OPTIONS_BY_QUESTION,
 	CLEAR_CURRENT_SURVEY,
 	POST_SURVEYEE_RESPONSE,
 	POST_SURVEYEE,
@@ -15,7 +17,9 @@ const initialState = {
 	surveys: null,
 	responseSuccess: false,
 	postSurveyeeSuccess: false,
-	currentSurveyQuiz: null,
+	currentSurvey: null,
+	getSurveyQuestions: [],
+	optionsByQuestion: [],
 	currentSurveyee: null,
 };
 
@@ -33,12 +37,26 @@ export default function SurveyReducer(state = initialState, action) {
 				isLoading: false,
 				surveys: action.payload,
 			};
-		case CURRENT_SURVEY_QUIZ:
+		case CURRENT_SURVEY:
 			return {
 				...state,
 				isAuthenticated: true,
 				isLoading: false,
-				currentSurveyQuiz: action.payload,
+				currentSurvey: action.payload,
+			};
+		case GET_QUESTIONS_BY_SURVEY:
+			return {
+				...state,
+				isAuthenticated: true,
+				isLoading: false,
+				getSurveyQuestions: action.payload,
+			};
+		case GET_OPTIONS_BY_QUESTION:
+			return {
+				...state,
+				isAuthenticated: true,
+				isLoading: false,
+				optionsByQuestion: action.payload,
 			};
 		case POST_SURVEYEE:
 			return {
@@ -75,7 +93,7 @@ export default function SurveyReducer(state = initialState, action) {
 				...state,
 				isAuthenticated: true,
 				isLoading: false,
-				currentSurveyQuiz: null,
+				currentSurvey: null,
 				currentSurveyee: null,
 			};
 		case SURVEY_ERROR:
