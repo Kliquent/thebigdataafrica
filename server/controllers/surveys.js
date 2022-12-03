@@ -159,20 +159,30 @@ export const getSurveysByResearcherToken = async (req, res) => {
 };
 
 export const getSurveysByResearcher = async (req, res) => {
+	const userId = req.userId;
 	let researcherId = req.params.researcherId;
 
 	try {
-		const existingResearcher = await Users.findOne({ _id: researcherId });
+		const currentUser = await Users.findById(userId);
 
-		// Check existing researcher
-		if (!existingResearcher)
-			return res.status(404).json({ message: "User doesn't exist!" });
+		// Admin can view all surveys when login in the app
+		if (currentUser.isAdmin) {
+			const surveys = await Surveys.find().limit(100);
 
-		const surveys = await Surveys.find({
-			researcher: researcherId,
-		});
+			res.status(200).json(surveys);
+		} else {
+			const existingResearcher = await Users.findOne({ _id: researcherId });
 
-		res.status(200).json(surveys);
+			// Check existing researcher
+			if (!existingResearcher)
+				return res.status(404).json({ message: "User doesn't exist!" });
+
+			const surveys = await Surveys.find({
+				researcher: researcherId,
+			});
+
+			res.status(200).json(surveys);
+		}
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: error });
