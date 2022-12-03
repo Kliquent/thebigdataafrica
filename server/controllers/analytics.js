@@ -49,3 +49,41 @@ export const Analytics = async (req, res) => {
 		res.status(500).json({ message: error });
 	}
 };
+
+// To be rendered on charts
+export const responseAnalyticsByQuestion = async (req, res) => {
+	try {
+		const answers = await Answers.aggregate([
+			{
+				// Populate question_id
+				$lookup: {
+					from: 'questions',
+					localField: 'question_id',
+					foreignField: '_id',
+					as: 'question_id',
+				},
+			},
+			{
+				// Populate option_id
+				$lookup: {
+					from: 'options',
+					localField: 'option_id',
+					foreignField: '_id',
+					as: 'option_id',
+				},
+			},
+			{
+				$group: {
+					_id: { question_id: '$question_id' }, // Group By field
+					responses: { $push: '$$ROOT' },
+					count: { $sum: 1 },
+				},
+			},
+		]);
+
+		res.status(200).json(answers);
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
