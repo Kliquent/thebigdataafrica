@@ -11,6 +11,7 @@ import surveyRoutes from './routes/surveys.js';
 import questionRoutes from './routes/questions.js';
 import optionRoutes from './routes/options.js';
 import answerRoutes from './routes/answers.js';
+import Analytics from './routes/analytics.js';
 import { parseUserAgent } from './utils/parseUserAgent.js';
 import { sanitizeUrl } from './utils/sanitizeUrl.js';
 
@@ -78,6 +79,7 @@ app.use('/api/v1/surveys', surveyRoutes);
 app.use('/api/v1/questions', questionRoutes);
 app.use('/api/v1/options', optionRoutes);
 app.use('/api/v1/answers', answerRoutes);
+app.use('/api/v1/analytics', Analytics);
 
 const PORT = process.env.PORT;
 
