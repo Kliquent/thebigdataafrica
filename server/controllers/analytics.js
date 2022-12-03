@@ -33,16 +33,16 @@ export const Analytics = async (req, res) => {
 		const answerEvent = await AnswerEvent.find();
 
 		res.status(200).json({
-			totalClients: clients,
-			totalResearchers: researchers,
-			totalSurveys: surveys,
-			totalQuestions: questions,
-			totalOptions: options,
-			totalAnswers: answers,
-			totalSurveyEvent: surveyEvent,
-			totalQuestionEvent: questionEvent,
-			totalOptionEvent: optionEvent,
-			totalAnswerEvent: answerEvent,
+			totalClients: clients.length,
+			totalResearchers: researchers.length,
+			totalSurveys: surveys.length,
+			totalQuestions: questions.length,
+			totalOptions: options.length,
+			totalAnswers: answers.length,
+			totalSurveyEvent: surveyEvent.length,
+			totalQuestionEvent: questionEvent.length,
+			totalOptionEvent: optionEvent.length,
+			totalAnswerEvent: answerEvent.length,
 		});
 	} catch (error) {
 		console.log(error);
