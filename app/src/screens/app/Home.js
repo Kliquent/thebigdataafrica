@@ -115,7 +115,7 @@ const Home = ({ navigation }) => {
 			</ActionSheet>
 			<SafeAreaView style={styles.container}>
 				<ScrollView
-					style={{ paddingHorizontal: 20, marginBottom: 95, paddingBottom: 5 }}
+					style={{ paddingHorizontal: 20, marginBottom: 5 }}
 					showsVerticalScrollIndicator={false}
 				>
 					<Text style={styles.textGreetings}>
