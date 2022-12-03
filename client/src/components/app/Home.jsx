@@ -33,7 +33,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CustomButton from '../../utils/CustomButton';
 
 import Navbar from './Navbar';
-// import { PieChartM, BarChartM } from '../charts/home';
+import PieChartM from '../chart/PieChartM';
+import BarChartM from '../chart/BarChartM';
 import { abbreviateNumber } from '../../utils/AbbreviationNumber';
 
 const Home = () => {
@@ -67,6 +68,8 @@ const Home = () => {
 	const [openClient, setOpenClient] = useState(false);
 	const [optionsClient, setOptionsClient] = useState([]);
 	const [selectedClient, setSelectedClient] = useState([]);
+
+	const [analytics, setAnalytics] = useState({});
 
 	const loading = open && options.length === 0;
 	const loadingClient = openClient && optionsClient.length === 0;
@@ -126,6 +129,23 @@ const Home = () => {
 			active = false;
 		};
 	}, [loadingClient]);
+
+	useEffect(() => {
+		(async () => {
+			const response = await axios.get(
+				`https://apis.thebigdataafrica.com/api/v1/analytics`,
+				token
+			);
+			const analyticsData = await response.data;
+
+			if (analyticsData) {
+				setAnalytics((analytics) => ({
+					...analytics,
+					...analyticsData,
+				}));
+			}
+		})();
+	}, []);
 
 	useEffect(() => {
 		reset({
@@ -302,10 +322,10 @@ const Home = () => {
 							</div>
 							<div>
 								<p className="mb-1 text-sm font-medium text-gray-600 dark:text-gray-400">
-									Survey Send
+									Surveys
 								</p>
 								<p className="text-2xl font-bold leading-none text-black dark:text-gray-200">
-									{abbreviateNumber(157)}
+									{abbreviateNumber(analytics.totalSurveys)}
 								</p>
 							</div>
 						</div>
@@ -332,7 +352,7 @@ const Home = () => {
 									Received Responses
 								</p>
 								<p className="text-2xl font-bold leading-none text-black dark:text-gray-200">
-									{abbreviateNumber(2910)}
+									{abbreviateNumber(analytics.totalAnswers)}
 								</p>
 							</div>
 						</div>
@@ -358,10 +378,10 @@ const Home = () => {
 							</div>
 							<div>
 								<p className="mb-1 text-sm font-medium text-gray-600 dark:text-gray-400">
-									Response Pending
+									Questions
 								</p>
 								<p className="text-2xl font-bold leading-none text-black dark:text-gray-200">
-									{abbreviateNumber(380)}
+									{abbreviateNumber(analytics.totalQuestions)}
 								</p>
 							</div>
 						</div>
@@ -389,7 +409,7 @@ const Home = () => {
 									Clients
 								</p>
 								<p className="text-2xl font-bold leading-none text-black dark:text-gray-200">
-									{abbreviateNumber(260)}
+									{abbreviateNumber(analytics.totalClients)}
 								</p>
 							</div>
 						</div>
@@ -401,16 +421,16 @@ const Home = () => {
 						<p className="mb-4 font-semibold text-gray-800 dark:text-gray-300">
 							Conversions This Year
 						</p>
-						{/* <BarChartM /> */}
+						<BarChartM />
 					</div>
 					<div className="min-w-0 p-4 bg-white rounded-lg ring-1 ring-gray-200 ring-opacity-4 dark:bg-gray-800">
 						<p className="mb-4 font-semibold text-gray-800 dark:text-gray-300">
-							Vertical Performance
+							Overall Performance
 						</p>
-						{/* <PieChartM /> */}
+						<PieChartM />
 					</div>
 				</div>
-				{/* Recent Orders */}
+				{/* Recent Surveys */}
 				<h1 className="my-6 text-lg font-bold text-gray-700 dark:text-gray-300">
 					Surveys
 				</h1>
