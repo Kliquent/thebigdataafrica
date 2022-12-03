@@ -141,12 +141,18 @@ export const getAnswers = async (req, res) => {
 			const answers = await Answers.find({
 				$text: { $search: `"${searchTerm}"` },
 			});
-			res.status(200).json({ answers });
+			res
+				.status(200)
+				.json({ answers })
+				.populate('question_id', 'name description')
+				.populate('option_id', 'type name description');
 		} else {
 			const answers = await Answers.find()
 				.sort([[orderBy, order]])
 				.skip(skipIndex)
-				.limit(limit);
+				.limit(limit)
+				.populate('question_id', 'name description')
+				.populate('option_id', 'type name description');
 
 			res.status(200).json(answers);
 		}
