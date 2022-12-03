@@ -51,3 +51,7 @@ export const GET_OPTIONS = 'get_options';
 export const GET_OPTIONS_BY_QUESTION = 'get_options_by_question';
 export const UPDATE_OPTION = 'update_option';
 export const DELETE_OPTION = 'delete_option';
+
+export const ANSWER_LOADING = 'answer_loading';
+export const GET_ANSWERS = 'get_answers';
+export const GET_ANSWER = 'get_answer';

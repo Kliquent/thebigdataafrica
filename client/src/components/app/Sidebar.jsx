@@ -218,6 +218,48 @@ const Sidebar = ({ width, toggled, handleDrawerToggle }) => {
 							<span className="links_name">Administrators</span>
 						</NavLink>
 					</li> */}
+					<li>
+						<NavLink
+							to="/responses"
+							activeclassname="active"
+							onClick={handleClick}
+						>
+							{toggled ? (
+								<i className="bx bx-user"></i>
+							) : (
+								<Tooltip
+									componentsProps={{
+										tooltip: {
+											sx: {
+												color: '#45B64C',
+												width: '120px',
+												bgcolor: '#fff',
+												lineHeight: '30px',
+												textAlign: 'center',
+												fontSize: '1rem',
+												boxShadow:
+													'0px 0px 0px 0.5px rgba(50, 50, 93, 0.1), 0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07)',
+												transition: 'all 0.5s ease',
+											},
+										},
+										arrow: {
+											sx: {
+												color: '#DCFCE7',
+											},
+										},
+									}}
+									enterTouchDelay={0}
+									title="Responses"
+									placement="right"
+									TransitionComponent={Zoom}
+									arrow
+								>
+									<i className="bx bx-user"></i>
+								</Tooltip>
+							)}
+							<span className="links_name">Responses</span>
+						</NavLink>
+					</li>
 				</ul>
 
 				<div className="profile_content">

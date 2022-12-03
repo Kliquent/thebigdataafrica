@@ -8,6 +8,7 @@ import {
 	Clients,
 	Researchers,
 	Administrators,
+	Responses,
 	// Content
 	SurveyDetails,
 } from './components/app';
@@ -59,6 +60,14 @@ const App = () => {
 						element={
 							<PrivateRoute>
 								<Administrators />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path="responses"
+						element={
+							<PrivateRoute>
+								<Responses />
 							</PrivateRoute>
 						}
 					/>

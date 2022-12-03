@@ -5,6 +5,7 @@ import clients from './client-reducer';
 import researchers from './researcher-reducer';
 import questions from './question-reducer';
 import options from './option-reducer';
+import answers from './answer-reducer';
 import error from './error-reducer';
 
 const rootReducer = combineReducers({
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
 	researchers,
 	questions,
 	options,
+	answers,
 	error,
 });
 

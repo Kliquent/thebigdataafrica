@@ -7,6 +7,7 @@ export { default as Home } from './Home';
 export { default as Clients } from './Clients';
 export { default as Researchers } from './Researchers';
 export { default as Administrators } from './Administrators';
+export { default as Responses } from './Responses';
 
 // Content
 export { default as SurveyDetails } from './SurveyDetails';
