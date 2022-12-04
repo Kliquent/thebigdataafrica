@@ -1,10 +1,16 @@
-import { ANSWER_LOADING, GET_ANSWER, GET_ANSWERS } from '../../constants/types';
+import {
+	ANSWER_LOADING,
+	GET_ANSWER,
+	GET_ANSWERS,
+	GET_ANSWER_ANALYTICS,
+} from '../../constants/types';
 
 const initialState = {
 	isLoading: false,
 	isAuthenticated: !!localStorage.getItem('userToken'),
 	answer: null,
 	answers: [],
+	getAnswerAnalytics: [],
 };
 
 export default function SurveyReducer(state = initialState, action) {
@@ -27,6 +33,13 @@ export default function SurveyReducer(state = initialState, action) {
 				isAuthenticated: true,
 				isLoading: false,
 				answers: action.payload,
+			};
+		case GET_ANSWER_ANALYTICS:
+			return {
+				...state,
+				isAuthenticated: true,
+				isLoading: false,
+				getAnswerAnalytics: action.payload,
 			};
 		default:
 			return state;

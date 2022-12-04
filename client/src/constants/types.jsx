@@ -55,3 +55,4 @@ export const DELETE_OPTION = 'delete_option';
 export const ANSWER_LOADING = 'answer_loading';
 export const GET_ANSWERS = 'get_answers';
 export const GET_ANSWER = 'get_answer';
+export const GET_ANSWER_ANALYTICS = 'get_answer_analytics';

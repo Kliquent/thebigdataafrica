@@ -225,7 +225,7 @@ const Sidebar = ({ width, toggled, handleDrawerToggle }) => {
 							onClick={handleClick}
 						>
 							{toggled ? (
-								<i className="bx bx-user"></i>
+								<i className="bx bx-analyse"></i>
 							) : (
 								<Tooltip
 									componentsProps={{
@@ -254,7 +254,7 @@ const Sidebar = ({ width, toggled, handleDrawerToggle }) => {
 									TransitionComponent={Zoom}
 									arrow
 								>
-									<i className="bx bx-user"></i>
+									<i className="bx bx-analyse"></i>
 								</Tooltip>
 							)}
 							<span className="links_name">Responses</span>
