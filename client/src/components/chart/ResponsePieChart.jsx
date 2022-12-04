@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
 import {
 	ResponsiveContainer,
 	PieChart,
@@ -8,7 +7,6 @@ import {
 	Pie,
 	Cell,
 } from 'recharts';
-import { tokenConfig } from '../../store/actions/survey-actions';
 
 const COLORS = [
 	// '#FFBB28',
@@ -22,60 +20,6 @@ const COLORS = [
 ];
 
 const ResponsePieChart = ({ options }) => {
-	const token = tokenConfig();
-
-	const [analytics, setAnalytics] = useState({});
-
-	useEffect(() => {
-		(async () => {
-			const response = await axios.get(
-				`https://apis.thebigdataafrica.com/api/v1/analytics`,
-				token
-			);
-			const analyticsData = await response.data;
-
-			if (analyticsData) {
-				setAnalytics((analytics) => ({
-					...analytics,
-					...analyticsData,
-				}));
-			}
-		})();
-	}, []);
-
-	// const groupBy = (arr, groupFn) =>
-	// 	arr.reduce(
-	// 		(grouped, obj) => ({
-	// 			...grouped,
-	// 			[groupFn(obj)]: [...(grouped[groupFn(obj)] || []), obj],
-	// 		}),
-	// 		{}
-	// 	);
-
-	// const data = groupBy(responses, (person) => person.length);
-
-	// console.log(data);
-	// console.log(responses);
-
-	const SURVEYS = [
-		{
-			name: 'Surveys',
-			value: analytics.totalSurveys,
-		},
-		{
-			name: 'Questions',
-			value: analytics.totalQuestions,
-		},
-		{
-			name: 'Options',
-			value: analytics.totalOptions,
-		},
-		{
-			name: 'Responses',
-			value: analytics.totalAnswers,
-		},
-	];
-
 	const RADIAN = Math.PI / 180;
 	const renderCustomizedLabel = ({
 		cx,

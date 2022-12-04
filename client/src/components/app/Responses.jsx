@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import Navbar from './Navbar';
 import ResponsePieChart from '../chart/ResponsePieChart';
+import ResponseBarChart from '../chart/ResponseBarChart';
 import {
 	getAnswers,
 	getAnswerAnalytics,
@@ -100,7 +101,20 @@ const Responses = () => {
 											</h3>
 										</div>
 									</div>
-									<ResponsePieChart options={options} />
+									<div className="grid gap-4 md:grid-cols-2 my-8">
+										<div className="min-w-0 p-4 bg-white rounded-lg  ring-1 ring-gray-200 ring-opacity-4 dark:bg-gray-800">
+											<p className="mb-4 font-semibold text-gray-800 dark:text-gray-300">
+												Bar Chart Representation
+											</p>
+											<ResponseBarChart options={options} />
+										</div>
+										<div className="min-w-0 p-4 bg-white rounded-lg ring-1 ring-gray-200 ring-opacity-4 dark:bg-gray-800">
+											<p className="mb-4 font-semibold text-gray-800 dark:text-gray-300">
+												Pie Chart Representation
+											</p>
+											<ResponsePieChart options={options} />
+										</div>
+									</div>
 								</Accordion>
 							</Fragment>
 						);
