@@ -74,9 +74,20 @@ export const responseAnalyticsByQuestion = async (req, res) => {
 			},
 			{
 				$group: {
-					_id: { question_id: '$question_id' }, // Group By field
-					responses: { $push: '$$ROOT' },
+					_id: { question_id: '$question_id', option_id: '$option_id' }, // Group By field
 					count: { $sum: 1 },
+				},
+			},
+			{
+				$group: {
+					_id: '$_id.question_id', // Group By field
+					options: {
+						$push: {
+							option_id: '$_id.option_id',
+							count: '$count',
+						},
+					},
+					totalQuestionOptions: { $sum: 1 },
 				},
 			},
 		]);
