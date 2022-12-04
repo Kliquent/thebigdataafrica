@@ -2,8 +2,8 @@ node_modules/
 .expo/
 dist/
 
-# app.json
-# service-account.json
+app.json
+service-account.json
 nikiaisystems-keystore-backup
 
 npm-debug.*
