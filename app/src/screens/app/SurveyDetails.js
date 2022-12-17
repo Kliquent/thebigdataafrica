@@ -32,6 +32,7 @@ const SurveyDetails = ({ navigation }) => {
 	const isFocused = useIsFocused();
 
 	let currentSurvey = useSelector((state) => state.surveys?.currentSurvey);
+	console.log(currentSurvey);
 	let surveyQuestions = useSelector(
 		(state) => state.surveys?.getSurveyQuestions
 	);
@@ -86,8 +87,7 @@ const SurveyDetails = ({ navigation }) => {
 			question_id: surveyQuestions[currentQuestionIndex]?._id,
 			option_id: option._id,
 			answerText: answerText,
-			location: '',
-			surveyee: currentSurveyee,
+			surveyee_id: currentSurveyee?._id,
 		};
 		setSelectedOption(body);
 	};
@@ -99,8 +99,7 @@ const SurveyDetails = ({ navigation }) => {
 				question_id: surveyQuestions[currentQuestionIndex]?._id,
 				option_id: option._id,
 				answerText: '',
-				location: '',
-				surveyee: currentSurveyee,
+				surveyee_id: currentSurveyee?._id,
 			};
 
 			let newArray = checkSelectedOption.slice();
@@ -127,8 +126,7 @@ const SurveyDetails = ({ navigation }) => {
 				question_id: surveyQuestions[currentQuestionIndex]?._id,
 				option_id: option._id,
 				answerText: '',
-				location: '',
-				surveyee: currentSurveyee,
+				surveyee_id: currentSurveyee?._id,
 			};
 			setSelectedOption(body);
 			// Show Next Button

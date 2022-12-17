@@ -91,6 +91,7 @@ export const getCurrentSurvey = (surveyId) => async (dispatch) => {
 			});
 		}
 	} catch (error) {
+		console.log(error.response);
 		dispatch(
 			returnErrors(error.response.data, error.response.status, 'SURVEY_ERROR')
 		);
@@ -149,7 +150,6 @@ export const getOptionsByQuestion = (questionId) => async (dispatch) => {
 
 		await dispatch(clearErrors());
 	} catch (error) {
-		console.log(error.response.data);
 		dispatch(
 			returnErrors(
 				error.response.data,
@@ -168,8 +168,7 @@ export const postSurveyeeResponse = (payload) => async (dispatch) => {
 		question_id,
 		option_id,
 		answerText,
-		surveyee,
-		location,
+		surveyee_id,
 	} = payload;
 
 	try {
@@ -182,8 +181,7 @@ export const postSurveyeeResponse = (payload) => async (dispatch) => {
 			question_id,
 			option_id,
 			answerText,
-			surveyee,
-			location,
+			surveyee_id,
 		});
 
 		const response = await axios.post(
@@ -202,7 +200,6 @@ export const postSurveyeeResponse = (payload) => async (dispatch) => {
 		dispatch(resetSurveyeeResponseSuccess());
 		dispatch(clearErrors());
 	} catch (error) {
-		console.log(error.response.data);
 		dispatch(
 			returnErrors(
 				error.response.data,
@@ -215,19 +212,33 @@ export const postSurveyeeResponse = (payload) => async (dispatch) => {
 
 // Save surveyee in redux state ( = Surveyee to be submitted with options = )
 export const postSurveyee = (payload) => async (dispatch) => {
-	const { first_name, last_name, phone } = payload;
+	const token = await tokenConfig();
+
+	const { first_name, last_name, email, phone } = payload;
 
 	try {
-		const data = {
-			first_name,
-			last_name,
+		await dispatch({
+			type: SURVEY_LOADING,
+		});
+
+		const body = JSON.stringify({
+			name: `${first_name} ${last_name}`,
+			email,
 			phone,
-			role: 'Surveyee',
-		};
+		});
+
+		const response = await axios.post(
+			`${NIKIAI_URL}/surveyee/create`,
+			body,
+			token
+		);
+
+		const data = await response.data;
+		console.log(data);
 
 		await dispatch({
 			type: POST_SURVEYEE,
-			payload: data,
+			payload: data?.surveyee,
 		});
 		dispatch(resetSurveyeeSuccess());
 		dispatch(clearErrors());

@@ -41,9 +41,11 @@ const SurveyeeForm = ({ navigation }) => {
 		const body = {
 			first_name,
 			last_name,
+			email: '',
 			phone,
 		};
-		dispatch(postSurveyee(body));
+		await dispatch(postSurveyee(body));
+		setButtonLoading(false);
 	};
 
 	useEffect(() => {
