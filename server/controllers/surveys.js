@@ -215,7 +215,7 @@ export const getSurveysByResearcherToken = async (req, res) => {
 				return res.status(404).json({ message: "User doesn't exist!" });
 
 			const surveysByResearcher = await Researcher.find({
-				researcher: userId,
+				researcher_id: userId,
 			}).populate('survey_id');
 
 			res.status(200).json(surveysByResearcher.survey_id);
@@ -246,7 +246,7 @@ export const getSurveysByResearcher = async (req, res) => {
 				return res.status(404).json({ message: "User doesn't exist!" });
 
 			const surveysByResearcher = await Researcher.find({
-				researcher: researcherId,
+				researcher_id: researcherId,
 			}).populate('survey_id');
 
 			res.status(200).json(surveysByResearcher.survey_id);
