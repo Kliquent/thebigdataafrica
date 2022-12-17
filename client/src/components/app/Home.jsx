@@ -349,7 +349,7 @@ const Home = () => {
 							</div>
 							<div>
 								<p className="mb-1 text-sm font-medium text-gray-600 dark:text-gray-400">
-									Received Responses
+									Responses
 								</p>
 								<p className="text-2xl font-bold leading-none text-black dark:text-gray-200">
 									{abbreviateNumber(analytics.totalAnswers)}
@@ -443,7 +443,6 @@ const Home = () => {
 									<td className="px-4 py-3">Type</td>
 									<td className="px-4 py-3 text-center">Title</td>
 									<td className="px-4 py-3">Client Name</td>
-									<td className="px-4 py-3">Researcher</td>
 									<td className="px-4 py-3">Created By</td>
 									<td className="px-4 py-3">Last Updated</td>
 									<td className="px-4 py-3">Status</td>
@@ -458,7 +457,6 @@ const Home = () => {
 											type,
 											title,
 											owner,
-											researcher,
 											created_by,
 											updatedAt,
 											active,
@@ -473,9 +471,6 @@ const Home = () => {
 												</td>
 												<td className="px-4 py-3">
 													<span className="text-sm">{owner?.name}</span>
-												</td>
-												<td className="px-4 py-3">
-													<span className="text-sm">{researcher?.name}</span>
 												</td>
 												<td className="px-4 py-3">
 													<span className="text-sm">{created_by?.name}</span>

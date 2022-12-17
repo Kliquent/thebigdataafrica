@@ -12,6 +12,7 @@ import {
 	// Content
 	SurveyDetails,
 } from './components/app';
+import { ClientSurveys } from './components/app/clients/index';
 import { PrivateRoute } from './middleware';
 import { Login, ForgotPassword, PageNotFound } from './components';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -47,6 +48,15 @@ const App = () => {
 							</PrivateRoute>
 						}
 					/>
+					<Route
+						path="/clients/:clientId"
+						element={
+							<PrivateRoute>
+								<ClientSurveys />
+							</PrivateRoute>
+						}
+					/>
+
 					<Route
 						path="researchers"
 						element={

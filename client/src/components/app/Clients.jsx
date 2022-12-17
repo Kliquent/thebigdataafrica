@@ -228,6 +228,7 @@ const Clients = () => {
 								{clients.length > 0 ? (
 									clients.map((client, index) => {
 										const {
+											_id,
 											name,
 											email,
 											phone,
@@ -274,6 +275,28 @@ const Clients = () => {
 												</td>
 												<td className="px-4 py-3">
 													<div className="flex items-center justify-end text-right">
+														<div className="p-2 cursor-pointer text-gray-400 hover:text-green-600">
+															<IconButton
+																onClick={() => navigate(`/clients/${_id}`)}
+															>
+																<svg
+																	className="w-6 h-6"
+																	fill="none"
+																	stroke="currentColor"
+																	viewBox="0 0 24 24"
+																	height="1em"
+																	width="1em"
+																	xmlns="http://www.w3.org/2000/svg"
+																>
+																	<path
+																		strokeLinecap="round"
+																		strokeLinejoin="round"
+																		strokeWidth={2}
+																		d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+																	/>
+																</svg>
+															</IconButton>
+														</div>
 														<div className="p-2 cursor-pointer text-gray-400 hover:text-green-600">
 															<IconButton
 																onClick={(e) => handleEditPopup(client, e)}
