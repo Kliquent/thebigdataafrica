@@ -5,6 +5,7 @@ const surveyeeSchema = Schema(
 	{
 		uniqueID: {
 			type: String,
+			unique: 1,
 			required: [true, 'Unique is required'],
 		},
 		name: {
@@ -13,8 +14,6 @@ const surveyeeSchema = Schema(
 		},
 		email: {
 			type: String,
-			trim: true,
-			unique: 1,
 			required: false,
 		},
 		phone: {

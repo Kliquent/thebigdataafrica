@@ -337,7 +337,6 @@ export const getSurvey = async (req, res) => {
 			_id: surveyId,
 		})
 			.populate('owner', 'name email phone gender')
-			.populate('researcher', 'name email phone gender')
 			.populate('created_by', 'name email phone gender')
 			.populate('updated_by', 'name email phone gender');
 
