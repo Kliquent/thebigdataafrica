@@ -214,11 +214,11 @@ export const getSurveysByResearcherToken = async (req, res) => {
 			if (!existingResearcher)
 				return res.status(404).json({ message: "User doesn't exist!" });
 
-			const surveys = await Surveys.find({
+			const surveysByResearcher = await Researcher.find({
 				researcher: userId,
-			});
+			}).populate('survey_id');
 
-			res.status(200).json(surveys);
+			res.status(200).json(surveysByResearcher.survey_id);
 		}
 	} catch (error) {
 		console.log(error);
@@ -245,11 +245,11 @@ export const getSurveysByResearcher = async (req, res) => {
 			if (!existingResearcher)
 				return res.status(404).json({ message: "User doesn't exist!" });
 
-			const surveys = await Surveys.find({
+			const surveysByResearcher = await Researcher.find({
 				researcher: researcherId,
-			});
+			}).populate('survey_id');
 
-			res.status(200).json(surveys);
+			res.status(200).json(surveysByResearcher.survey_id);
 		}
 	} catch (error) {
 		console.log(error);
@@ -301,7 +301,6 @@ export const getSurveys = async (req, res) => {
 				$text: { $search: `"${searchTerm}"` },
 			})
 				.populate('owner', 'name email phone gender')
-				.populate('researcher', 'name email phone gender')
 				.populate('created_by', 'name email phone gender')
 				.populate('updated_by', 'name email phone gender');
 
@@ -312,7 +311,6 @@ export const getSurveys = async (req, res) => {
 				.skip(skipIndex)
 				.limit(limit)
 				.populate('owner', 'name email phone gender')
-				.populate('researcher', 'name email phone gender')
 				.populate('created_by', 'name email phone gender')
 				.populate('updated_by', 'name email phone gender');
 
