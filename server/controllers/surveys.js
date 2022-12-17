@@ -218,7 +218,11 @@ export const getSurveysByResearcherToken = async (req, res) => {
 				researcher_id: userId,
 			}).populate('survey_id');
 
-			res.status(200).json(surveysByResearcher.survey_id);
+			const surveys = surveysByResearcher.map((survey) => {
+				return survey.survey_id;
+			});
+
+			res.status(200).json(surveys);
 		}
 	} catch (error) {
 		console.log(error);
@@ -249,7 +253,11 @@ export const getSurveysByResearcher = async (req, res) => {
 				researcher_id: researcherId,
 			}).populate('survey_id');
 
-			res.status(200).json(surveysByResearcher.survey_id);
+			const surveys = surveysByResearcher.map((survey) => {
+				return survey.survey_id;
+			});
+
+			res.status(200).json(surveys);
 		}
 	} catch (error) {
 		console.log(error);
