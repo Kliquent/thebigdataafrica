@@ -87,12 +87,20 @@ export const clientAnalytics = async (req, res) => {
 			return answer._id;
 		});
 
+		const surveyee = await Answers.find({
+			$and: [
+				{ surveyee_id: { $exists: true } },
+				{ question_id: { $in: questionIds } },
+			],
+		});
+
 		const answerEvent = await AnswerEvent.find({
 			answer_id: { $in: answerIds },
 		});
 
 		res.status(200).json({
 			totalResearchers: researchers.length,
+			totalSurveyee: surveyee.length,
 			totalSurveys: surveys.length,
 			totalQuestions: questions.length,
 			totalOptions: options.length,
