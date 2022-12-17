@@ -7,6 +7,7 @@ import winston from 'winston';
 
 import authRoutes from './routes/users.js';
 import roleRoutes from './routes/roles.js';
+import surveyeeRoutes from './routes/surveyee.js';
 import surveyRoutes from './routes/surveys.js';
 import questionRoutes from './routes/questions.js';
 import optionRoutes from './routes/options.js';
@@ -75,6 +76,7 @@ app.get('/', (req, res) => {
 // Routes middleware
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/roles', roleRoutes);
+app.use('/api/v1/surveyee', surveyeeRoutes);
 app.use('/api/v1/surveys', surveyRoutes);
 app.use('/api/v1/questions', questionRoutes);
 app.use('/api/v1/options', optionRoutes);

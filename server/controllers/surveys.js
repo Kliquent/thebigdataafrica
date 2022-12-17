@@ -1,5 +1,6 @@
 import Users from '../models/Users.js';
 import Surveys from '../models/Survey.js';
+import Researcher from '../models/Researcher.js';
 import SurveyQuestion from '../models/SurveyQuestion.js';
 import Questions from '../models/Questions.js';
 import SurveyEvent from '../models/SurveyEvent.js';
@@ -7,7 +8,7 @@ import SurveyEvent from '../models/SurveyEvent.js';
 // Create survey controller & capture events
 export const createSurvey = async (req, res) => {
 	let userId = req.userId;
-	const { title, description, researcher_id, client_id } = req.body;
+	const { title, description, researcher_id, client_id, location } = req.body;
 
 	try {
 		// Simple validation
@@ -22,11 +23,21 @@ export const createSurvey = async (req, res) => {
 			title,
 			description,
 			active: true,
-			researcher: researcher_id,
 			owner: client_id ? client_id : userId, // can be admin/client based on role
 			created_by: userId,
 			updated_by: userId,
 		});
+
+		// Add researcher to survey
+		if (researcher_id) {
+			await Researcher.create({
+				survey_id: newSurvey._id,
+				researcher_id: researcher_id,
+				location,
+				created_by: userId,
+				updated_by: userId,
+			});
+		}
 
 		// Log event
 		await SurveyEvent.create({
@@ -50,7 +61,7 @@ export const updateSurvey = async (req, res) => {
 	let userId = req.userId;
 	let surveyId = req.params.surveyId;
 
-	const { title, description, researcher_id, client_id } = req.body;
+	const { title, description, researcher_id, client_id, location } = req.body;
 
 	try {
 		// Simple validation
@@ -65,7 +76,6 @@ export const updateSurvey = async (req, res) => {
 		const updatedSurveyInfo = {
 			title: title || currentSurvey.title,
 			description: description || currentSurvey.description,
-			researcher: researcher_id || currentSurvey.researcher,
 			owner: client_id || currentSurvey.owner,
 			updated_by: userId,
 		};
@@ -78,6 +88,21 @@ export const updateSurvey = async (req, res) => {
 			{ $set: updatedSurveyInfo },
 			{ new: true }
 		);
+
+		const existingResearcher = await Researcher.findOne({
+			researcher_id: researcher_id,
+		});
+
+		if (researcher_id && !existingResearcher) {
+			// Add researcher to survey if researcher doesn't exist
+			await Researcher.create({
+				survey_id: surveyId,
+				researcher_id: researcher_id,
+				location,
+				created_by: userId,
+				updated_by: userId,
+			});
+		}
 
 		// Log event
 		await SurveyEvent.create({
@@ -118,6 +143,16 @@ export const deleteSurvey = async (req, res) => {
 			});
 		}
 
+		// Find all referenced researchers
+		const researchersToDelete = await Researcher.find({ survey_id: surveyId });
+
+		const researchers = researchersToDelete.map((user) => {
+			return user.researcher_id;
+		});
+
+		// Delete referenced researchers
+		await Researcher.deleteMany({ researcher_id: researchers });
+
 		// Log event
 		await SurveyEvent.create({
 			event: 'DELETE',
@@ -131,6 +166,30 @@ export const deleteSurvey = async (req, res) => {
 		await Surveys.findByIdAndDelete({ _id: surveyId });
 
 		res.status(200).json({ message: 'Survey deleted successfully!' });
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
+// Delete survey researcher
+export const deleteSurveyResearcher = async (req, res) => {
+	const { survey_id, researcher_id } = req.body;
+
+	try {
+		// Search researcherSchemaId using survey_id & researcher_id
+		const currentResearcherSchemaId = await Researcher.findOne({
+			$and: [{ survey_id }, { researcher_id }],
+		});
+
+		// Delete reference survey to researcher
+		await Researcher.findByIdAndDelete({
+			_id: currentResearcherSchemaId._id,
+		});
+
+		res
+			.status(200)
+			.json({ message: 'Survey researcher deleted successfully!' });
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: error });

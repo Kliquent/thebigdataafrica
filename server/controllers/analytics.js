@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
 import Users from '../models/Users.js';
+import Researchers from '../models/Researcher.js';
 import Surveys from '../models/Survey.js';
 import Questions from '../models/Questions.js';
+import SurveyQuestion from '../models/SurveyQuestion.js';
 import Options from '../models/Options.js';
 import Answers from '../models/Answers.js';
 
@@ -43,6 +45,60 @@ export const Analytics = async (req, res) => {
 			totalQuestionEvent: questionEvent.length,
 			totalOptionEvent: optionEvent.length,
 			totalAnswerEvent: answerEvent.length,
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
+// Client Analytics
+export const clientAnalytics = async (req, res) => {
+	let clientId = req.params.clientId;
+
+	try {
+		const surveys = await Surveys.find({ owner: clientId });
+		const surveyIds = surveys.map((survey) => {
+			return survey._id;
+		});
+
+		// Find researchers based on surveyIds from client surveys
+		const researchers = await Researchers.find({
+			survey_id: { $in: surveyIds },
+		});
+
+		// Find distinct locations from researchers
+		const locations = await Researchers.find({}).distinct('location');
+
+		// Find all questions based on surveyIds from client surveys
+		const questions = await SurveyQuestion.find({
+			survey_id: { $in: surveyIds },
+		});
+		const questionIds = questions.map((question) => {
+			return question.question_id;
+		});
+
+		// Find all options based on questionIds from client surveys
+		const options = await Options.find({ question_id: { $in: questionIds } });
+
+		// Find all answers based on questionIds from client surveys
+		const answers = await Answers.find({ question_id: { $in: questionIds } });
+		const answerIds = answers.map((answer) => {
+			return answer._id;
+		});
+
+		const answerEvent = await AnswerEvent.find({
+			answer_id: { $in: answerIds },
+		});
+
+		res.status(200).json({
+			totalResearchers: researchers.length,
+			totalSurveys: surveys.length,
+			totalQuestions: questions.length,
+			totalOptions: options.length,
+			totalAnswers: answers.length,
+			totalAnswerEvents: answerEvent.length,
+			totalLocations: locations.length,
 		});
 	} catch (error) {
 		console.log(error);

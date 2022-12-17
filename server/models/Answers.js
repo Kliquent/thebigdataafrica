@@ -25,13 +25,10 @@ const answerSchema = Schema(
 			type: String,
 			required: false,
 		},
-		location: {
-			type: Array,
-			default: [],
-		},
-		surveyee: {
-			type: Array,
-			default: [],
+		surveyee_id: {
+			type: Schema.Types.ObjectId,
+			ref: 'users',
+			required: false,
 		},
 		created_by: {
 			type: Schema.Types.ObjectId,
