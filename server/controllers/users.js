@@ -437,7 +437,7 @@ export const adminGetUser = async (req, res) => {
 
 		if (currentUser.isAdmin) {
 			// This is currently viewed user
-			const getUser = await Users.findById(_id).populate('role', 'title');
+			const getUser = await Users.findById(_id).populate('role_id', 'title');
 
 			if (!getUser) return res.status(403).json({ message: 'No user found.' });
 
@@ -458,7 +458,7 @@ export const getClient = async (req, res) => {
 
 	try {
 		// This is currently viewed user
-		const getUser = await Users.findById(clientId).populate('role', 'title');
+		const getUser = await Users.findById(clientId).populate('role_id', 'title');
 
 		if (!getUser) return res.status(403).json({ message: 'No user found.' });
 
