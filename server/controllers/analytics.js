@@ -68,7 +68,9 @@ export const clientAnalytics = async (req, res) => {
 		});
 
 		// Find distinct locations from researchers
-		const locations = await Researchers.find({}).distinct('location');
+		const locations = await Researchers.find({
+			survey_id: { $in: surveyIds },
+		}).distinct('location');
 
 		// Find all questions based on surveyIds from client surveys
 		const questions = await SurveyQuestion.find({

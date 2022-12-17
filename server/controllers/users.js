@@ -441,12 +441,28 @@ export const adminGetUser = async (req, res) => {
 
 			if (!getUser) return res.status(403).json({ message: 'No user found.' });
 
-			res.status(200).json({ current_user: currentUser });
+			res.status(200).json({ current_user: getUser });
 		} else {
 			return res.status(401).json({
 				message: `You're not an admin, resource can't be created`,
 			});
 		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
+export const getClient = async (req, res) => {
+	let clientId = req.query.clientId;
+
+	try {
+		// This is currently viewed user
+		const getUser = await Users.findById(clientId).populate('role', 'title');
+
+		if (!getUser) return res.status(403).json({ message: 'No user found.' });
+
+		res.status(200).json({ current_user: getUser });
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: error });
