@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -29,6 +29,9 @@ import { getClientAnswerAnalytics } from '../../../store/actions/answer-actions'
 
 import Navbar from '../Navbar';
 import { abbreviateNumber } from '../../../utils/AbbreviationNumber';
+
+import ResponsePieChart from '../../chart/ResponsePieChart';
+import ResponseBarChart from '../../chart/ResponseBarChart';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
@@ -661,11 +664,84 @@ const Surveys = () => {
 
 				{/* Response Analytics By Survey Question */}
 				<h1 className="my-6 text-lg font-bold text-gray-700 dark:text-gray-300">
-					Response Analytics By Survey Question
+					Response Analytics By Survey Questions
 				</h1>
+
+				<div className="wrapper">
+					{answerClientAnalytics.length > 0 ? (
+						answerClientAnalytics.map((analytics, index) => {
+							const { _id, options, totalQuestionOptions } = analytics;
+
+							return (
+								<Fragment key={index}>
+									<Accordion
+										title={
+											_id[0]?.name ? _id[0]?.name : 'Question not available'
+										}
+									>
+										<div className="flex items-center justify-between">
+											{_id[0]?.description}
+										</div>
+										<div className="mt-8 flex justify-between item-center">
+											<div className="flex items-center space-x-2">
+												<h3 className="text-xl whitespace-nowrap">
+													{totalQuestionOptions} Total Question Choices
+												</h3>
+											</div>
+										</div>
+										<div className="grid gap-4 md:grid-cols-2 my-8">
+											<div className="min-w-0 p-4 bg-white rounded-lg  ring-1 ring-gray-200 ring-opacity-4 dark:bg-gray-800">
+												<p className="mb-4 font-semibold text-gray-800 dark:text-gray-300">
+													Bar Chart Representation
+												</p>
+												<ResponseBarChart options={options} />
+											</div>
+											<div className="min-w-0 p-4 bg-white rounded-lg ring-1 ring-gray-200 ring-opacity-4 dark:bg-gray-800">
+												<p className="mb-4 font-semibold text-gray-800 dark:text-gray-300">
+													Pie Chart Representation
+												</p>
+												<ResponsePieChart options={options} />
+											</div>
+										</div>
+									</Accordion>
+								</Fragment>
+							);
+						})
+					) : (
+						<div className="flex items-center justify-center">
+							{answerLoading ? (
+								<CircularProgress
+									variant="indeterminate"
+									disableShrink
+									size={25}
+									thickness={4}
+								/>
+							) : (
+								<p>You have no responses</p>
+							)}
+						</div>
+					)}
+				</div>
 			</main>
 		</>
 	);
 };
 
 export default Surveys;
+
+const Accordion = ({ title, children }) => {
+	const [isOpen, setOpen] = React.useState(false);
+	return (
+		<div className="accordion-wrapper">
+			<div
+				className={`accordion-title ${isOpen ? 'open' : ''}`}
+				onClick={() => setOpen(!isOpen)}
+			>
+				{title}
+			</div>
+			<div className={`accordion-item ${!isOpen ? 'collapsed' : ''}`}>
+				<div className="accordion-content">{children}</div>
+			</div>
+		</div>
+	);
+};

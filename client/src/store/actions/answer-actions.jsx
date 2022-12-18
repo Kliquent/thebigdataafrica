@@ -109,7 +109,7 @@ export const getClientAnswerAnalytics = (clientId) => async (dispatch) => {
 		await dispatch({ type: ANSWER_LOADING });
 
 		const response = await axios.get(
-			`${ANALYTICS_SERVER}/response-analytics?clientId=${clientId}`,
+			`${ANALYTICS_SERVER}/client-response-analytics?clientId=${clientId}`,
 			token
 		);
 		const data = await response.data;
