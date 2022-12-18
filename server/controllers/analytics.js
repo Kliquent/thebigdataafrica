@@ -116,6 +116,74 @@ export const clientAnalytics = async (req, res) => {
 	}
 };
 
+export const clientResponseAnalyticsByQuestion = async (req, res) => {
+	let clientId = req.params.clientId;
+
+	try {
+		const surveys = await Surveys.find({ owner: clientId });
+		const surveyIds = surveys.map((survey) => {
+			return survey._id;
+		});
+
+		// Find all questions based on surveyIds from client surveys
+		const questions = await SurveyQuestion.find({
+			survey_id: { $in: surveyIds },
+		});
+		const questionIds = questions.map((question) => {
+			return question.question_id;
+		});
+
+		const answers = await Answers.aggregate([
+			{
+				$match: {
+					question_id: { $in: questionIds },
+				},
+			},
+			{
+				// Populate question_id
+				$lookup: {
+					from: 'questions',
+					localField: 'question_id',
+					foreignField: '_id',
+					as: 'question_id',
+				},
+			},
+			{
+				// Populate option_id
+				$lookup: {
+					from: 'options',
+					localField: 'option_id',
+					foreignField: '_id',
+					as: 'option_id',
+				},
+			},
+			{
+				$group: {
+					_id: { question_id: '$question_id', option_id: '$option_id' }, // Group By field
+					count: { $sum: 1 },
+				},
+			},
+			{
+				$group: {
+					_id: '$_id.question_id', // Group By field
+					options: {
+						$push: {
+							option_id: '$_id.option_id',
+							count: '$count',
+						},
+					},
+					totalQuestionOptions: { $sum: 1 },
+				},
+			},
+		]);
+
+		res.status(200).json(answers);
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
 // To be rendered on charts
 export const responseAnalyticsByQuestion = async (req, res) => {
 	try {
