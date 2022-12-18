@@ -383,3 +383,32 @@ export const getSurveyBySurveyQuestion = async (req, res) => {
 		res.status(500).json({ message: error });
 	}
 };
+
+// Get client surveys
+export const getClientSurveys = async (req, res) => {
+	let clientId = req.params.clientId;
+
+	// let searchTerm = req.query.searchTerm;
+	let order = req.query.order ? req.query.order : 'desc';
+	let orderBy = req.query.orderBy ? req.query.orderBy : '_id';
+
+	const page = parseInt(req.query.page)
+		? parseInt(req.query.page)
+		: parseInt(1);
+	let limit = parseInt(req.query.limit)
+		? parseInt(req.query.limit)
+		: parseInt(20);
+	const skipIndex = (page - 1) * limit;
+
+	try {
+		const surveys = await Surveys.find({ owner: clientId })
+			.sort([[orderBy, order]])
+			.skip(skipIndex)
+			.limit(limit);
+
+		res.status(200).json(surveys);
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
