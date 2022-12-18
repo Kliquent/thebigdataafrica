@@ -27,7 +27,7 @@ const answerSchema = Schema(
 		},
 		surveyee_id: {
 			type: Schema.Types.ObjectId,
-			ref: 'users',
+			ref: 'surveyee',
 			required: false,
 		},
 		created_by: {
