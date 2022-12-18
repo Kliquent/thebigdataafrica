@@ -1,3 +1,6 @@
+import Surveys from '../models/Survey.js';
+import SurveyQuestion from '../models/SurveyQuestion.js';
+import Answers from '../models/Answers.js';
 import Surveyee from '../models/Surveyee.js';
 
 // Create Surveyee controller
@@ -18,6 +21,37 @@ export const createSurveyee = async (req, res) => {
 		});
 
 		res.status(200).json({ surveyee });
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
+export const getClientSurveyees = async (req, res) => {
+	let clientId = req.query.clientId;
+
+	try {
+		const surveys = await Surveys.find({ owner: clientId });
+		const surveyIds = surveys.map((survey) => {
+			return survey._id;
+		});
+
+		// Find all questions based on surveyIds from client surveys
+		const questions = await SurveyQuestion.find({
+			survey_id: { $in: surveyIds },
+		});
+		const questionIds = questions.map((question) => {
+			return question.question_id;
+		});
+
+		const surveyee = await Answers.find({
+			$and: [
+				{ surveyee_id: { $exists: true } },
+				{ question_id: { $in: questionIds } },
+			],
+		});
+
+		res.status(200).json(surveyee);
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: error });
