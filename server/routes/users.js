@@ -13,6 +13,7 @@ import {
 	// storeExponentPushToken,
 	getUsersByRole,
 	getClient,
+	getClientSurveyResearchers,
 } from '../controllers/users.js';
 import { profile } from '../controllers/profile.js';
 import { auth } from '../middleware/auth.js';
@@ -21,6 +22,7 @@ const router = express.Router();
 
 router.get('/profile', auth, profile);
 router.get('/client', auth, getClient);
+router.get('/get-client-survey-researchers', auth, getClientSurveyResearchers);
 router.get('/admin/get-user', auth, adminGetUser);
 router.post('/signin', signin);
 router.post('/user/signup', userSignup);

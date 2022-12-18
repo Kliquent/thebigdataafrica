@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 
 import Roles from '../models/Roles.js';
 import Users from '../models/Users.js';
+import Surveys from '../models/Survey.js';
+import Researchers from '../models/Researcher.js';
 
 // signin controller handles signin of all users i.e admin, client, researcher
 export const signin = async (req, res) => {
@@ -463,6 +465,27 @@ export const getClient = async (req, res) => {
 		if (!getUser) return res.status(403).json({ message: 'No user found.' });
 
 		res.status(200).json({ current_user: getUser });
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
+export const getClientSurveyResearchers = async (req, res) => {
+	let clientId = req.query.clientId;
+
+	try {
+		const surveys = await Surveys.find({ owner: clientId });
+		const surveyIds = surveys.map((survey) => {
+			return survey._id;
+		});
+
+		// Find researchers based on surveyIds from client surveys
+		const researchers = await Researchers.find({
+			survey_id: { $in: surveyIds },
+		});
+
+		res.status(200).json(researchers);
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: error });
