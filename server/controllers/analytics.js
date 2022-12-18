@@ -132,7 +132,6 @@ export const clientResponseAnalyticsByQuestion = async (req, res) => {
 		const questionIds = questions.map((question) => {
 			return question.question_id;
 		});
-		console.log(clientId);
 
 		const answers = await Answers.aggregate([
 			{

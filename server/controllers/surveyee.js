@@ -49,7 +49,9 @@ export const getClientSurveyees = async (req, res) => {
 				{ surveyee_id: { $exists: true } },
 				{ question_id: { $in: questionIds } },
 			],
-		}).populate('surveyee_id');
+		})
+			.distinct('surveyee_id')
+			.populate('surveyee_id');
 
 		res.status(200).json(surveyee);
 	} catch (error) {
