@@ -117,7 +117,7 @@ export const clientAnalytics = async (req, res) => {
 };
 
 export const clientResponseAnalyticsByQuestion = async (req, res) => {
-	let clientId = req.params.clientId;
+	let clientId = req.query.clientId;
 
 	try {
 		const surveys = await Surveys.find({ owner: clientId });
@@ -132,6 +132,7 @@ export const clientResponseAnalyticsByQuestion = async (req, res) => {
 		const questionIds = questions.map((question) => {
 			return question.question_id;
 		});
+		console.log(clientId);
 
 		const answers = await Answers.aggregate([
 			{
