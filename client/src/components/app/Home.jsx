@@ -432,7 +432,7 @@ const Home = () => {
 				</div>
 				{/* Recent Surveys */}
 				<h1 className="my-6 text-lg font-bold text-gray-700 dark:text-gray-300">
-					Surveys
+					All Surveys
 				</h1>
 
 				<div className="w-full overflow-hidden border border-gray-200 dark:border-gray-700 rounded-lg ring-1 ring-black ring-opacity-5 mb-8">

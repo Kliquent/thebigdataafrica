@@ -3,6 +3,7 @@ import {
 	GET_ANSWER,
 	GET_ANSWERS,
 	GET_ANSWER_ANALYTICS,
+	GET_CLIENT_ANSWER_ANALYTICS,
 } from '../../constants/types';
 
 const initialState = {
@@ -11,6 +12,7 @@ const initialState = {
 	answer: null,
 	answers: [],
 	getAnswerAnalytics: [],
+	getClientAnswerAnalytics: [],
 };
 
 export default function SurveyReducer(state = initialState, action) {
@@ -40,6 +42,13 @@ export default function SurveyReducer(state = initialState, action) {
 				isAuthenticated: true,
 				isLoading: false,
 				getAnswerAnalytics: action.payload,
+			};
+		case GET_CLIENT_ANSWER_ANALYTICS:
+			return {
+				...state,
+				isAuthenticated: true,
+				isLoading: false,
+				getClientAnswerAnalytics: action.payload,
 			};
 		default:
 			return state;

@@ -3,6 +3,7 @@ import {
 	CREATE_CLIENT,
 	GET_CLIENT,
 	GET_CLIENTS,
+	GET_CLIENT_SURVEYEES,
 	UPDATE_CLIENT,
 	DELETE_CLIENT,
 } from '../../constants/types';
@@ -12,6 +13,7 @@ const initialState = {
 	isAuthenticated: !!localStorage.getItem('userToken'),
 	client: null,
 	clients: [],
+	getClientSurveyees: [],
 	totalSearchClients: null,
 };
 
@@ -28,6 +30,13 @@ export default function ClientReducer(state = initialState, action) {
 				isAuthenticated: true,
 				isLoading: false,
 				client: action.payload,
+			};
+		case GET_CLIENT_SURVEYEES:
+			return {
+				...state,
+				isAuthenticated: true,
+				isLoading: false,
+				getClientSurveyees: action.payload,
 			};
 		case GET_CLIENTS:
 			return {

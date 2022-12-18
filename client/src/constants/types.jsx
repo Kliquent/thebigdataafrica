@@ -21,11 +21,13 @@ export const GET_SURVEY = 'get_survey';
 export const GET_SURVEYS = 'get_surveys';
 export const UPDATE_SURVEY = 'update_survey';
 export const DELETE_SURVEY = 'delete_survey';
+export const GET_CLIENT_SURVEYS = 'get_client_surveys';
 
 export const CLIENT_LOADING = 'client_loading';
 export const CREATE_CLIENT = 'create_client';
 export const GET_CLIENT = 'get_client';
 export const GET_CLIENTS = 'get_clients';
+export const GET_CLIENT_SURVEYEES = 'get_client_surveyees';
 export const UPDATE_CLIENT = 'update_client';
 export const DELETE_CLIENT = 'delete_client';
 
@@ -35,6 +37,7 @@ export const GET_RESEARCHER = 'get_researcher';
 export const GET_RESEARCHERS = 'get_researchers';
 export const UPDATE_RESEARCHER = 'update_researcher';
 export const DELETE_RESEARCHER = 'delete_researcher';
+export const GET_CLIENT_RESEARCHERS = 'get_client_researchers';
 
 export const QUESTION_LOADING = 'question_loading';
 export const CREATE_QUESTION = 'create_question';
@@ -56,3 +59,4 @@ export const ANSWER_LOADING = 'answer_loading';
 export const GET_ANSWERS = 'get_answers';
 export const GET_ANSWER = 'get_answer';
 export const GET_ANSWER_ANALYTICS = 'get_answer_analytics';
+export const GET_CLIENT_ANSWER_ANALYTICS = 'get_client_answer_analytics';

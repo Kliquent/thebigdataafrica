@@ -5,6 +5,7 @@ import {
 	CREATE_SURVEY,
 	GET_SURVEY,
 	GET_SURVEYS,
+	GET_CLIENT_SURVEYS,
 	GET_QUESTIONS_BY_SURVEY,
 	UPDATE_SURVEY,
 	DELETE_SURVEY,
@@ -124,6 +125,34 @@ export const deleteSurvey = (payload) => async (dispatch) => {
 		toast.error(`Error! ${error?.response?.data?.message}`);
 		dispatch(
 			returnErrors(error.response.data, error.response.status, 'DELETE_SURVEY')
+		);
+	}
+};
+
+export const getClientSurveys = (clientId) => async (dispatch) => {
+	const token = tokenConfig();
+
+	try {
+		await dispatch({ type: SURVEY_LOADING });
+
+		const response = await axios.get(
+			`${SURVEY_SERVER}/get-client-surveys/${clientId}`,
+			token
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: GET_CLIENT_SURVEYS,
+			payload: data,
+		});
+	} catch (error) {
+		console.log(error.response);
+		dispatch(
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'GET_CLIENT_SURVEY_ERROR'
+			)
 		);
 	}
 };

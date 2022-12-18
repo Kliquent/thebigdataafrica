@@ -5,6 +5,7 @@ import {
 	CREATE_RESEARCHER,
 	GET_RESEARCHER,
 	GET_RESEARCHERS,
+	GET_CLIENT_RESEARCHERS,
 	UPDATE_RESEARCHER,
 	DELETE_RESEARCHER,
 } from '../../constants/types';
@@ -218,6 +219,37 @@ export const getResearcher = (payload) => async (dispatch) => {
 		toast.error('Error! get researcher failed.');
 		dispatch(
 			returnErrors(error.response.data, error.response.status, 'GET_RESEARCHER')
+		);
+	}
+};
+
+export const getClientResearchers = (clientId) => async (dispatch) => {
+	const token = tokenConfig();
+
+	try {
+		await dispatch({ type: RESEARCHER_LOADING });
+
+		const response = await axios.get(
+			`${RESEARCHER_SERVER}/get-client-survey-researchers/?clientId=${clientId}`,
+			token
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: GET_CLIENT_RESEARCHERS,
+			payload: data,
+		});
+
+		await dispatch(clearErrors());
+	} catch (error) {
+		console.log(error.response);
+		toast.error('Error! get client researchers failed.');
+		dispatch(
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'GET_CLIENT_RESEARCHER'
+			)
 		);
 	}
 };

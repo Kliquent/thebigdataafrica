@@ -3,6 +3,7 @@ import {
 	CREATE_SURVEY,
 	GET_SURVEY,
 	GET_SURVEYS,
+	GET_CLIENT_SURVEYS,
 	GET_QUESTIONS_BY_SURVEY,
 	UPDATE_SURVEY,
 	DELETE_SURVEY,
@@ -13,6 +14,7 @@ const initialState = {
 	isAuthenticated: !!localStorage.getItem('userToken'),
 	survey: null,
 	surveys: [],
+	getClientSurveys: [],
 	questionsBySurvey: [],
 	totalSearchSurveys: null,
 };
@@ -38,6 +40,13 @@ export default function SurveyReducer(state = initialState, action) {
 				isLoading: false,
 				surveys: action.payload,
 				totalSearchSurveys: action.totalSearchSurveys,
+			};
+		case GET_CLIENT_SURVEYS:
+			return {
+				...state,
+				isAuthenticated: true,
+				isLoading: false,
+				getClientSurveys: action.payload,
 			};
 		case GET_QUESTIONS_BY_SURVEY:
 			return {

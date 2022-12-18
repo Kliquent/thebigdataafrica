@@ -5,6 +5,7 @@ import {
 	CREATE_CLIENT,
 	GET_CLIENT,
 	GET_CLIENTS,
+	GET_CLIENT_SURVEYEES,
 	UPDATE_CLIENT,
 	DELETE_CLIENT,
 } from '../../constants/types';
@@ -206,6 +207,37 @@ export const getClient = (payload) => async (dispatch) => {
 		toast.error('Error! get client failed.');
 		dispatch(
 			returnErrors(error.response.data, error.response.status, 'GET_CLIENT')
+		);
+	}
+};
+
+export const getClientSurveyees = (clientId) => async (dispatch) => {
+	const token = tokenConfig();
+
+	try {
+		await dispatch({ type: CLIENT_LOADING });
+
+		const response = await axios.get(
+			`https://apis.thebigdataafrica.com/api/v1/surveyee/get-client-surveyees?clientId=${clientId}`,
+			token
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: GET_CLIENT_SURVEYEES,
+			payload: data,
+		});
+
+		await dispatch(clearErrors());
+	} catch (error) {
+		console.log(error);
+		toast.error('Error! get client surveyees failed.');
+		dispatch(
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'GET_CLIENT_SURVEYEES'
+			)
 		);
 	}
 };

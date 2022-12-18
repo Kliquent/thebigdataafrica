@@ -4,6 +4,7 @@ import {
 	ANSWER_LOADING,
 	GET_ANSWERS,
 	GET_ANSWER_ANALYTICS,
+	GET_CLIENT_ANSWER_ANALYTICS,
 } from '../../constants/types';
 import { returnErrors, clearErrors } from './error-actions';
 
@@ -98,5 +99,30 @@ export const getAnswerAnalytics = () => async (dispatch) => {
 		// 		'GET_ANSWER_ANALYTICS'
 		// 	)
 		// );
+	}
+};
+
+export const getClientAnswerAnalytics = (clientId) => async (dispatch) => {
+	const token = tokenConfig();
+
+	try {
+		await dispatch({ type: ANSWER_LOADING });
+
+		const response = await axios.get(
+			`${ANALYTICS_SERVER}/response-analytics?clientId=${clientId}`,
+			token
+		);
+		const data = await response.data;
+		console.log(data);
+
+		await dispatch({
+			type: GET_CLIENT_ANSWER_ANALYTICS,
+			payload: data,
+		});
+
+		await dispatch(clearErrors());
+	} catch (error) {
+		console.log(error);
+		toast.error('Error! get client answer analytics failed.');
 	}
 };

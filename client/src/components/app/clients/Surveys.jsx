@@ -19,7 +19,13 @@ import {
 	TablePagination,
 } from '@mui/material';
 
-import { tokenConfig } from '../../../store/actions/survey-actions';
+import {
+	tokenConfig,
+	getClientSurveys,
+} from '../../../store/actions/survey-actions';
+import { getClientResearchers } from '../../../store/actions/researcher-actions';
+import { getClientSurveyees } from '../../../store/actions/client-actions';
+import { getClientAnswerAnalytics } from '../../../store/actions/answer-actions';
 
 import Navbar from '../Navbar';
 import { abbreviateNumber } from '../../../utils/AbbreviationNumber';
@@ -34,8 +40,40 @@ const Surveys = () => {
 	let urlParams = useParams();
 	let clientId = urlParams?.clientId;
 
+	let surveyLoading = useSelector((state) => state.surveys?.isLoading);
+	let clientSurveys = useSelector((state) => state.surveys?.getClientSurveys);
+
+	let researcherLoading = useSelector((state) => state.researchers?.isLoading);
+	let researchers = useSelector(
+		(state) => state.researchers?.getClientResearchers
+	);
+
+	// API call under client redux action
+	let clientLoading = useSelector((state) => state.clients?.isLoading);
+	let surveyees = useSelector((state) => state.clients?.getClientSurveyees);
+
+	let answerLoading = useSelector((state) => state.answers?.isLoading);
+	let answerClientAnalytics = useSelector(
+		(state) => state.answers?.getClientAnswerAnalytics
+	);
+
+	// console.log(answerClientAnalytics);
+
 	const [currentClient, setCurrentClient] = useState({});
 	const [analytics, setAnalytics] = useState({});
+
+	const pages = [10, 20, 50];
+	const [page, setPage] = useState(0);
+	const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
+
+	const handlePageChange = (event, newPage) => {
+		setPage(newPage);
+	};
+
+	const handleRowsPerPageChange = (event) => {
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
+	};
 
 	useEffect(() => {
 		(async () => {
@@ -69,6 +107,22 @@ const Surveys = () => {
 				}));
 			}
 		})();
+	}, []);
+
+	useEffect(() => {
+		dispatch(getClientSurveys(clientId));
+	}, []);
+
+	useEffect(() => {
+		dispatch(getClientResearchers(clientId));
+	}, []);
+
+	useEffect(() => {
+		dispatch(getClientSurveyees(clientId));
+	}, []);
+
+	useEffect(() => {
+		dispatch(getClientAnswerAnalytics(clientId));
 	}, []);
 
 	return (
@@ -305,6 +359,310 @@ const Surveys = () => {
 						</div>
 					</div>
 				</div>
+
+				{/* Client Surveys */}
+				<h1 className="my-6 text-lg font-bold text-gray-700 dark:text-gray-300">
+					Your Surveys
+				</h1>
+
+				<div className="mt-8 w-full overflow-hidden border border-gray-200 dark:border-gray-700 rounded-lg ring-1 ring-black ring-opacity-5 mb-8">
+					<div className="w-full overflow-x-auto no-scrollbar">
+						<table className="w-full whitespace-nowrap">
+							<thead className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
+								<tr>
+									<td className="px-4 py-3">Type</td>
+									<td className="px-4 py-3">Title</td>
+									<td className="px-4 py-3">Last Updated</td>
+									<td className="px-4 py-3">Status</td>
+									<td className="px-4 py-3 text-center">Action</td>
+								</tr>
+							</thead>
+							<tbody className="bg-white divide-y divide-gray-100 dark:divide-gray-700 dark:bg-gray-800 text-gray-700 dark:text-gray-400">
+								{clientSurveys.length > 0 ? (
+									clientSurveys.map((survey, index) => {
+										const { _id, type, title, updatedAt, active } = survey;
+										return (
+											<tr key={index} className="">
+												<td className="px-4 py-3">
+													<span className="text-sm">{type}</span>
+												</td>
+												<td className="px-4 py-3">
+													<span className="text-sm">{title}</span>
+												</td>
+
+												<td className="px-4 py-3">
+													<span className="text-sm">
+														{new Date(`${updatedAt}`).toLocaleString()}
+													</span>
+												</td>
+
+												<td className="px-4 py-3">
+													<span className="font-serif">
+														{active === true ? (
+															<span className="inline-flex px-2 text-xs font-medium leading-5 rounded-full text-green-500 bg-green-100 dark:bg-green-800 dark:text-green-100">
+																Active
+															</span>
+														) : (
+															<span className="inline-flex px-2 text-xs font-medium leading-5 rounded-full text-red-500 bg-red-100 dark:text-red-100 dark:bg-red-800">
+																Inactive
+															</span>
+														)}
+													</span>
+												</td>
+												<td className="px-4 py-3">
+													<div className="flex items-center justify-center text-right">
+														<div className="p-2 cursor-pointer text-gray-400 hover:text-green-600">
+															<IconButton
+																onClick={() =>
+																	navigate(`/surveys-details/${_id}`)
+																}
+															>
+																<svg
+																	className="w-6 h-6"
+																	fill="none"
+																	stroke="currentColor"
+																	viewBox="0 0 24 24"
+																	height="1em"
+																	width="1em"
+																	xmlns="http://www.w3.org/2000/svg"
+																>
+																	<path
+																		strokeLinecap="round"
+																		strokeLinejoin="round"
+																		strokeWidth={2}
+																		d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+																	/>
+																</svg>
+															</IconButton>
+														</div>
+													</div>
+												</td>
+											</tr>
+										);
+									})
+								) : (
+									<TableRow>
+										<TableCell
+											colSpan={12}
+											style={{ padding: '1rem', textAlign: 'center' }}
+										>
+											{surveyLoading ? (
+												<CircularProgress
+													variant="indeterminate"
+													disableShrink
+													size={25}
+													thickness={4}
+												/>
+											) : (
+												<p>You have no surveys</p>
+											)}
+										</TableCell>
+									</TableRow>
+								)}
+							</tbody>
+						</table>
+					</div>
+					<div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-white text-gray-500 dark:text-gray-400 dark:bg-gray-800">
+						<div className="flex flex-col justify-between text-xs sm:flex-row text-gray-600 dark:text-gray-400">
+							<span className="flex items-center font-semibold tracking-wide uppercase">
+								Showing 1-{clientSurveys.length} of{' '}
+								{clientSurveys.length ? clientSurveys.length : 0}
+							</span>
+							<div className="flex mt-2 sm:mt-auto sm:justify-end">
+								<TablePagination
+									sx={{ overflow: 'hidden' }}
+									component="div"
+									page={page}
+									rowsPerPageOptions={pages}
+									rowsPerPage={rowsPerPage}
+									count={clientSurveys.length ? clientSurveys.length : 0}
+									onPageChange={handlePageChange}
+									onRowsPerPageChange={handleRowsPerPageChange}
+								/>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{/* Client Researchers */}
+				<h1 className="my-6 text-lg font-bold text-gray-700 dark:text-gray-300">
+					Researchers
+				</h1>
+
+				<div className="mt-8 w-full overflow-hidden border border-gray-200 dark:border-gray-700 rounded-lg ring-1 ring-black ring-opacity-5 mb-8">
+					<div className="w-full overflow-x-auto no-scrollbar">
+						<table className="w-full whitespace-nowrap">
+							<thead className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
+								<tr>
+									<td className="px-4 py-3">Name</td>
+									<td className="px-4 py-3">Email</td>
+									<td className="px-4 py-3">Phone</td>
+									<td className="px-4 py-3">Gender</td>
+								</tr>
+							</thead>
+							<tbody className="bg-white divide-y divide-gray-100 dark:divide-gray-700 dark:bg-gray-800 text-gray-700 dark:text-gray-400">
+								{researchers.length > 0 ? (
+									researchers.map((researcher, index) => {
+										const { researcher_id } = researcher;
+
+										return (
+											<tr key={index} className="">
+												<td className="px-4 py-3">
+													<span className="text-sm">{researcher_id?.name}</span>
+												</td>
+
+												<td className="px-4 py-3">
+													<span className="text-sm">
+														{researcher_id?.email}
+													</span>
+												</td>
+
+												<td className="px-4 py-3">
+													<span className="text-sm">
+														{researcher_id?.phone}
+													</span>
+												</td>
+
+												<td className="px-4 py-3">
+													<span className="text-sm">
+														{researcher_id?.gender}
+													</span>
+												</td>
+											</tr>
+										);
+									})
+								) : (
+									<TableRow>
+										<TableCell
+											colSpan={12}
+											style={{ padding: '1rem', textAlign: 'center' }}
+										>
+											{researcherLoading ? (
+												<CircularProgress
+													variant="indeterminate"
+													disableShrink
+													size={25}
+													thickness={4}
+												/>
+											) : (
+												<p>You have no researchers</p>
+											)}
+										</TableCell>
+									</TableRow>
+								)}
+							</tbody>
+						</table>
+					</div>
+					<div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-white text-gray-500 dark:text-gray-400 dark:bg-gray-800">
+						<div className="flex flex-col justify-between text-xs sm:flex-row text-gray-600 dark:text-gray-400">
+							<span className="flex items-center font-semibold tracking-wide uppercase">
+								Showing 1-{researchers.length} of{' '}
+								{researchers.length ? researchers.length : 0}
+							</span>
+							<div className="flex mt-2 sm:mt-auto sm:justify-end">
+								<TablePagination
+									sx={{ overflow: 'hidden' }}
+									component="div"
+									page={page}
+									rowsPerPageOptions={pages}
+									rowsPerPage={rowsPerPage}
+									count={researchers.length ? researchers.length : 0}
+									onPageChange={handlePageChange}
+									onRowsPerPageChange={handleRowsPerPageChange}
+								/>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{/* Client Surveyees */}
+				<h1 className="my-6 text-lg font-bold text-gray-700 dark:text-gray-300">
+					Surveyees
+				</h1>
+
+				<div className="mt-8 w-full overflow-hidden border border-gray-200 dark:border-gray-700 rounded-lg ring-1 ring-black ring-opacity-5 mb-8">
+					<div className="w-full overflow-x-auto no-scrollbar">
+						<table className="w-full whitespace-nowrap">
+							<thead className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
+								<tr>
+									<td className="px-4 py-3">Name</td>
+									<td className="px-4 py-3">Email</td>
+									<td className="px-4 py-3">Phone</td>
+								</tr>
+							</thead>
+							<tbody className="bg-white divide-y divide-gray-100 dark:divide-gray-700 dark:bg-gray-800 text-gray-700 dark:text-gray-400">
+								{surveyees.length > 0 ? (
+									surveyees.map((surveyee, index) => {
+										const { surveyee_id } = surveyee;
+
+										return (
+											<tr key={index} className="">
+												<td className="px-4 py-3">
+													<span className="text-sm">{surveyee_id?.name}</span>
+												</td>
+
+												<td className="px-4 py-3">
+													<span className="text-sm">
+														{surveyee_id?.email
+															? surveyee_id?.email
+															: 'Email address not provided by Surveyee'}
+													</span>
+												</td>
+
+												<td className="px-4 py-3">
+													<span className="text-sm">{surveyee_id?.phone}</span>
+												</td>
+											</tr>
+										);
+									})
+								) : (
+									<TableRow>
+										<TableCell
+											colSpan={12}
+											style={{ padding: '1rem', textAlign: 'center' }}
+										>
+											{clientLoading ? (
+												<CircularProgress
+													variant="indeterminate"
+													disableShrink
+													size={25}
+													thickness={4}
+												/>
+											) : (
+												<p>You have no surveyees</p>
+											)}
+										</TableCell>
+									</TableRow>
+								)}
+							</tbody>
+						</table>
+					</div>
+					<div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-white text-gray-500 dark:text-gray-400 dark:bg-gray-800">
+						<div className="flex flex-col justify-between text-xs sm:flex-row text-gray-600 dark:text-gray-400">
+							<span className="flex items-center font-semibold tracking-wide uppercase">
+								Showing 1-{surveyees.length} of{' '}
+								{surveyees.length ? surveyees.length : 0}
+							</span>
+							<div className="flex mt-2 sm:mt-auto sm:justify-end">
+								<TablePagination
+									sx={{ overflow: 'hidden' }}
+									component="div"
+									page={page}
+									rowsPerPageOptions={pages}
+									rowsPerPage={rowsPerPage}
+									count={surveyees.length ? surveyees.length : 0}
+									onPageChange={handlePageChange}
+									onRowsPerPageChange={handleRowsPerPageChange}
+								/>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{/* Response Analytics By Survey Question */}
+				<h1 className="my-6 text-lg font-bold text-gray-700 dark:text-gray-300">
+					Response Analytics By Survey Question
+				</h1>
 			</main>
 		</>
 	);
