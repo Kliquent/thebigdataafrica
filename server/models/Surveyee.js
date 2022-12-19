@@ -35,4 +35,4 @@ const surveyeeSchema = Schema(
 	{ timestamps: true }
 );
 
-export default mongoose.model('surveyee', surveyeeSchema);
+export default mongoose.model('surveyees', surveyeeSchema);

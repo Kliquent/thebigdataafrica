@@ -44,14 +44,34 @@ export const getClientSurveyees = async (req, res) => {
 			return question.question_id;
 		});
 
-		const surveyee = await Answers.find({
-			$and: [
-				{ surveyee_id: { $exists: true } },
-				{ question_id: { $in: questionIds } },
-			],
-		})
-			.distinct('surveyee_id')
-			.populate('surveyee_id');
+		const surveyee = await Answers.aggregate([
+			{
+				$match: {
+					$and: [
+						{ surveyee_id: { $exists: true } },
+						{ question_id: { $in: questionIds } },
+					],
+				},
+			},
+			{
+				// Populate surveyee_id
+				$lookup: {
+					from: 'surveyees',
+					localField: 'surveyee_id',
+					foreignField: '_id',
+					as: 'surveyee',
+				},
+			},
+			{
+				$group: {
+					_id: { surveyee_id: '$surveyee_id' }, // Group By field
+					surveyee_response: {
+						$push: '$$ROOT',
+					},
+					count: { $sum: 1 },
+				},
+			},
+		]);
 
 		res.status(200).json(surveyee);
 	} catch (error) {
