@@ -38,6 +38,8 @@ export const GET_RESEARCHERS = 'get_researchers';
 export const UPDATE_RESEARCHER = 'update_researcher';
 export const DELETE_RESEARCHER = 'delete_researcher';
 export const GET_CLIENT_RESEARCHERS = 'get_client_researchers';
+export const GET_RESEARCHER_SURVEYEE_LOCATION =
+	'get_researcher_surveyee_location';
 
 export const QUESTION_LOADING = 'question_loading';
 export const CREATE_QUESTION = 'create_question';

@@ -6,6 +6,7 @@ import {
 	GET_RESEARCHER,
 	GET_RESEARCHERS,
 	GET_CLIENT_RESEARCHERS,
+	GET_RESEARCHER_SURVEYEE_LOCATION,
 	UPDATE_RESEARCHER,
 	DELETE_RESEARCHER,
 } from '../../constants/types';
@@ -249,6 +250,37 @@ export const getClientResearchers = (clientId) => async (dispatch) => {
 				error.response.data,
 				error.response.status,
 				'GET_CLIENT_RESEARCHER'
+			)
+		);
+	}
+};
+
+export const getResearcherSurveyeeLocation = (clientId) => async (dispatch) => {
+	const token = tokenConfig();
+
+	try {
+		await dispatch({ type: RESEARCHER_LOADING });
+
+		const response = await axios.get(
+			`https://apis.thebigdataafrica.com/api/v1/surveyee/get-researcher-surveyee-location/?clientId=${clientId}`,
+			token
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: GET_RESEARCHER_SURVEYEE_LOCATION,
+			payload: data,
+		});
+
+		await dispatch(clearErrors());
+	} catch (error) {
+		console.log(error.response);
+		toast.error('Error! get researcher surveyee location failed.');
+		dispatch(
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'GET_RESEARCHER_SURVEYEE_LOCATION'
 			)
 		);
 	}

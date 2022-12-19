@@ -23,7 +23,10 @@ import {
 	tokenConfig,
 	getClientSurveys,
 } from '../../../store/actions/survey-actions';
-import { getClientResearchers } from '../../../store/actions/researcher-actions';
+import {
+	getClientResearchers,
+	getResearcherSurveyeeLocation,
+} from '../../../store/actions/researcher-actions';
 import { getClientSurveyees } from '../../../store/actions/client-actions';
 import { getClientAnswerAnalytics } from '../../../store/actions/answer-actions';
 
@@ -50,6 +53,9 @@ const Surveys = () => {
 	let researchers = useSelector(
 		(state) => state.researchers?.getClientResearchers
 	);
+	let researcherSurveyeeLocations = useSelector(
+		(state) => state.researchers?.getResearcherSurveyeeLocation
+	);
 
 	// API call under client redux action
 	let clientLoading = useSelector((state) => state.clients?.isLoading);
@@ -59,8 +65,6 @@ const Surveys = () => {
 	let answerClientAnalytics = useSelector(
 		(state) => state.answers?.getClientAnswerAnalytics
 	);
-
-	// console.log(answerClientAnalytics);
 
 	const [currentClient, setCurrentClient] = useState({});
 	const [analytics, setAnalytics] = useState({});
@@ -118,6 +122,10 @@ const Surveys = () => {
 
 	useEffect(() => {
 		dispatch(getClientResearchers(clientId));
+	}, []);
+
+	useEffect(() => {
+		dispatch(getResearcherSurveyeeLocation(clientId));
 	}, []);
 
 	useEffect(() => {
@@ -377,7 +385,6 @@ const Surveys = () => {
 									<td className="px-4 py-3">Title</td>
 									<td className="px-4 py-3">Last Updated</td>
 									<td className="px-4 py-3">Status</td>
-									<td className="px-4 py-3 text-center">Action</td>
 								</tr>
 							</thead>
 							<tbody className="bg-white divide-y divide-gray-100 dark:divide-gray-700 dark:bg-gray-800 text-gray-700 dark:text-gray-400">
@@ -411,34 +418,6 @@ const Surveys = () => {
 															</span>
 														)}
 													</span>
-												</td>
-												<td className="px-4 py-3">
-													<div className="flex items-center justify-center text-right">
-														<div className="p-2 cursor-pointer text-gray-400 hover:text-green-600">
-															<IconButton
-																onClick={() =>
-																	navigate(`/surveys-details/${_id}`)
-																}
-															>
-																<svg
-																	className="w-6 h-6"
-																	fill="none"
-																	stroke="currentColor"
-																	viewBox="0 0 24 24"
-																	height="1em"
-																	width="1em"
-																	xmlns="http://www.w3.org/2000/svg"
-																>
-																	<path
-																		strokeLinecap="round"
-																		strokeLinejoin="round"
-																		strokeWidth={2}
-																		d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-																	/>
-																</svg>
-															</IconButton>
-														</div>
-													</div>
 												</td>
 											</tr>
 										);
@@ -588,32 +567,50 @@ const Surveys = () => {
 						<table className="w-full whitespace-nowrap">
 							<thead className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
 								<tr>
+									<td className="px-4 py-3">Unique ID</td>
 									<td className="px-4 py-3">Name</td>
 									<td className="px-4 py-3">Email</td>
 									<td className="px-4 py-3">Phone</td>
+									<td className="px-4 py-3">Responses</td>
 								</tr>
 							</thead>
 							<tbody className="bg-white divide-y divide-gray-100 dark:divide-gray-700 dark:bg-gray-800 text-gray-700 dark:text-gray-400">
 								{surveyees.length > 0 ? (
 									surveyees.map((surveyee, index) => {
-										const { surveyee_id } = surveyee;
+										const { surveyee_response, count } = surveyee;
 
 										return (
 											<tr key={index} className="">
 												<td className="px-4 py-3">
-													<span className="text-sm">{surveyee_id?.name}</span>
+													<span className="text-sm">
+														{
+															surveyee_response[index]?.surveyee[index]
+																?.uniqueID
+														}
+													</span>
 												</td>
 
 												<td className="px-4 py-3">
 													<span className="text-sm">
-														{surveyee_id?.email
-															? surveyee_id?.email
+														{surveyee_response[index]?.surveyee[index]?.name}
+													</span>
+												</td>
+
+												<td className="px-4 py-3">
+													<span className="text-sm">
+														{surveyee_response[index]?.surveyee[index]?.email
+															? surveyee_response[index]?.surveyee[index]?.email
 															: 'Email address not provided by Surveyee'}
 													</span>
 												</td>
 
 												<td className="px-4 py-3">
-													<span className="text-sm">{surveyee_id?.phone}</span>
+													<span className="text-sm">
+														{surveyee_response?.[0]?.surveyee[index]?.phone}
+													</span>
+												</td>
+												<td className="px-4 py-3">
+													<span className="text-sm">{count}</span>
 												</td>
 											</tr>
 										);
@@ -654,6 +651,91 @@ const Surveys = () => {
 									rowsPerPageOptions={pages}
 									rowsPerPage={rowsPerPage}
 									count={surveyees.length ? surveyees.length : 0}
+									onPageChange={handlePageChange}
+									onRowsPerPageChange={handleRowsPerPageChange}
+								/>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{/* Surveyee Researcher Locations */}
+				<h1 className="my-6 text-lg font-bold text-gray-700 dark:text-gray-300">
+					Surveyee Researcher Locations
+				</h1>
+
+				<div className="mt-8 w-full overflow-hidden border border-gray-200 dark:border-gray-700 rounded-lg ring-1 ring-black ring-opacity-5 mb-8">
+					<div className="w-full overflow-x-auto no-scrollbar">
+						<table className="w-full whitespace-nowrap">
+							<thead className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
+								<tr>
+									<td className="px-4 py-3">Location</td>
+									<td className="px-4 py-3 text-center">
+										No. of Researchers By Location
+									</td>
+								</tr>
+							</thead>
+							<tbody className="bg-white divide-y divide-gray-100 dark:divide-gray-700 dark:bg-gray-800 text-gray-700 dark:text-gray-400">
+								{researcherSurveyeeLocations.length > 0 ? (
+									researcherSurveyeeLocations.map((location, index) => {
+										const { _id, number_of_researchers_by_location } = location;
+
+										return (
+											<tr key={index} className="">
+												<td className="px-4 py-3">
+													<span className="text-sm">{_id?.location}</span>
+												</td>
+
+												<td className="px-4 py-3 text-center">
+													<span className="text-sm">
+														{number_of_researchers_by_location}
+													</span>
+												</td>
+											</tr>
+										);
+									})
+								) : (
+									<TableRow>
+										<TableCell
+											colSpan={12}
+											style={{ padding: '1rem', textAlign: 'center' }}
+										>
+											{researcherLoading ? (
+												<CircularProgress
+													variant="indeterminate"
+													disableShrink
+													size={25}
+													thickness={4}
+												/>
+											) : (
+												<p>You have no survey research locations</p>
+											)}
+										</TableCell>
+									</TableRow>
+								)}
+							</tbody>
+						</table>
+					</div>
+					<div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-white text-gray-500 dark:text-gray-400 dark:bg-gray-800">
+						<div className="flex flex-col justify-between text-xs sm:flex-row text-gray-600 dark:text-gray-400">
+							<span className="flex items-center font-semibold tracking-wide uppercase">
+								Showing 1-{researcherSurveyeeLocations.length} of{' '}
+								{researcherSurveyeeLocations.length
+									? researcherSurveyeeLocations.length
+									: 0}
+							</span>
+							<div className="flex mt-2 sm:mt-auto sm:justify-end">
+								<TablePagination
+									sx={{ overflow: 'hidden' }}
+									component="div"
+									page={page}
+									rowsPerPageOptions={pages}
+									rowsPerPage={rowsPerPage}
+									count={
+										researcherSurveyeeLocations.length
+											? researcherSurveyeeLocations.length
+											: 0
+									}
 									onPageChange={handlePageChange}
 									onRowsPerPageChange={handleRowsPerPageChange}
 								/>

@@ -113,7 +113,6 @@ export const getClientAnswerAnalytics = (clientId) => async (dispatch) => {
 			token
 		);
 		const data = await response.data;
-		console.log(data);
 
 		await dispatch({
 			type: GET_CLIENT_ANSWER_ANALYTICS,

@@ -4,6 +4,7 @@ import {
 	GET_RESEARCHER,
 	GET_RESEARCHERS,
 	GET_CLIENT_RESEARCHERS,
+	GET_RESEARCHER_SURVEYEE_LOCATION,
 	UPDATE_RESEARCHER,
 	DELETE_RESEARCHER,
 } from '../../constants/types';
@@ -14,6 +15,7 @@ const initialState = {
 	researcher: null,
 	researchers: [],
 	getClientResearchers: [],
+	getResearcherSurveyeeLocation: [],
 	totalSearchResearchers: null,
 };
 
@@ -45,6 +47,13 @@ export default function ClientReducer(state = initialState, action) {
 				isAuthenticated: true,
 				isLoading: false,
 				getClientResearchers: action.payload,
+			};
+		case GET_RESEARCHER_SURVEYEE_LOCATION:
+			return {
+				...state,
+				isAuthenticated: true,
+				isLoading: false,
+				getResearcherSurveyeeLocation: action.payload,
 			};
 		case CREATE_RESEARCHER:
 			return {
