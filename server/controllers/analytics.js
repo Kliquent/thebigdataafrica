@@ -94,7 +94,7 @@ export const clientAnalytics = async (req, res) => {
 				{ surveyee_id: { $exists: true } },
 				{ question_id: { $in: questionIds } },
 			],
-		});
+		}).distinct('surveyee_id');
 
 		const answerEvent = await AnswerEvent.find({
 			answer_id: { $in: answerIds },

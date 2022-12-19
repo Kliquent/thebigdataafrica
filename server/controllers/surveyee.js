@@ -1,5 +1,6 @@
 import Surveys from '../models/Survey.js';
 import SurveyQuestion from '../models/SurveyQuestion.js';
+import Researchers from '../models/Researcher.js';
 import Answers from '../models/Answers.js';
 import Surveyee from '../models/Surveyee.js';
 
@@ -74,6 +75,43 @@ export const getClientSurveyees = async (req, res) => {
 		]);
 
 		res.status(200).json(surveyee);
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
+export const surveyeeResearcherLocation = async (req, res) => {
+	let clientId = req.query.clientId;
+
+	try {
+		const surveys = await Surveys.find({ owner: clientId });
+		const surveyIds = surveys.map((survey) => {
+			return survey._id;
+		});
+
+		// Find distinct locations from researchers
+		// const locations = await Researchers.find({
+		// 	survey_id: { $in: surveyIds },
+		// });
+		const locations = await Researchers.aggregate([
+			{
+				$match: {
+					survey_id: { $in: surveyIds },
+				},
+			},
+			{
+				$group: {
+					_id: { location: '$location' }, // Group By field
+					researcher_location: {
+						$push: '$$ROOT',
+					},
+					number_of_researchers_by_location: { $sum: 1 },
+				},
+			},
+		]);
+
+		res.status(200).json(locations);
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: error });
