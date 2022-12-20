@@ -176,7 +176,7 @@ const Sidebar = ({ width, toggled, handleDrawerToggle }) => {
 						</NavLink>
 					</li>
 
-					{/* <li>
+					<li>
 						<NavLink
 							to="/administrators"
 							activeclassname="active"
@@ -217,7 +217,7 @@ const Sidebar = ({ width, toggled, handleDrawerToggle }) => {
 							)}
 							<span className="links_name">Administrators</span>
 						</NavLink>
-					</li> */}
+					</li>
 					<li>
 						<NavLink
 							to="/responses"

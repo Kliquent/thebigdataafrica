@@ -569,9 +569,9 @@ const Surveys = () => {
 								<tr>
 									<td className="px-4 py-3">Unique ID</td>
 									<td className="px-4 py-3">Name</td>
-									<td className="px-4 py-3">Email</td>
 									<td className="px-4 py-3">Phone</td>
 									<td className="px-4 py-3">Responses</td>
+									<td className="px-4 py-3">Created At</td>
 								</tr>
 							</thead>
 							<tbody className="bg-white divide-y divide-gray-100 dark:divide-gray-700 dark:bg-gray-800 text-gray-700 dark:text-gray-400">
@@ -582,35 +582,31 @@ const Surveys = () => {
 										return (
 											<tr key={index} className="">
 												<td className="px-4 py-3">
-													<span className="text-sm">
-														{
-															surveyee_response[index]?.surveyee[index]
-																?.uniqueID
-														}
+													<span className="text-sm uppercase">
+														{surveyee_response[index]?.surveyee[0]?._id}
 													</span>
 												</td>
 
 												<td className="px-4 py-3">
 													<span className="text-sm">
-														{surveyee_response[index]?.surveyee[index]?.name}
+														{surveyee_response[index]?.surveyee[0]?.name}
 													</span>
 												</td>
 
 												<td className="px-4 py-3">
 													<span className="text-sm">
-														{surveyee_response[index]?.surveyee[index]?.email
-															? surveyee_response[index]?.surveyee[index]?.email
-															: 'Email address not provided by Surveyee'}
-													</span>
-												</td>
-
-												<td className="px-4 py-3">
-													<span className="text-sm">
-														{surveyee_response?.[0]?.surveyee[index]?.phone}
+														{surveyee_response?.[index]?.surveyee[0]?.phone}
 													</span>
 												</td>
 												<td className="px-4 py-3">
 													<span className="text-sm">{count}</span>
+												</td>
+												<td className="px-4 py-3">
+													<span className="text-sm">
+														{new Date(
+															`${surveyee_response[index]?.surveyee[0]?.createdAt}`
+														).toLocaleString()}
+													</span>
 												</td>
 											</tr>
 										);

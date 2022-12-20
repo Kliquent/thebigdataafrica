@@ -224,15 +224,7 @@ const Navbar = () => {
 												to="/"
 												className="block px-2 py-1 transition rounded-md hover:bg-gray-100"
 											>
-												Dashboard
-											</Link>
-										</li>
-										<li>
-											<Link
-												to="/"
-												className="block px-2 py-1 transition rounded-md hover:bg-gray-100"
-											>
-												Settings
+												Profile
 											</Link>
 										</li>
 									</ul>
