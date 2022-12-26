@@ -41,6 +41,13 @@ export const GET_CLIENT_RESEARCHERS = 'get_client_researchers';
 export const GET_RESEARCHER_SURVEYEE_LOCATION =
 	'get_researcher_surveyee_location';
 
+export const ADMIN_LOADING = 'admin-loading';
+export const CREATE_ADMIN = 'create_admin';
+export const GET_ADMINS = 'get_admins';
+export const GET_ADMIN = 'get_admin';
+export const UPDATE_ADMIN = 'update_admin';
+export const DELETE_ADMIN = 'delete_admin';
+
 export const QUESTION_LOADING = 'question_loading';
 export const CREATE_QUESTION = 'create_question';
 export const GET_QUESTION = 'get_question';
