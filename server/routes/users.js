@@ -31,7 +31,7 @@ router.put('/admin/update-user-info', auth, adminUpdateUserInfo);
 router.put('/update-user-info', auth, updateUserInfo);
 router.put('/update-password', auth, changePassword);
 router.put('/forgot-password', forgotPassword);
-router.delete('/admin/delete-user', auth, adminDeleteUser);
+router.delete('/admin/delete-user', adminDeleteUser);
 router.get('/users-by-role/:roleId', auth, getUsersByRole);
 
 export default router;
