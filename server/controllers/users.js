@@ -495,8 +495,7 @@ export const getClientSurveyResearchers = async (req, res) => {
 
 export const adminDeleteUser = async (req, res) => {
 	let userId = req.userId;
-	const { deleteUserId } = req.body;
-	console.log(deleteUserId);
+	const id = req.params.deleteUserId;
 
 	try {
 		const currentUser = await Users.findById(userId);
@@ -506,7 +505,7 @@ export const adminDeleteUser = async (req, res) => {
 
 			// Log event
 
-			await Users.findByIdAndDelete({ _id: deleteUserId });
+			await Users.findByIdAndDelete({ _id: id });
 
 			res.status(200).json({ message: 'User deleted successfully!' });
 		} else {
