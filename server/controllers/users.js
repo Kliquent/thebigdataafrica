@@ -494,6 +494,7 @@ export const getClientSurveyResearchers = async (req, res) => {
 };
 
 export const adminDeleteUser = async (req, res) => {
+	let userId = req.userId;
 	const { deleteUserId } = req.body;
 
 	try {
