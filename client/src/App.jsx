@@ -11,6 +11,7 @@ import {
 	Responses,
 	// Content
 	SurveyDetails,
+	Profile,
 } from './components/app';
 import { ClientSurveys } from './components/app/clients/index';
 import { PrivateRoute } from './middleware';
@@ -87,6 +88,9 @@ const App = () => {
 						path="/surveys-details/:surveyId"
 						element={<SurveyDetails />}
 					/>
+
+					{/* User profile */}
+					<Route path="/profile" element={<Profile />} />
 				</Route>
 				<Route path="/login" element={<Login />} />
 				<Route path="/forgot-password" element={<ForgotPassword />} />

@@ -112,7 +112,7 @@ const Administrators = () => {
 		reset({
 			name,
 			email,
-			phone,
+			phone: `0${phone}`,
 			gender,
 		});
 
@@ -135,7 +135,7 @@ const Administrators = () => {
 	const onSubmitEdit = async (data, e) => {
 		e.preventDefault();
 		setButtonLoading(true);
-		const { name, email, phone, gender } = data;
+		const { name, email, phone, gender, password } = data;
 
 		const payload = {
 			_id: updatedAdmin._id,
@@ -143,6 +143,7 @@ const Administrators = () => {
 			email,
 			phone,
 			gender,
+			password,
 		};
 
 		await dispatch(updateAdmin(payload));
@@ -517,7 +518,7 @@ const Administrators = () => {
 							))}
 						</TextField>
 
-						{openPopup && (
+						{openPopup ? (
 							<TextField
 								{...register('password', {
 									required: 'Password is required!',
@@ -533,6 +534,15 @@ const Administrators = () => {
 								autoComplete="off"
 								error={errors?.password ? true : false}
 								helperText={errors?.password?.message}
+							/>
+						) : (
+							<TextField
+								{...register('password')}
+								fullWidth
+								name="password"
+								type={showPassword ? 'text' : 'password'}
+								label="Password"
+								autoComplete="off"
 							/>
 						)}
 					</DialogContent>

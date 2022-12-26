@@ -75,7 +75,7 @@ export const createAdmin = (payload) => async (dispatch) => {
 
 export const updateAdmin = (payload) => async (dispatch) => {
 	const token = tokenConfig();
-	const { _id, name, email, phone, gender } = payload;
+	const { _id, name, email, phone, gender, password } = payload;
 
 	try {
 		await dispatch({ type: ADMIN_LOADING });
@@ -86,6 +86,7 @@ export const updateAdmin = (payload) => async (dispatch) => {
 			email,
 			phone,
 			gender,
+			password,
 		});
 
 		const response = await axios.put(

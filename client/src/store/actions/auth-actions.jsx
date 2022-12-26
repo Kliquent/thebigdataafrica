@@ -4,6 +4,8 @@ import {
 	USER_LOADING,
 	AUTH_USER,
 	GET_USERS,
+	UPDATE_USER_INFO,
+	CHANGE_PASSWORD,
 	CREATE_USER,
 	LOGIN_SUCCESS,
 	LOGOUT_SUCCESS,
@@ -159,6 +161,73 @@ export const logOut = () => (dispatch) => {
 	dispatch({
 		type: LOGOUT_SUCCESS,
 	});
+};
+
+export const updateUserInfo = (payload) => async (dispatch) => {
+	const token = tokenConfig();
+
+	const { name, email, phone } = payload;
+
+	try {
+		// Request body
+		const body = JSON.stringify({ name, email, phone });
+
+		const response = await axios.put(
+			`${USERS_URL}/update-user-info`,
+			body,
+			token
+		);
+
+		const data = await response.data;
+
+		await dispatch({
+			type: UPDATE_USER_INFO,
+			payload: data,
+		});
+		toast.success(`Success! User info updated.`);
+	} catch (error) {
+		toast.error('Error updating user info!');
+		dispatch(
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'UPDATE_USER_INFO'
+			)
+		);
+	}
+};
+
+export const changePassword = (payload) => async (dispatch) => {
+	const token = tokenConfig();
+
+	const { current_password, new_password } = payload;
+	try {
+		// Request body
+		const body = JSON.stringify({ current_password, new_password });
+
+		const response = await axios.put(
+			`${USERS_URL}/update-password`,
+			body,
+			token
+		);
+
+		const data = await response.data;
+
+		await dispatch({
+			type: CHANGE_PASSWORD,
+			payload: data,
+		});
+		toast.success(`Success! password changed..`);
+	} catch (error) {
+		toast.error('Current pass is incorrect!');
+		dispatch(
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'CHANGE_PASSWORD'
+			)
+		);
+	}
 };
 
 // Forgot password

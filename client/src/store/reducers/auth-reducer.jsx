@@ -1,6 +1,8 @@
 import {
 	AUTH_USER,
 	GET_USERS,
+	UPDATE_USER_INFO,
+	CHANGE_PASSWORD,
 	USER_LOADING,
 	AUTH_ERROR,
 	LOGIN_SUCCESS,
@@ -42,8 +44,15 @@ export default function AuthReducer(state = initialState, action) {
 				isLoading: false,
 				users: action.payload,
 			};
+		case CHANGE_PASSWORD:
+			return {
+				...state,
+				isAuthenticated: true,
+				isLoading: false,
+			};
 		case CREATE_USER:
 		case LOGIN_SUCCESS:
+		case UPDATE_USER_INFO:
 		case REGISTER_SUCCESS:
 			return {
 				...state,

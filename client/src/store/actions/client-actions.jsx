@@ -76,7 +76,7 @@ export const createClient = (payload) => async (dispatch) => {
 
 export const updateClient = (payload) => async (dispatch) => {
 	const token = tokenConfig();
-	const { _id, name, email, phone, gender } = payload;
+	const { _id, name, email, phone, gender, password } = payload;
 
 	try {
 		await dispatch({ type: CLIENT_LOADING });
@@ -87,6 +87,7 @@ export const updateClient = (payload) => async (dispatch) => {
 			email,
 			phone,
 			gender,
+			password,
 		});
 
 		const response = await axios.put(

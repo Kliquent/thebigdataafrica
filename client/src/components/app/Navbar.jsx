@@ -221,7 +221,7 @@ const Navbar = () => {
 									<ul className="flex flex-col p-2 my-2 space-y-1">
 										<li>
 											<Link
-												to="/"
+												to="/profile"
 												className="block px-2 py-1 transition rounded-md hover:bg-gray-100"
 											>
 												Profile

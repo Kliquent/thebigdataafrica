@@ -11,3 +11,4 @@ export { default as Responses } from './Responses';
 
 // Content
 export { default as SurveyDetails } from './SurveyDetails';
+export { default as Profile } from './Profile';

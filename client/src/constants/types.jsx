@@ -12,6 +12,8 @@ export const REGISTER_FAIL = 'register_fail';
 export const RESET_FAIL = 'reset_fail';
 export const GET_ERRORS = 'get_errors';
 export const CLEAR_ERRORS = 'clear_errors';
+export const UPDATE_USER_INFO = 'update_user_info';
+export const CHANGE_PASSWORD = 'change_password';
 
 export const CREATE_USER = 'create_user';
 
