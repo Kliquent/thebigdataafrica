@@ -494,25 +494,26 @@ export const getClientSurveyResearchers = async (req, res) => {
 };
 
 export const adminDeleteUser = async (req, res) => {
-	// let userId = req.userId;
+	let userId = req.userId;
 	const { deleteUserId } = req.body;
+	console.log(deleteUserId);
 
 	try {
-		// const currentUser = await Users.findById(userId);
+		const currentUser = await Users.findById(userId);
 
-		// if (currentUser.isAdmin) {
-		// Prevent delete if the user has attached resources
+		if (currentUser.isAdmin) {
+			// Prevent delete if the user has attached resources
 
-		// Log event
+			// Log event
 
-		await Users.findByIdAndDelete({ _id: deleteUserId });
+			await Users.findByIdAndDelete({ _id: deleteUserId });
 
-		res.status(200).json({ message: 'User deleted successfully!' });
-		// } else {
-		// 	return res.status(401).json({
-		// 		message: `You're not an admin, resource can't be created`,
-		// 	});
-		// }
+			res.status(200).json({ message: 'User deleted successfully!' });
+		} else {
+			return res.status(401).json({
+				message: `You're not an admin, resource can't be created`,
+			});
+		}
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: error });
