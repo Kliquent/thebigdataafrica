@@ -73,6 +73,81 @@ export const createAdmin = (payload) => async (dispatch) => {
 	}
 };
 
+export const updateAdmin = (payload) => async (dispatch) => {
+	const token = tokenConfig();
+	const { _id, name, email, phone, gender } = payload;
+
+	try {
+		await dispatch({ type: ADMIN_LOADING });
+		// Request body
+		const body = JSON.stringify({
+			_id,
+			name,
+			email,
+			phone,
+			gender,
+		});
+
+		const response = await axios.put(
+			`${ADMIN_SERVER}/admin/update-user-info`,
+			body,
+			token
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: UPDATE_ADMIN,
+			payload: data,
+		});
+
+		await dispatch(clearErrors());
+
+		toast.success(`Success! update admin success.`);
+	} catch (error) {
+		console.log(error);
+		toast.error('Error! update admin failed.');
+		dispatch(
+			returnErrors(error.response.data, error.response.status, 'UPDATE_ADMIN')
+		);
+	}
+};
+
+export const deleteAdmin = (payload) => async (dispatch) => {
+	const token = tokenConfig();
+	const { _id } = payload;
+
+	try {
+		await dispatch({ type: ADMIN_LOADING });
+
+		const body = JSON.stringify({
+			deleteUserId: _id,
+		});
+
+		const response = await axios.delete(
+			`${ADMIN_SERVER}/admin/delete-user`,
+			body,
+			token
+		);
+
+		const data = await response.data;
+
+		await dispatch({
+			type: DELETE_ADMIN,
+			payload: data,
+		});
+
+		await dispatch(clearErrors());
+
+		toast.success(`Success! delete admin success.`);
+	} catch (error) {
+		console.log(error.response);
+		toast.error('Error! delete admin failed.');
+		dispatch(
+			returnErrors(error.response.data, error.response.status, 'DELETE_ADMIN')
+		);
+	}
+};
+
 export const getAdmins = () => async (dispatch) => {
 	const token = tokenConfig();
 	let roleId = '638321424a197589eeedf7f7'; // admin roleId (Not super admin)

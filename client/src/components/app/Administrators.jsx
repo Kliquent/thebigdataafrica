@@ -20,7 +20,12 @@ import {
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
-import { createAdmin, getAdmins } from '../../store/actions/admin-actions';
+import {
+	createAdmin,
+	updateAdmin,
+	deleteAdmin,
+	getAdmins,
+} from '../../store/actions/admin-actions';
 
 import CustomButton from '../../utils/CustomButton';
 
@@ -129,35 +134,35 @@ const Administrators = () => {
 
 	const onSubmitEdit = async (data, e) => {
 		e.preventDefault();
-		// setButtonLoading(true);
-		// const { name, email, phone, gender } = data;
+		setButtonLoading(true);
+		const { name, email, phone, gender } = data;
 
-		// const payload = {
-		// 	_id: updatedClient._id,
-		// 	name,
-		// 	email,
-		// 	phone,
-		// 	gender,
-		// };
+		const payload = {
+			_id: updatedAdmin._id,
+			name,
+			email,
+			phone,
+			gender,
+		};
 
-		// await dispatch(updateClient(payload));
-		// await dispatch(getClients());
+		await dispatch(updateAdmin(payload));
+		await dispatch(getAdmins());
 
-		// setButtonLoading(false);
-		// handleCloseEditDialog();
+		setButtonLoading(false);
+		handleCloseEditDialog();
 	};
 
-	const handleDeleteAdmin = (client) => {
-		// setDeletedClient(client);
-		// setOpenDeletePopup(true);
+	const handleDeleteAdmin = (admin) => {
+		setDeletedAdmin(admin);
+		setOpenDeletePopup(true);
 	};
 
 	const confirmDeleteAdmin = async () => {
-		// setButtonLoading(true);
-		// await dispatch(deleteClient(deletedClient));
-		// await dispatch(getClients());
-		// setButtonLoading(false);
-		// handleCloseDeleteDialog();
+		setButtonLoading(true);
+		await dispatch(deleteAdmin(deletedAdmin));
+		await dispatch(getAdmins());
+		setButtonLoading(false);
+		handleCloseDeleteDialog();
 	};
 
 	return (
@@ -551,6 +556,61 @@ const Administrators = () => {
 						</DialogActions>
 					)}
 				</form>
+			</Dialog>
+			<Dialog
+				open={openDeletePopup}
+				onClose={handleCloseDeleteDialog}
+				aria-labelledby="alert-dialog-title"
+				aria-describedby="alert-dialog-description"
+			>
+				<DialogContent
+					sx={{
+						display: 'flex',
+						flexDirection: 'column',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<DialogContentText id="alert-dialog-description">
+						<svg
+							className="w-16 h-16 text-red-500"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+							/>
+						</svg>
+					</DialogContentText>
+					<DialogContentText
+						sx={{ color: '#000', fontSize: 18, paddingBottom: '1rem' }}
+						id="alert-dialog-description"
+					>
+						Are You Sure! Want to Delete this record?
+					</DialogContentText>
+					<DialogContentText id="alert-dialog-description">
+						Do you really want to delete this record? You can't view this in
+						your list anymore if you delete!
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button sx={{ color: 'gray' }} onClick={handleCloseDeleteDialog}>
+						No, Keep it
+					</Button>
+					<CustomButton
+						onClick={confirmDeleteAdmin}
+						disabled={buttonLoading ? true : false}
+						loading={buttonLoading}
+						variant="contained"
+					>
+						Yes, Delete it
+					</CustomButton>
+				</DialogActions>
 			</Dialog>
 		</>
 	);
