@@ -92,7 +92,7 @@ const ChangePass = () => {
 				</div>
 				<div className="p-16 bg-gray-100 flex justify-between rounded-b-lg border-t border-gray-200">
 					<p className="float-left text-xs text-gray-500 tracking-tight mt-2">
-						Click on Save to update your password
+						Click on Change Password to update your password
 					</p>
 					<CustomButton
 						type="submit"
