@@ -132,13 +132,8 @@ export const deleteResearcher = (payload) => async (dispatch) => {
 	try {
 		await dispatch({ type: RESEARCHER_LOADING });
 
-		const body = JSON.stringify({
-			deleteUserId: _id,
-		});
-
 		const response = await axios.delete(
-			`${RESEARCHER_SERVER}/admin/delete-user`,
-			body,
+			`${RESEARCHER_SERVER}/admin/delete-user/${_id}`,
 			token
 		);
 

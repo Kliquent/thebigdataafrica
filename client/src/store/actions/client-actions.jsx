@@ -123,13 +123,8 @@ export const deleteClient = (payload) => async (dispatch) => {
 	try {
 		await dispatch({ type: CLIENT_LOADING });
 
-		const body = JSON.stringify({
-			deleteUserId: _id,
-		});
-
 		const response = await axios.delete(
-			`${CLIENT_SERVER}/admin/delete-user`,
-			body,
+			`${CLIENT_SERVER}/admin/delete-user/${_id}`,
 			token
 		);
 

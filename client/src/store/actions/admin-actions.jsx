@@ -120,21 +120,16 @@ export const deleteAdmin = (payload) => async (dispatch) => {
 	try {
 		await dispatch({ type: ADMIN_LOADING });
 
-		const body = JSON.stringify({
-			deleteUserId: _id,
-		});
-
 		const response = await axios.delete(
-			`${ADMIN_SERVER}/admin/delete-user`,
-			body,
+			`${ADMIN_SERVER}/admin/delete-user/${_id}`,
 			token
 		);
 
-		const data = await response.data;
+		const deletedData = await response.data;
 
 		await dispatch({
 			type: DELETE_ADMIN,
-			payload: data,
+			payload: deletedData,
 		});
 
 		await dispatch(clearErrors());

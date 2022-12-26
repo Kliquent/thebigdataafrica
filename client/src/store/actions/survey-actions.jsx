@@ -36,7 +36,7 @@ export const tokenConfig = () => {
 
 export const createSurvey = (payload) => async (dispatch) => {
 	const token = tokenConfig();
-	const { title, description, researcher_id, client_id } = payload;
+	const { title, description, researcher_id, location, client_id } = payload;
 
 	try {
 		await dispatch({ type: SURVEY_LOADING });
@@ -45,6 +45,7 @@ export const createSurvey = (payload) => async (dispatch) => {
 			title,
 			description,
 			researcher_id,
+			location,
 			client_id,
 		});
 
@@ -70,7 +71,8 @@ export const createSurvey = (payload) => async (dispatch) => {
 
 export const updateSurvey = (payload) => async (dispatch) => {
 	const token = tokenConfig();
-	const { _id, title, description, researcher_id, client_id } = payload;
+	const { _id, title, description, researcher_id, location, client_id } =
+		payload;
 
 	try {
 		await dispatch({ type: SURVEY_LOADING });
@@ -79,6 +81,7 @@ export const updateSurvey = (payload) => async (dispatch) => {
 			title,
 			description,
 			researcher_id,
+			location,
 			client_id,
 		});
 

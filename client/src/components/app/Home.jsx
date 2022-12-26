@@ -13,6 +13,7 @@ import {
 	TableRow,
 	TableCell,
 	Button,
+	Chip,
 	Autocomplete,
 	IconButton,
 	CircularProgress,
@@ -55,6 +56,8 @@ const Home = () => {
 	const [openEditPopup, setOpenEditPopup] = useState(false);
 	const [openDeletePopup, setOpenDeletePopup] = useState(false);
 	const [buttonLoading, setButtonLoading] = useState(false);
+
+	const [openResearcherPopup, setOpenResearcherPopup] = useState(false);
 
 	const [updatedSurvey, setUpdatedSurvey] = useState([]);
 	const [updatedResearcher, setUpdatedResearcher] = useState([]);
@@ -175,6 +178,17 @@ const Home = () => {
 		shouldFocusError: true,
 	});
 
+	const {
+		register: register2,
+		reset: reset2,
+		handleSubmit: handleSubmit2,
+		formState: { errors: errors2 },
+	} = useForm({
+		mode: 'all',
+		shouldUnregister: true,
+		shouldFocusError: true,
+	});
+
 	const handleCloseDialog = () => {
 		setOpenPopup(false);
 	};
@@ -191,6 +205,10 @@ const Home = () => {
 		setOpenDeletePopup(false);
 	};
 
+	const handleCloseResearcherDialog = () => {
+		setOpenResearcherPopup(false);
+	};
+
 	const selectedOption = (value) => {
 		setSelectedResearcher(value);
 	};
@@ -203,19 +221,23 @@ const Home = () => {
 		setOpenPopup(true);
 	};
 
+	const handleResearcherPopup = (data, e) => {
+		e.preventDefault();
+		setUpdatedSurvey(data);
+		setOpenResearcherPopup(true);
+	};
+
 	const handleEditPopup = (data, e) => {
 		e.preventDefault();
-		const { title, description, researcher, owner } = data;
+		const { title, description, owner } = data;
 
 		reset({
 			title,
 			description,
-			researcher: researcher?.name,
 			client: owner?.name,
 		});
 
 		setUpdatedSurvey(data);
-		setUpdatedResearcher(researcher);
 		setUpdatedClient(owner);
 		setOpenEditPopup(true);
 	};
@@ -229,7 +251,8 @@ const Home = () => {
 		const payload = {
 			title,
 			description,
-			researcher_id: selectedResearcher?._id,
+			researcher_id: '',
+			location: '',
 			client_id: selectedClient?._id,
 		};
 
@@ -249,7 +272,8 @@ const Home = () => {
 			_id: updatedSurvey._id,
 			title,
 			description,
-			researcher_id: selectedResearcher?._id,
+			researcher_id: '',
+			location: '',
 			client_id: selectedClient?._id,
 		};
 
@@ -271,6 +295,24 @@ const Home = () => {
 		await dispatch(getSurveys());
 		setButtonLoading(false);
 		handleCloseDeleteDialog();
+	};
+
+	const onSubmitResearcher = async (data, e) => {
+		e.preventDefault();
+		setButtonLoading(true);
+		const { location } = data;
+
+		const updatedData = {
+			_id: updatedSurvey._id,
+			title: '',
+			description: '',
+			location,
+			researcher_id: selectedResearcher?._id,
+			client_id: '',
+		};
+		await dispatch(updateSurvey(updatedData));
+		setButtonLoading(false);
+		handleCloseResearcherDialog();
 	};
 
 	return (
@@ -416,7 +458,7 @@ const Home = () => {
 					</div>
 				</div>
 				{/* Visual Charts */}
-				<div className="grid gap-4 md:grid-cols-2 my-8">
+				{/* <div className="grid gap-4 md:grid-cols-2 my-8">
 					<div className="min-w-0 p-4 bg-white rounded-lg  ring-1 ring-gray-200 ring-opacity-4 dark:bg-gray-800">
 						<p className="mb-4 font-semibold text-gray-800 dark:text-gray-300">
 							Conversions This Year
@@ -429,7 +471,7 @@ const Home = () => {
 						</p>
 						<PieChartM />
 					</div>
-				</div>
+				</div> */}
 				{/* Recent Surveys */}
 				<h1 className="my-6 text-lg font-bold text-gray-700 dark:text-gray-300">
 					All Surveys
@@ -496,6 +538,28 @@ const Home = () => {
 												</td>
 												<td className="px-4 py-3">
 													<div className="flex items-center justify-end text-right">
+														<div className="p-2 cursor-pointer text-gray-400 hover:text-green-600">
+															<IconButton
+																onClick={(e) =>
+																	handleResearcherPopup(survey, e)
+																}
+															>
+																<svg
+																	className="w-6 h-6"
+																	fill="none"
+																	stroke="currentColor"
+																	viewBox="0 0 24 24"
+																	xmlns="http://www.w3.org/2000/svg"
+																>
+																	<path
+																		strokeLinecap="round"
+																		strokeLinejoin="round"
+																		strokeWidth={2}
+																		d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+																	/>
+																</svg>
+															</IconButton>
+														</div>
 														<div className="p-2 cursor-pointer text-gray-400 hover:text-green-600">
 															<IconButton
 																onClick={() =>
@@ -619,7 +683,7 @@ const Home = () => {
 						? openViewPopup
 						: openPopup
 				}
-				onBackdropClick={() => setOpenViewPopup(false)}
+				onClose={() => setOpenViewPopup(false)}
 			>
 				<DialogTitle
 					sx={{
@@ -706,99 +770,6 @@ const Home = () => {
 							error={errors?.description ? true : false}
 							helperText={errors?.description?.message}
 						/>
-
-						{openEditPopup || openViewPopup ? (
-							<Autocomplete
-								defaultValue={updatedResearcher}
-								id="researcher"
-								style={{ marginBottom: '1rem' }}
-								open={open}
-								onOpen={() => {
-									setOpen(true);
-								}}
-								onClose={() => {
-									setOpen(false);
-								}}
-								onChange={(event, value) => selectedOption(value)}
-								isOptionEqualToValue={(option, value) => {
-									return option.name === value.name;
-								}}
-								getOptionLabel={(option) => option.name}
-								options={options}
-								loading={loading}
-								fullWidth
-								renderInput={(params) => (
-									<TextField
-										{...params}
-										{...register('researcher', {
-											required: 'Researcher is required!',
-											shouldFocus: true,
-										})}
-										sx={{ marginBottom: '.8rem' }}
-										label="Assign survey researcher"
-										variant="outlined"
-										InputProps={{
-											...params.InputProps,
-											endAdornment: (
-												<>
-													{loading ? (
-														<CircularProgress color="inherit" size={20} />
-													) : null}
-													{params.InputProps.endAdornment}
-												</>
-											),
-										}}
-										error={errors?.researcher ? true : false}
-										helperText={errors?.researcher?.message}
-									/>
-								)}
-							/>
-						) : (
-							<Autocomplete
-								id="researcher"
-								style={{ marginBottom: '1rem' }}
-								open={open}
-								onOpen={() => {
-									setOpen(true);
-								}}
-								onClose={() => {
-									setOpen(false);
-								}}
-								onChange={(event, value) => selectedOption(value)}
-								isOptionEqualToValue={(option, value) => {
-									return option.name === value.name;
-								}}
-								getOptionLabel={(option) => option.name}
-								options={options}
-								loading={loading}
-								fullWidth
-								renderInput={(params) => (
-									<TextField
-										{...params}
-										{...register('researcher', {
-											required: 'Researcher is required!',
-											shouldFocus: true,
-										})}
-										sx={{ marginBottom: '.8rem' }}
-										label="Assign survey researcher"
-										variant="outlined"
-										InputProps={{
-											...params.InputProps,
-											endAdornment: (
-												<>
-													{loading ? (
-														<CircularProgress color="inherit" size={20} />
-													) : null}
-													{params.InputProps.endAdornment}
-												</>
-											),
-										}}
-										error={errors?.researcher ? true : false}
-										helperText={errors?.researcher?.message}
-									/>
-								)}
-							/>
-						)}
 
 						{openEditPopup || openViewPopup ? (
 							<Autocomplete
@@ -914,6 +885,116 @@ const Home = () => {
 					)}
 				</form>
 			</Dialog>
+			{/* Add a new researcher */}
+			<Dialog
+				open={openResearcherPopup}
+				onClose={() => setOpenViewPopup(false)}
+			>
+				<DialogTitle
+					sx={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+					}}
+				>
+					{'Add New Researcher'}
+					<IconButton onClick={() => setOpenResearcherPopup(false)}>
+						<svg
+							className="w-6 h-6"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M6 18L18 6M6 6l12 12"
+							/>
+						</svg>
+					</IconButton>
+				</DialogTitle>
+				<form onSubmit={handleSubmit2(onSubmitResearcher)}>
+					<DialogContent>
+						<DialogContentText style={{ marginBottom: '.8rem' }}>
+							Assign researcher to survey
+						</DialogContentText>
+
+						<Autocomplete
+							id="researcher"
+							style={{ marginBottom: '1rem' }}
+							open={open}
+							onOpen={() => {
+								setOpen(true);
+							}}
+							onClose={() => {
+								setOpen(false);
+							}}
+							onChange={(event, value) => selectedOption(value)}
+							isOptionEqualToValue={(option, value) => {
+								return option.name === value.name;
+							}}
+							getOptionLabel={(option) => option.name}
+							options={options}
+							loading={loading}
+							fullWidth
+							renderInput={(params) => (
+								<TextField
+									{...params}
+									{...register2('researcher', {
+										required: 'Researcher is required!',
+										shouldFocus: true,
+									})}
+									sx={{ marginBottom: '.8rem' }}
+									label="Assign survey researcher"
+									variant="outlined"
+									InputProps={{
+										...params.InputProps,
+										endAdornment: (
+											<>
+												{loading ? (
+													<CircularProgress color="inherit" size={20} />
+												) : null}
+												{params.InputProps.endAdornment}
+											</>
+										),
+									}}
+									error={errors2?.researcher ? true : false}
+									helperText={errors2?.researcher?.message}
+								/>
+							)}
+						/>
+
+						<TextField
+							{...register2('location', {
+								required: 'Researcher survey location is required!',
+								shouldFocus: true,
+							})}
+							style={{ marginBottom: '.8rem' }}
+							name="location"
+							fullWidth
+							autoComplete="off"
+							label="Researcher survey location"
+							placeholder="Enter researcher survey location"
+							error={errors2?.location ? true : false}
+							helperText={errors2?.location?.message}
+						/>
+					</DialogContent>
+					<DialogActions sx={{ marginRight: '1rem', marginBottom: '1rem' }}>
+						<Button onClick={handleCloseResearcherDialog}>Cancel</Button>
+						<CustomButton
+							type="submit"
+							disabled={buttonLoading ? true : false}
+							loading={buttonLoading}
+							variant="contained"
+						>
+							Create
+						</CustomButton>
+					</DialogActions>
+				</form>
+			</Dialog>
+			{/* Delete survey */}
 			<Dialog
 				open={openDeletePopup}
 				onClose={handleCloseDeleteDialog}
