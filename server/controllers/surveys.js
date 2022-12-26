@@ -61,10 +61,6 @@ export const updateSurvey = async (req, res) => {
 	const { title, description, researcher_id, client_id, location } = req.body;
 
 	try {
-		// Simple validation
-		if (!title)
-			return res.status(400).json({ message: 'Please enter title field!' });
-
 		const currentSurvey = await Surveys.findOne({ _id: surveyId });
 
 		if (!currentSurvey)
