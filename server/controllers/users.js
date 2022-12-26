@@ -238,7 +238,7 @@ export const adminSignup = async (req, res) => {
 export const adminUpdateUserInfo = async (req, res) => {
 	const userId = req.userId;
 
-	const { _id, name, email, phone, gender } = req.body;
+	const { _id, name, email, phone, gender, password } = req.body;
 
 	const emailLowercase = email.toLowerCase(); // sanitize: convert email to lowercase
 
@@ -255,6 +255,7 @@ export const adminUpdateUserInfo = async (req, res) => {
 				email: emailLowercase,
 				phone,
 				gender,
+				password, // Not required
 			};
 
 			await Users.findByIdAndUpdate(
