@@ -54,8 +54,10 @@ export const getSurveys = (researcherId) => async (dispatch) => {
 			type: GET_SURVEY,
 			payload: data,
 		});
+
 		dispatch(clearErrors());
 	} catch (error) {
+		console.log(error.response);
 		dispatch(
 			returnErrors(error.response.data, error.response.status, 'SURVEY_ERROR')
 		);
