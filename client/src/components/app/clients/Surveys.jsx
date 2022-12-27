@@ -46,6 +46,8 @@ const Surveys = () => {
 	let urlParams = useParams();
 	let clientId = urlParams?.clientId;
 
+	let auth = useSelector((state) => state.auth);
+
 	let surveyLoading = useSelector((state) => state.surveys?.isLoading);
 	let clientSurveys = useSelector((state) => state.surveys?.getClientSurveys);
 
@@ -141,9 +143,14 @@ const Surveys = () => {
 			<Navbar />
 			<main className="flex-1 max-h-full p-5 overflow-hidden overflow-y-scroll">
 				<div className="flex flex-col items-start justify-start pb-6 space-x-2 space-y-4 border-b lg:items-center lg:space-y-0 lg:flex-row">
-					<IconButton onClick={() => navigate('/clients')}>
-						<ArrowBackIcon />
-					</IconButton>
+					{auth?.user?.current_user?.role_id?.title === 'Administrator' ||
+						(auth?.user?.current_user?.role_id?.title ===
+							'Root Administrator' && (
+							<IconButton onClick={() => navigate('/clients')}>
+								<ArrowBackIcon />
+							</IconButton>
+						))}
+
 					<h1 className="text-2xl font-semibold whitespace-nowrap">
 						Client Name: {currentClient.name}
 					</h1>

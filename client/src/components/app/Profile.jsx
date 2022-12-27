@@ -30,6 +30,10 @@ const Profile = () => {
 	});
 
 	useEffect(() => {
+		dispatch(auth());
+	}, []);
+
+	useEffect(() => {
 		reset({
 			name: currentUser?.name,
 			email: currentUser?.email,

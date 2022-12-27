@@ -17,8 +17,6 @@ const Login = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [buttonLoading, setButtonLoading] = useState(false);
 
-	const origin = location.state?.from?.pathname || '/';
-
 	const {
 		register,
 		handleSubmit,
@@ -37,6 +35,16 @@ const Login = () => {
 		e.preventDefault();
 		await dispatch(loginUser(data));
 	};
+
+	let origin = '/';
+	if (
+		auth?.user?.current_user?.role_id?.title === 'Administrator' ||
+		auth?.user?.current_user?.role_id?.title === 'Root Administrator'
+	) {
+		origin = location.state?.from?.pathname || '/';
+	} else {
+		origin = '/profile' || `/clients/${auth?.user?.current_user?.role_id?._id}`;
+	}
 
 	useEffect(() => {
 		if (auth.isAuthenticated) {

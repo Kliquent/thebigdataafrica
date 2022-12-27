@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { Tooltip, Zoom } from '@mui/material';
@@ -52,214 +52,271 @@ const Sidebar = ({ width, toggled, handleDrawerToggle }) => {
 				</div>
 
 				<ul>
-					<li>
-						<NavLink to="/">
-							{toggled ? (
-								<i className="bx bx-grid-alt"></i>
-							) : (
-								<Tooltip
-									componentsProps={{
-										tooltip: {
-											sx: {
-												color: '#45B64C',
-												width: '100px',
-												bgcolor: '#fff',
-												lineHeight: '30px',
-												textAlign: 'center',
-												fontSize: '1rem',
-												boxShadow:
-													'0px 0px 0px 0.5px rgba(50, 50, 93, 0.1), 0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07)',
-												transition: 'all 0.5s ease',
-											},
-										},
-										arrow: {
-											sx: {
-												color: '#DCFCE7',
-											},
-										},
-									}}
-									enterTouchDelay={0}
-									title="Home"
-									placement="right"
-									TransitionComponent={Zoom}
-									arrow
-								>
-									<i className="bx bx-grid-alt"></i>
-								</Tooltip>
-							)}
+					{auth?.user?.current_user?.role_id?.title === 'Administrator' ||
+						(auth?.user?.current_user?.role_id?.title ===
+							'Root Administrator' && (
+							<li>
+								<NavLink to="/">
+									{toggled ? (
+										<i className="bx bx-grid-alt"></i>
+									) : (
+										<Tooltip
+											componentsProps={{
+												tooltip: {
+													sx: {
+														color: '#45B64C',
+														width: '100px',
+														bgcolor: '#fff',
+														lineHeight: '30px',
+														textAlign: 'center',
+														fontSize: '1rem',
+														boxShadow:
+															'0px 0px 0px 0.5px rgba(50, 50, 93, 0.1), 0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07)',
+														transition: 'all 0.5s ease',
+													},
+												},
+												arrow: {
+													sx: {
+														color: '#DCFCE7',
+													},
+												},
+											}}
+											enterTouchDelay={0}
+											title="Home"
+											placement="right"
+											TransitionComponent={Zoom}
+											arrow
+										>
+											<i className="bx bx-grid-alt"></i>
+										</Tooltip>
+									)}
 
-							<span className="links_name">Home</span>
-						</NavLink>
-					</li>
-					<li>
-						<NavLink
-							to="/clients"
-							activeclassname="active"
-							onClick={handleClick}
-						>
-							{toggled ? (
-								<i className="bx bx-group"></i>
-							) : (
-								<Tooltip
-									componentsProps={{
-										tooltip: {
-											sx: {
-												color: '#45B64C',
-												width: '100px',
-												bgcolor: '#fff',
-												lineHeight: '30px',
-												textAlign: 'center',
-												fontSize: '1rem',
-												boxShadow:
-													'0px 0px 0px 0.5px rgba(50, 50, 93, 0.1), 0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07)',
-												transition: 'all 0.5s ease',
-											},
-										},
-										arrow: {
-											sx: {
-												color: '#DCFCE7',
-											},
-										},
-									}}
-									enterTouchDelay={0}
-									title="Clients"
-									placement="right"
-									TransitionComponent={Zoom}
-									arrow
-								>
+									<span className="links_name">Home</span>
+								</NavLink>
+							</li>
+						))}
+
+					{auth?.user?.current_user?.role_id?.title === 'Administrator' ||
+					auth?.user?.current_user?.role_id?.title === 'Root Administrator' ? (
+						<li>
+							<NavLink
+								to="/clients"
+								activeclassname="active"
+								onClick={handleClick}
+							>
+								{toggled ? (
 									<i className="bx bx-group"></i>
-								</Tooltip>
-							)}
-							<span className="links_name">Clients</span>
-						</NavLink>
-					</li>
-					<li>
-						<NavLink
-							to="/researchers"
-							activeclassname="active"
-							onClick={handleClick}
-						>
-							{toggled ? (
-								<i className="bx bxs-user-detail"></i>
-							) : (
-								<Tooltip
-									componentsProps={{
-										tooltip: {
-											sx: {
-												color: '#45B64C',
-												width: '110px',
-												bgcolor: '#fff',
-												lineHeight: '30px',
-												textAlign: 'center',
-												fontSize: '1rem',
-												boxShadow:
-													'0px 0px 0px 0.5px rgba(50, 50, 93, 0.1), 0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07)',
-												transition: 'all 0.5s ease',
+								) : (
+									<Tooltip
+										componentsProps={{
+											tooltip: {
+												sx: {
+													color: '#45B64C',
+													width: '100px',
+													bgcolor: '#fff',
+													lineHeight: '30px',
+													textAlign: 'center',
+													fontSize: '1rem',
+													boxShadow:
+														'0px 0px 0px 0.5px rgba(50, 50, 93, 0.1), 0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07)',
+													transition: 'all 0.5s ease',
+												},
 											},
-										},
-										arrow: {
-											sx: {
-												color: '#DCFCE7',
+											arrow: {
+												sx: {
+													color: '#DCFCE7',
+												},
 											},
-										},
-									}}
-									enterTouchDelay={0}
-									title="Researchers"
-									placement="right"
-									TransitionComponent={Zoom}
-									arrow
-								>
-									<i className="bx bxs-user-detail"></i>
-								</Tooltip>
-							)}
-							<span className="links_name">Researchers</span>
-						</NavLink>
-					</li>
+										}}
+										enterTouchDelay={0}
+										title="Clients"
+										placement="right"
+										TransitionComponent={Zoom}
+										arrow
+									>
+										<i className="bx bx-group"></i>
+									</Tooltip>
+								)}
+								<span className="links_name">Clients</span>
+							</NavLink>
+						</li>
+					) : (
+						<li>
+							<NavLink
+								to={`/clients/${auth?.user?.current_user?._id}`}
+								activeclassname="active"
+								onClick={handleClick}
+							>
+								{toggled ? (
+									<i className="bx bx-group"></i>
+								) : (
+									<Tooltip
+										componentsProps={{
+											tooltip: {
+												sx: {
+													color: '#45B64C',
+													width: '100px',
+													bgcolor: '#fff',
+													lineHeight: '30px',
+													textAlign: 'center',
+													fontSize: '1rem',
+													boxShadow:
+														'0px 0px 0px 0.5px rgba(50, 50, 93, 0.1), 0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07)',
+													transition: 'all 0.5s ease',
+												},
+											},
+											arrow: {
+												sx: {
+													color: '#DCFCE7',
+												},
+											},
+										}}
+										enterTouchDelay={0}
+										title="Clients"
+										placement="right"
+										TransitionComponent={Zoom}
+										arrow
+									>
+										<i className="bx bx-group"></i>
+									</Tooltip>
+								)}
+								<span className="links_name">Clients</span>
+							</NavLink>
+						</li>
+					)}
 
-					<li>
-						<NavLink
-							to="/administrators"
-							activeclassname="active"
-							onClick={handleClick}
-						>
-							{toggled ? (
-								<i className="bx bx-user"></i>
-							) : (
-								<Tooltip
-									componentsProps={{
-										tooltip: {
-											sx: {
-												color: '#45B64C',
-												width: '120px',
-												bgcolor: '#fff',
-												lineHeight: '30px',
-												textAlign: 'center',
-												fontSize: '1rem',
-												boxShadow:
-													'0px 0px 0px 0.5px rgba(50, 50, 93, 0.1), 0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07)',
-												transition: 'all 0.5s ease',
-											},
-										},
-										arrow: {
-											sx: {
-												color: '#DCFCE7',
-											},
-										},
-									}}
-									enterTouchDelay={0}
-									title="Administrators"
-									placement="right"
-									TransitionComponent={Zoom}
-									arrow
-								>
-									<i className="bx bx-user"></i>
-								</Tooltip>
-							)}
-							<span className="links_name">Administrators</span>
-						</NavLink>
-					</li>
-					<li>
-						<NavLink
-							to="/responses"
-							activeclassname="active"
-							onClick={handleClick}
-						>
-							{toggled ? (
-								<i className="bx bx-analyse"></i>
-							) : (
-								<Tooltip
-									componentsProps={{
-										tooltip: {
-											sx: {
-												color: '#45B64C',
-												width: '120px',
-												bgcolor: '#fff',
-												lineHeight: '30px',
-												textAlign: 'center',
-												fontSize: '1rem',
-												boxShadow:
-													'0px 0px 0px 0.5px rgba(50, 50, 93, 0.1), 0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07)',
-												transition: 'all 0.5s ease',
-											},
-										},
-										arrow: {
-											sx: {
-												color: '#DCFCE7',
-											},
-										},
-									}}
-									enterTouchDelay={0}
-									title="Responses"
-									placement="right"
-									TransitionComponent={Zoom}
-									arrow
-								>
-									<i className="bx bx-analyse"></i>
-								</Tooltip>
-							)}
-							<span className="links_name">Responses</span>
-						</NavLink>
-					</li>
+					{auth?.user?.current_user?.role_id?.title === 'Administrator' ||
+						(auth?.user?.current_user?.role_id?.title ===
+							'Root Administrator' && (
+							<>
+								<li>
+									<NavLink
+										to="/researchers"
+										activeclassname="active"
+										onClick={handleClick}
+									>
+										{toggled ? (
+											<i className="bx bxs-user-detail"></i>
+										) : (
+											<Tooltip
+												componentsProps={{
+													tooltip: {
+														sx: {
+															color: '#45B64C',
+															width: '110px',
+															bgcolor: '#fff',
+															lineHeight: '30px',
+															textAlign: 'center',
+															fontSize: '1rem',
+															boxShadow:
+																'0px 0px 0px 0.5px rgba(50, 50, 93, 0.1), 0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07)',
+															transition: 'all 0.5s ease',
+														},
+													},
+													arrow: {
+														sx: {
+															color: '#DCFCE7',
+														},
+													},
+												}}
+												enterTouchDelay={0}
+												title="Researchers"
+												placement="right"
+												TransitionComponent={Zoom}
+												arrow
+											>
+												<i className="bx bxs-user-detail"></i>
+											</Tooltip>
+										)}
+										<span className="links_name">Researchers</span>
+									</NavLink>
+								</li>
+								<li>
+									<NavLink
+										to="/administrators"
+										activeclassname="active"
+										onClick={handleClick}
+									>
+										{toggled ? (
+											<i className="bx bx-user"></i>
+										) : (
+											<Tooltip
+												componentsProps={{
+													tooltip: {
+														sx: {
+															color: '#45B64C',
+															width: '120px',
+															bgcolor: '#fff',
+															lineHeight: '30px',
+															textAlign: 'center',
+															fontSize: '1rem',
+															boxShadow:
+																'0px 0px 0px 0.5px rgba(50, 50, 93, 0.1), 0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07)',
+															transition: 'all 0.5s ease',
+														},
+													},
+													arrow: {
+														sx: {
+															color: '#DCFCE7',
+														},
+													},
+												}}
+												enterTouchDelay={0}
+												title="Administrators"
+												placement="right"
+												TransitionComponent={Zoom}
+												arrow
+											>
+												<i className="bx bx-user"></i>
+											</Tooltip>
+										)}
+										<span className="links_name">Administrators</span>
+									</NavLink>
+								</li>
+								<li>
+									<NavLink
+										to="/responses"
+										activeclassname="active"
+										onClick={handleClick}
+									>
+										{toggled ? (
+											<i className="bx bx-analyse"></i>
+										) : (
+											<Tooltip
+												componentsProps={{
+													tooltip: {
+														sx: {
+															color: '#45B64C',
+															width: '120px',
+															bgcolor: '#fff',
+															lineHeight: '30px',
+															textAlign: 'center',
+															fontSize: '1rem',
+															boxShadow:
+																'0px 0px 0px 0.5px rgba(50, 50, 93, 0.1), 0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07)',
+															transition: 'all 0.5s ease',
+														},
+													},
+													arrow: {
+														sx: {
+															color: '#DCFCE7',
+														},
+													},
+												}}
+												enterTouchDelay={0}
+												title="Responses"
+												placement="right"
+												TransitionComponent={Zoom}
+												arrow
+											>
+												<i className="bx bx-analyse"></i>
+											</Tooltip>
+										)}
+										<span className="links_name">Responses</span>
+									</NavLink>
+								</li>
+							</>
+						))}
 				</ul>
 
 				<div className="profile_content">
@@ -267,7 +324,9 @@ const Sidebar = ({ width, toggled, handleDrawerToggle }) => {
 						<div className="profile_details">
 							<div className="name_job">
 								<div className="name">{auth?.user?.current_user?.name}</div>
-								<div className="job">{auth?.user?.current_user?.role}</div>
+								<div className="job">
+									{auth?.user?.current_user?.role_id?.title}
+								</div>
 							</div>
 						</div>
 						{toggled ? (
