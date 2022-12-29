@@ -8,6 +8,7 @@ import {
 	getSurvey,
 	// getQuestionBySurveyQuestion,
 	getClientSurveys,
+	getSurveyResearchers,
 	getQuestionsBySurvey,
 	getSurveysByResearcher,
 	getSurveysByResearcherToken,
@@ -25,6 +26,7 @@ router.get(
 	getSurveysByResearcher
 );
 router.get('/get-questions-by-survey/:surveyId', auth, getQuestionsBySurvey);
+router.get('/get-survey-researchers/:surveyId', auth, getSurveyResearchers);
 router.get('/get-client-surveys/:clientId', auth, getClientSurveys);
 router.get('/:surveyId', auth, getSurvey);
 router.put('/:surveyId', auth, updateSurvey);

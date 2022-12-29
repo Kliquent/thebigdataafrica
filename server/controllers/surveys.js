@@ -165,6 +165,22 @@ export const deleteSurvey = async (req, res) => {
 	}
 };
 
+export const getSurveyResearchers = async () => {
+	let surveyId = req.params.surveyId;
+
+	try {
+		// Find researchers based on surveyIds from client surveys
+		const researchers = await Researcher.find({
+			survey_id: surveyId,
+		});
+
+		res.status(200).json({ researchers });
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: error });
+	}
+};
+
 // Delete survey researcher
 export const deleteSurveyResearcher = async (req, res) => {
 	const { survey_id, researcher_id } = req.body;
