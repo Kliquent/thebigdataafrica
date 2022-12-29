@@ -68,7 +68,7 @@ const Login = () => {
 					style={[styles.centerAlign, { paddingBottom: 5, height: height / 3 }]}
 				>
 					<Image
-						source={require('../../../assets/nikiai-logo.png')}
+						source={require('../../../assets/bigdata-logo-transparent.png')}
 						style={styles.logo}
 					/>
 				</LinearGradient>
