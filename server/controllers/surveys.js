@@ -183,7 +183,8 @@ export const getSurveyResearchers = async (req, res) => {
 
 // Delete survey researcher
 export const deleteSurveyResearcher = async (req, res) => {
-	const { survey_id, researcher_id } = req.body;
+	const { survey_id, researcher_id } = req.body.data;
+	console.log(req.body);
 
 	try {
 		// Search researcherSchemaId using survey_id & researcher_id

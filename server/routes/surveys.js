@@ -12,6 +12,7 @@ import {
 	getQuestionsBySurvey,
 	getSurveysByResearcher,
 	getSurveysByResearcherToken,
+	deleteSurveyResearcher,
 } from '../controllers/surveys.js';
 import { auth } from '../middleware/auth.js';
 
@@ -30,6 +31,7 @@ router.get('/get-survey-researchers/:surveyId', auth, getSurveyResearchers);
 router.get('/get-client-surveys/:clientId', auth, getClientSurveys);
 router.get('/:surveyId', auth, getSurvey);
 router.put('/:surveyId', auth, updateSurvey);
+router.delete('/delete-survey-researchers', auth, deleteSurveyResearcher);
 router.delete('/:surveyId', auth, deleteSurvey);
 
 export default router;
