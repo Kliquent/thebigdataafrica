@@ -165,7 +165,7 @@ export const deleteSurvey = async (req, res) => {
 	}
 };
 
-export const getSurveyResearchers = async () => {
+export const getSurveyResearchers = async (req, res) => {
 	let surveyId = req.params.surveyId;
 
 	try {
