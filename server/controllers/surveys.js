@@ -172,7 +172,7 @@ export const getSurveyResearchers = async () => {
 		// Find researchers based on surveyIds from client surveys
 		const researchers = await Researcher.find({
 			survey_id: surveyId,
-		});
+		}).populate('researcher_id');
 
 		res.status(200).json({ researchers });
 	} catch (error) {
