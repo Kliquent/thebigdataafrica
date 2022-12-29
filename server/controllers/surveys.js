@@ -185,17 +185,19 @@ export const getSurveyResearchers = async (req, res) => {
 // Delete survey researcher
 export const deleteSurveyResearcher = async (req, res) => {
 	const { survey_id, researcher_id } = req.body;
+	console.log(req.body);
 
 	try {
 		// Search researcherSchemaId using survey_id & researcher_id
 		const currentResearcherSchemaId = await Researcher.findOne({
 			$and: [{ survey_id }, { researcher_id }],
 		});
+		console.log(currentResearcherSchemaId);
 
-		// Delete reference survey to researcher
-		await Researcher.findByIdAndDelete({
-			_id: currentResearcherSchemaId._id,
-		});
+		// // Delete reference survey to researcher
+		// await Researcher.findByIdAndDelete({
+		// 	_id: currentResearcherSchemaId._id,
+		// });
 
 		res
 			.status(200)
