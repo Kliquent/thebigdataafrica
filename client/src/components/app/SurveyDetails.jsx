@@ -22,6 +22,8 @@ import { useForm } from 'react-hook-form';
 import {
 	getSurvey,
 	getQuestionsBySurvey,
+	getSurveyResearchers,
+	deleteSurveyResearcher,
 } from '../../store/actions/survey-actions';
 import {
 	createQuestion,
@@ -47,7 +49,12 @@ const SurveyDetails = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
+	let surveyLoading = useSelector((state) => state.surveys?.isLoading);
 	let survey = useSelector((state) => state.surveys?.survey);
+	let surveyResearchers = useSelector(
+		(state) => state.surveys?.getSurveyResearchers
+	);
+
 	let questionLoading = useSelector((state) => state.questions?.isLoading);
 	let questionsBySurvey = useSelector(
 		(state) => state.surveys?.questionsBySurvey
@@ -101,6 +108,10 @@ const SurveyDetails = () => {
 
 	useEffect(() => {
 		dispatch(getOptions());
+	}, []);
+
+	useEffect(() => {
+		dispatch(getSurveyResearchers(surveyId));
 	}, []);
 
 	useEffect(() => {
@@ -347,6 +358,17 @@ const SurveyDetails = () => {
 
 	const handleChangeInputType = (event) => {
 		setSelectedInputType(event.target.value);
+	};
+
+	const handleDeleteSurveyResearcher = async (researcher_id, e) => {
+		e.preventDefault();
+		const payload = {
+			researcher_id: researcher_id?._id,
+			survey_id: surveyId,
+		};
+
+		await dispatch(deleteSurveyResearcher(payload));
+		await dispatch(getSurveyResearchers(surveyId));
 	};
 
 	return (
@@ -660,6 +682,126 @@ const SurveyDetails = () => {
 							)}
 						</div>
 					)}
+				</div>
+
+				{/* Survey Researchers */}
+				<h1 className="my-6 text-lg font-bold text-gray-700 dark:text-gray-300">
+					Researchers
+				</h1>
+
+				<div className="mt-8 w-full overflow-hidden border border-gray-200 dark:border-gray-700 rounded-lg ring-1 ring-black ring-opacity-5 mb-8">
+					<div className="w-full overflow-x-auto no-scrollbar">
+						<table className="w-full whitespace-nowrap">
+							<thead className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
+								<tr>
+									<td className="px-4 py-3">Name</td>
+									<td className="px-4 py-3">Email</td>
+									<td className="px-4 py-3">Phone</td>
+									<td className="px-4 py-3">Gender</td>
+									<td className="px-4 py-3">Action</td>
+								</tr>
+							</thead>
+							<tbody className="bg-white divide-y divide-gray-100 dark:divide-gray-700 dark:bg-gray-800 text-gray-700 dark:text-gray-400">
+								{surveyResearchers?.researchers?.length > 0 ? (
+									surveyResearchers?.researchers?.map((researcher, index) => {
+										const { researcher_id } = researcher;
+
+										return (
+											<tr key={index} className="">
+												<td className="px-4 py-3">
+													<span className="text-sm">{researcher_id?.name}</span>
+												</td>
+
+												<td className="px-4 py-3">
+													<span className="text-sm">
+														{researcher_id?.email}
+													</span>
+												</td>
+
+												<td className="px-4 py-3">
+													<span className="text-sm">
+														{researcher_id?.phone}
+													</span>
+												</td>
+
+												<td className="px-4 py-3">
+													<span className="text-sm">
+														{researcher_id?.gender}
+													</span>
+												</td>
+												<td className="px-4 py-3">
+													<div className="p-2 cursor-pointer text-gray-400 hover:text-red-600">
+														<IconButton
+															onClick={(e) =>
+																handleDeleteSurveyResearcher(researcher_id, e)
+															}
+														>
+															<svg
+																stroke="currentColor"
+																fill="none"
+																strokeWidth={2}
+																viewBox="0 0 24 24"
+																strokeLinecap="round"
+																strokeLinejoin="round"
+																height="1em"
+																width="1em"
+																xmlns="http://www.w3.org/2000/svg"
+															>
+																<polyline points="3 6 5 6 21 6" />
+																<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+																<line x1={10} y1={11} x2={10} y2={17} />
+																<line x1={14} y1={11} x2={14} y2={17} />
+															</svg>
+														</IconButton>
+													</div>
+												</td>
+											</tr>
+										);
+									})
+								) : (
+									<TableRow>
+										<TableCell
+											colSpan={12}
+											style={{ padding: '1rem', textAlign: 'center' }}
+										>
+											{surveyLoading ? (
+												<CircularProgress
+													variant="indeterminate"
+													disableShrink
+													size={25}
+													thickness={4}
+												/>
+											) : (
+												<p>You have no survey researchers</p>
+											)}
+										</TableCell>
+									</TableRow>
+								)}
+							</tbody>
+						</table>
+					</div>
+					<div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-white text-gray-500 dark:text-gray-400 dark:bg-gray-800">
+						<div className="flex flex-col justify-between text-xs sm:flex-row text-gray-600 dark:text-gray-400">
+							<span className="flex items-center font-semibold tracking-wide uppercase">
+								Showing 1-{surveyResearchers.length} of{' '}
+								{surveyResearchers.length ? surveyResearchers.length : 0}
+							</span>
+							<div className="flex mt-2 sm:mt-auto sm:justify-end">
+								<TablePagination
+									sx={{ overflow: 'hidden' }}
+									component="div"
+									page={page}
+									rowsPerPageOptions={pages}
+									rowsPerPage={rowsPerPage}
+									count={
+										surveyResearchers.length ? surveyResearchers.length : 0
+									}
+									onPageChange={handlePageChange}
+									onRowsPerPageChange={handleRowsPerPageChange}
+								/>
+							</div>
+						</div>
+					</div>
 				</div>
 			</main>
 			<Dialog

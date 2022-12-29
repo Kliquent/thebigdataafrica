@@ -24,6 +24,8 @@ export const GET_SURVEYS = 'get_surveys';
 export const UPDATE_SURVEY = 'update_survey';
 export const DELETE_SURVEY = 'delete_survey';
 export const GET_CLIENT_SURVEYS = 'get_client_surveys';
+export const GET_SURVEY_RESEARCHERS = 'get_survey_researchers';
+export const DELETE_SURVEY_RESEARCHER = 'delete_survey_researcher';
 
 export const CLIENT_LOADING = 'client_loading';
 export const CREATE_CLIENT = 'create_client';

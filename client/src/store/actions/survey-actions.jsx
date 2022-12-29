@@ -7,8 +7,10 @@ import {
 	GET_SURVEYS,
 	GET_CLIENT_SURVEYS,
 	GET_QUESTIONS_BY_SURVEY,
+	GET_SURVEY_RESEARCHERS,
 	UPDATE_SURVEY,
 	DELETE_SURVEY,
+	DELETE_SURVEY_RESEARCHER,
 } from '../../constants/types';
 import { returnErrors, clearErrors } from './error-actions';
 
@@ -155,6 +157,69 @@ export const getClientSurveys = (clientId) => async (dispatch) => {
 				error.response.data,
 				error.response.status,
 				'GET_CLIENT_SURVEY_ERROR'
+			)
+		);
+	}
+};
+
+export const getSurveyResearchers = (surveyId) => async (dispatch) => {
+	const token = tokenConfig();
+
+	try {
+		await dispatch({ type: SURVEY_LOADING });
+
+		const response = await axios.get(
+			`${SURVEY_SERVER}/get-survey-researchers/${surveyId}`,
+			token
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: GET_SURVEY_RESEARCHERS,
+			payload: data,
+		});
+	} catch (error) {
+		console.log(error.response);
+		dispatch(
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'GET_SURVEY_RESEARCHERS'
+			)
+		);
+	}
+};
+
+export const deleteSurveyResearcher = (payload) => async (dispatch) => {
+	const token = tokenConfig();
+
+	const { survey_id, researcher_id } = payload;
+
+	try {
+		await dispatch({ type: SURVEY_LOADING });
+
+		// Request body
+		const body = JSON.stringify({ survey_id, researcher_id });
+
+		const response = await axios.post(
+			`${SURVEY_SERVER}/delete-survey-researchers`,
+			body,
+			token
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: DELETE_SURVEY_RESEARCHER,
+			payload: data,
+		});
+		toast.success(`Success! delete survey researcher.`);
+	} catch (error) {
+		console.log(error);
+		dispatch(
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'DELETE_SURVEY_RESEARCHER'
 			)
 		);
 	}

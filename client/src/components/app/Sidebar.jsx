@@ -273,7 +273,7 @@ const Sidebar = ({ width, toggled, handleDrawerToggle }) => {
 										<span className="links_name">Administrators</span>
 									</NavLink>
 								</li>
-								<li>
+								{/* <li>
 									<NavLink
 										to="/responses"
 										activeclassname="active"
@@ -314,7 +314,7 @@ const Sidebar = ({ width, toggled, handleDrawerToggle }) => {
 										)}
 										<span className="links_name">Responses</span>
 									</NavLink>
-								</li>
+								</li> */}
 							</>
 						))}
 				</ul>

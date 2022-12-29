@@ -397,7 +397,7 @@ const Clients = () => {
 						? openViewPopup
 						: openPopup
 				}
-				onBackdropClick={() => setOpenViewPopup(false)}
+				onClose={() => setOpenViewPopup(false)}
 			>
 				<DialogTitle
 					sx={{
