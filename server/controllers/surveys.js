@@ -181,21 +181,21 @@ export const getSurveyResearchers = async (req, res) => {
 	}
 };
 
+// POST method is used as payload doesn't work in DELETE
 // Delete survey researcher
 export const deleteSurveyResearcher = async (req, res) => {
-	// const { survey_id, researcher_id } = req.body.data;
-	console.log(req.body);
+	const { survey_id, researcher_id } = req.body;
 
 	try {
 		// Search researcherSchemaId using survey_id & researcher_id
-		// const currentResearcherSchemaId = await Researcher.findOne({
-		// 	$and: [{ survey_id }, { researcher_id }],
-		// });
+		const currentResearcherSchemaId = await Researcher.findOne({
+			$and: [{ survey_id }, { researcher_id }],
+		});
 
-		// // Delete reference survey to researcher
-		// await Researcher.findByIdAndDelete({
-		// 	_id: currentResearcherSchemaId._id,
-		// });
+		// Delete reference survey to researcher
+		await Researcher.findByIdAndDelete({
+			_id: currentResearcherSchemaId._id,
+		});
 
 		res
 			.status(200)
